@@ -1,12 +1,11 @@
 import Link from "next/link"
 import { createClient } from "../../utils/supabase/server"
 
-export const revalidate = 60 // Cache page for up to 60 seconds on public CDN
+export const revalidate = 60
 
 export default async function NowPage() {
   const supabase = await createClient()
 
-  // Fetch only visible sections
   const { data: visibleSections } = await supabase
     .from('pos_sections')
     .select('slug, title')
@@ -14,42 +13,28 @@ export default async function NowPage() {
 
   const activeSlugs = (visibleSections || []).map((s) => s.slug)
 
-  // Fetch active shelf and vitals entries
   const { data: entries } = await supabase
     .from('pos_entries')
     .select('*')
     .eq('status', 'active')
     .order('order_index', { ascending: true })
 
-  // Fetch active research tracker items
   const { data: researchTrackers } = await supabase
     .from('pos_research_tracker')
-    .select(`
-      id,
-      title,
-      description,
-      status,
-      progress,
-      target_date,
-      related_research_id,
-      updated_at
-    `)
+    .select('id, title, description, status, progress, target_date, related_research_id, updated_at')
     .order('updated_at', { ascending: false })
 
-  // Fetch goals
   const { data: goals } = await supabase
     .from('pos_goals')
     .select('*')
     .order('quarter', { ascending: false })
     .order('created_at', { ascending: true })
 
-  // Fetch achievements
   const { data: achievements } = await supabase
     .from('pos_achievements')
     .select('*')
     .order('date', { ascending: false })
 
-  // Fetch recent activity feed
   const { data: activities } = await supabase
     .from('pos_activity')
     .select('*')
@@ -57,18 +42,11 @@ export default async function NowPage() {
     .limit(12)
 
   type PosEntry = {
-    id: string
-    section_slug: string
-    title: string
-    subtitle: string | null
-    url: string | null
-    progress: number | null
-    updated_at: string
+    id: string; section_slug: string; title: string; subtitle: string | null;
+    url: string | null; progress: number | null; updated_at: string;
   }
 
   const typedEntries = (entries || []) as PosEntry[]
-
-  // Group entries by section_slug
   const entryMap = typedEntries.reduce((acc, entry) => {
     if (!acc[entry.section_slug]) acc[entry.section_slug] = []
     acc[entry.section_slug]!.push(entry)
@@ -76,52 +54,35 @@ export default async function NowPage() {
   }, {} as Record<string, PosEntry[]>)
 
   const isSectionVisible = (slug: string) => activeSlugs.includes(slug)
-
   const getVitalText = (slug: string) => {
     if (!isSectionVisible(slug)) return null
     const list = entryMap[slug] || []
     return list[0]?.title || null
   }
 
-  // Format relative date
   const formatTimeAgo = (dateStr: string) => {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
+    const diffMs = Date.now() - new Date(dateStr).getTime()
     const diffMins = Math.floor(diffMs / 60000)
     const diffHours = Math.floor(diffMins / 60)
     const diffDays = Math.floor(diffHours / 24)
-
     if (diffMins < 1) return 'just now'
     if (diffMins < 60) return `${diffMins}m ago`
     if (diffHours < 24) return `${diffHours}h ago`
     if (diffDays === 1) return 'yesterday'
-    return `${diffDays} days ago`
+    return `${diffDays}d ago`
   }
 
-  // Find last updated timestamp across all POS feeds
   const getLastUpdated = () => {
     let maxTime = 0
-    const checkTime = (timeStr?: string | null) => {
-      if (!timeStr) return
-      const t = new Date(timeStr).getTime()
-      if (t > maxTime) maxTime = t
-    }
-
-    (entries || []).forEach((e) => checkTime(e.updated_at));
-    (researchTrackers || []).forEach((r) => checkTime(r.updated_at));
-    (goals || []).forEach((g) => checkTime(g.updated_at));
-    (activities || []).forEach((a) => checkTime(a.timestamp));
-
+    const check = (t?: string | null) => { if (t) { const v = new Date(t).getTime(); if (v > maxTime) maxTime = v; } };
+    (entries || []).forEach((e) => check(e.updated_at));
+    (researchTrackers || []).forEach((r) => check(r.updated_at));
+    (goals || []).forEach((g) => check(g.updated_at));
+    (activities || []).forEach((a) => check(a.timestamp));
     if (maxTime === 0) return 'Recent'
-    return new Date(maxTime).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    return new Date(maxTime).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
   }
 
-  // Group stack elements by subtitle category
   const stackItems = entryMap['stack'] || []
   const groupedStack = stackItems.reduce((acc: Record<string, PosEntry[]>, item: PosEntry) => {
     const cat = item.subtitle || 'General'
@@ -131,96 +92,78 @@ export default async function NowPage() {
   }, {} as Record<string, PosEntry[]>)
 
   return (
-    <div className="w-full flex flex-col items-center">
-      
-      {/* Page Header */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-20 md:py-28">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6">
-          <div>
-            <span className="text-xs uppercase font-bold tracking-widest text-primary-900 bg-gray-100 px-3 py-1 rounded-full">
-              Personal OS
-            </span>
-            <h1 className="text-5xl md:text-6xl font-medium tracking-tight text-primary-900 mt-4">
-              /now
-            </h1>
-            <p className="mt-4 text-lg text-gray-500 max-w-xl leading-relaxed">
-              A real-time dashboard tracking my active focus, development stack, ongoing research, and current lifestyle stats.
-            </p>
-          </div>
-          <div className="text-xs text-gray-400 font-mono text-left md:text-right shrink-0">
-            Last Updated <br/>
-            <span className="text-gray-900 font-semibold">{getLastUpdated()}</span>
-          </div>
+    <div className="flex flex-col w-full">
+
+      {/* HEADER */}
+      <section className="section-full py-20 md:py-28">
+        <span className="section-number">01</span>
+        <div className="section-label">section.operating_system</div>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#1a1a1a]">/now</h1>
+        <p className="mt-4 text-base text-[#666] font-mono max-w-xl leading-relaxed">
+          A real-time dashboard tracking my active focus, development stack, ongoing research, and current vitals.
+        </p>
+        <div className="mt-4 font-mono text-[10px] text-[#999]">
+          Last synced: <span className="text-[#1a1a1a] font-semibold">{getLastUpdated()}</span>
         </div>
       </section>
 
-      {/* Grid Bento Layout */}
-      <section className="w-full max-w-6xl mx-auto px-6 pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          {/* Bento 1: Mission & Focus */}
-          <div className="lg:col-span-2 bg-white border border-gray-100 p-8 rounded-3xl flex flex-col gap-6 shadow-sm">
+      {/* BENTO GRID */}
+      <section className="section-full pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#d1d5db]">
+
+          {/* Mission & Focus */}
+          <div className="lg:col-span-2 card flex flex-col gap-6">
             {isSectionVisible('mission') && getVitalText('mission') && (
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Current Mission</h3>
-                <p className="text-2xl font-normal text-primary-900 leading-snug">
-                  "{getVitalText('mission')}"
-                </p>
+                <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-2">Current Mission</h3>
+                <p className="text-xl text-[#1a1a1a] leading-snug">&ldquo;{getVitalText('mission')}&rdquo;</p>
               </div>
             )}
-
             {isSectionVisible('focus') && getVitalText('focus') && (
-              <div className="border-t border-gray-50 pt-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Day-to-Day Focus</h3>
-                <p className="text-base text-gray-600 leading-relaxed">
-                  {getVitalText('focus')}
-                </p>
+              <div className="border-t border-[#e0e0e0] pt-4">
+                <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-2">Day-to-Day Focus</h3>
+                <p className="text-sm text-[#444] leading-relaxed">{getVitalText('focus')}</p>
               </div>
             )}
           </div>
 
-          {/* Bento 2: Location & Travel Card */}
-          <div className="bg-white border border-gray-100 p-8 rounded-3xl flex flex-col justify-between gap-6 shadow-sm">
+          {/* Location */}
+          <div className="card flex flex-col justify-between gap-6">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Coordinates & Vitals</h3>
-              
+              <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-4">Coordinates</h3>
               {isSectionVisible('location') && getVitalText('location') && (
                 <div className="mb-4">
-                  <span className="text-xs text-gray-400">Current Base</span>
-                  <div className="text-lg font-medium text-primary-900 flex items-center gap-1.5 mt-0.5">
-                    <span className="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span>
+                  <span className="font-mono text-[10px] text-[#999]">Current Base</span>
+                  <div className="text-lg font-semibold text-[#1a1a1a] flex items-center gap-1.5 mt-0.5">
+                    <span className="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse" />
                     {getVitalText('location')}
                   </div>
                 </div>
               )}
-
               {isSectionVisible('travel') && getVitalText('travel') && (
                 <div>
-                  <span className="text-xs text-gray-400">Status</span>
-                  <p className="text-sm text-gray-600 mt-0.5 leading-relaxed">{getVitalText('travel')}</p>
+                  <span className="font-mono text-[10px] text-[#999]">Status</span>
+                  <p className="text-sm text-[#444] mt-0.5">{getVitalText('travel')}</p>
                 </div>
               )}
             </div>
-
-            <div className="border-t border-gray-50 pt-4 flex justify-between items-center text-xs text-gray-400">
+            <div className="border-t border-[#e0e0e0] pt-3 flex justify-between items-center font-mono text-[10px] text-[#999]">
               <span>Timezone</span>
-              <span className="text-gray-900 font-mono font-medium">GMT+5:30</span>
+              <span className="text-[#1a1a1a] font-semibold">GMT+5:30</span>
             </div>
           </div>
 
-          {/* Bento 3: Tech Stack Badge Cloud */}
+          {/* Tech Stack */}
           {isSectionVisible('stack') && Object.keys(groupedStack).length > 0 && (
-            <div className="lg:col-span-2 bg-white border border-gray-100 p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">Current Tech Stack</h3>
-              <div className="flex flex-col gap-5">
+            <div className="lg:col-span-2 card">
+              <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-6">Current Tech Stack</h3>
+              <div className="flex flex-col gap-4">
                 {Object.entries(groupedStack).map(([category, items]) => (
                   <div key={category} className="flex flex-col md:flex-row md:items-start gap-2 md:gap-6">
-                    <span className="text-xs font-semibold text-gray-400 w-32 shrink-0 md:pt-1">{category}</span>
+                    <span className="font-mono text-[10px] text-[#999] w-28 shrink-0 md:pt-0.5">{category}</span>
                     <div className="flex flex-wrap gap-1.5">
                       {items.map((tech) => (
-                        <span key={tech.id} className="px-3 py-1 text-xs font-medium bg-gray-50 border border-gray-100 hover:border-gray-200 text-gray-800 rounded-full transition-colors">
-                          {tech.title}
-                        </span>
+                        <span key={tech.id} className="tag-pill text-[10px]">{tech.title}</span>
                       ))}
                     </div>
                   </div>
@@ -229,167 +172,124 @@ export default async function NowPage() {
             </div>
           )}
 
-          {/* Bento 4: Research Tracker */}
-          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Active Research</h3>
-            
-            <div className="flex flex-col gap-5">
-              {(researchTrackers || []).length === 0 ? (
-                <p className="text-sm text-gray-400 italic">No research currently tracked.</p>
-              ) : (
-                (researchTrackers || []).slice(0, 3).map((research) => (
-                  <div key={research.id} className="flex flex-col gap-2 pb-4 border-b border-gray-50 last:border-0 last:pb-0">
-                    <div className="flex justify-between items-start gap-2">
-                      <span className="font-medium text-sm text-primary-900 leading-tight">
-                        {research.title}
-                      </span>
-                      <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-50/50 border border-blue-100 text-blue-700 shrink-0">
-                        {research.status.replace('-', ' ')}
-                      </span>
-                    </div>
-                    {research.description && (
-                      <p className="text-xs text-gray-500 leading-normal">{research.description}</p>
-                    )}
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="flex-1 bg-gray-100 h-1 rounded-full overflow-hidden">
-                        <div className="bg-primary-900 h-1 rounded-full" style={{ width: `${research.progress}%` }}></div>
-                      </div>
-                      <span className="text-[10px] text-gray-500 font-mono w-8 text-right font-medium">{research.progress}%</span>
-                    </div>
+          {/* Research Tracker */}
+          <div className="card flex flex-col gap-5">
+            <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999]">Active Research</h3>
+            {(researchTrackers || []).length === 0 ? (
+              <p className="font-mono text-xs text-[#999]">No research currently tracked.</p>
+            ) : (
+              (researchTrackers || []).slice(0, 3).map((r) => (
+                <div key={r.id} className="flex flex-col gap-2 pb-4 border-b border-[#e0e0e0] last:border-0 last:pb-0">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="text-sm font-semibold text-[#1a1a1a] leading-tight">{r.title}</span>
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-[#3b5bdb] font-semibold shrink-0">
+                      {r.status.replace('-', ' ')}
+                    </span>
                   </div>
-                ))
-              )}
-            </div>
+                  {r.description && <p className="text-xs text-[#666] leading-normal">{r.description}</p>}
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="progress-track flex-1"><div className="progress-fill" style={{ width: `${r.progress}%` }} /></div>
+                    <span className="font-mono text-[10px] text-[#999] w-8 text-right">{r.progress}%</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
-          {/* Bento 5: Dynamic Shelves (Building / Learning / Reading / Listening) */}
+          {/* Shelves */}
           {['building', 'learning', 'reading', 'listening'].map((slug) => {
             if (!isSectionVisible(slug)) return null
             const items = entryMap[slug] || []
-            const label = slug === 'building' ? 'Building' : slug === 'learning' ? 'Learning' : slug === 'reading' ? 'Reading' : 'Listening'
-            const labelSub = slug === 'building' ? 'Active developments' : slug === 'learning' ? 'Courses & languages' : slug === 'reading' ? 'Shelf stack' : 'Audio stream'
-
+            const label = slug.charAt(0).toUpperCase() + slug.slice(1)
             return (
-              <div key={slug} className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6">
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">{label}</h3>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{labelSub}</p>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  {items.length === 0 ? (
-                    <p className="text-xs text-gray-400 italic">Shelf is currently empty.</p>
-                  ) : (
-                    items.map((item) => (
-                      <div key={item.id} className="flex flex-col gap-1">
-                        <div className="flex justify-between items-start gap-2 text-xs">
-                          <span className="font-medium text-primary-900 leading-tight">
-                            {item.url ? (
-                              <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-blue-600">
-                                {item.title}
-                              </a>
-                            ) : (
-                              item.title
-                            )}
-                          </span>
-                          {item.subtitle && <span className="text-gray-400 text-[10px] text-right">{item.subtitle}</span>}
-                        </div>
-                        {item.progress !== null && (
-                          <div className="flex items-center gap-2 mt-1">
-                            <div className="flex-1 bg-gray-100 h-1 rounded-full overflow-hidden">
-                              <div className="bg-primary-950 h-1 rounded-full" style={{ width: `${item.progress}%` }}></div>
-                            </div>
-                            <span className="text-[10px] text-gray-500 font-mono w-8 text-right">{item.progress}%</span>
-                          </div>
-                        )}
+              <div key={slug} className="card flex flex-col gap-5">
+                <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999]">{label}</h3>
+                {items.length === 0 ? (
+                  <p className="font-mono text-xs text-[#999]">Shelf is currently empty.</p>
+                ) : (
+                  items.map((item) => (
+                    <div key={item.id} className="flex flex-col gap-1">
+                      <div className="flex justify-between items-start gap-2 text-xs">
+                        <span className="font-medium text-[#1a1a1a] leading-tight">
+                          {item.url ? (
+                            <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#3b5bdb] underline">{item.title}</a>
+                          ) : item.title}
+                        </span>
+                        {item.subtitle && <span className="font-mono text-[10px] text-[#999] text-right">{item.subtitle}</span>}
                       </div>
-                    ))
-                  )}
-                </div>
+                      {item.progress !== null && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="progress-track flex-1"><div className="progress-fill" style={{ width: `${item.progress}%` }} /></div>
+                          <span className="font-mono text-[10px] text-[#999] w-8 text-right">{item.progress}%</span>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             )
           })}
 
-          {/* Bento 6: Goals Dashboard */}
-          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Quarterly Goals</h3>
-            
-            <div className="flex flex-col gap-4">
-              {(goals || []).length === 0 ? (
-                <p className="text-xs text-gray-400 italic">No targets set for this period.</p>
-              ) : (
-                (goals || []).slice(0, 4).map((goal) => (
-                  <div key={goal.id} className="flex flex-col gap-1 text-xs">
-                    <div className="flex justify-between items-start gap-2">
-                      <span className="font-medium text-primary-900 leading-tight">{goal.title}</span>
-                      <span className="text-[9px] uppercase font-bold text-gray-400 tracking-wider shrink-0">{goal.quarter}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="flex-1 bg-gray-100 h-1 rounded-full overflow-hidden">
-                        <div className="bg-primary-900 h-1 rounded-full" style={{ width: `${goal.progress}%` }}></div>
-                      </div>
-                      <span className="text-[10px] text-gray-500 font-mono w-8 text-right">{goal.progress}%</span>
-                    </div>
+          {/* Goals */}
+          <div className="card flex flex-col gap-5">
+            <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999]">Quarterly Goals</h3>
+            {(goals || []).length === 0 ? (
+              <p className="font-mono text-xs text-[#999]">No targets set.</p>
+            ) : (
+              (goals || []).slice(0, 4).map((goal) => (
+                <div key={goal.id} className="flex flex-col gap-1 text-xs">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="font-medium text-[#1a1a1a] leading-tight">{goal.title}</span>
+                    <span className="font-mono text-[9px] uppercase text-[#999] shrink-0">{goal.quarter}</span>
                   </div>
-                ))
-              )}
-            </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="progress-track flex-1"><div className="progress-fill" style={{ width: `${goal.progress}%` }} /></div>
+                    <span className="font-mono text-[10px] text-[#999] w-8 text-right">{goal.progress}%</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
-          {/* Bento 7: Activity Feed */}
-          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6 lg:col-span-2">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Activity Log</h3>
-            
-            <div className="flex flex-col gap-4">
-              {(activities || []).length === 0 ? (
-                <p className="text-xs text-gray-400 italic">No recent log actions recorded.</p>
-              ) : (
-                (activities || []).map((activity) => (
-                  <div key={activity.id} className="flex items-start gap-4 text-xs pb-3 border-b border-gray-50 last:border-0 last:pb-0">
-                    <span className="text-[10px] text-gray-400 font-mono shrink-0 pt-0.5 w-16">
-                      {formatTimeAgo(activity.timestamp)}
-                    </span>
-                    <div className="flex-1">
-                      <p className="text-gray-700 leading-relaxed">
-                        {activity.content}
-                      </p>
-                    </div>
-                    <span className="text-[9px] uppercase font-bold tracking-wider text-gray-400 border border-gray-200 px-2 py-0.5 rounded-full shrink-0">
-                      {activity.activity_type}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
+          {/* Activity Log */}
+          <div className="lg:col-span-2 card flex flex-col gap-5">
+            <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999]">Activity Log</h3>
+            {(activities || []).length === 0 ? (
+              <p className="font-mono text-xs text-[#999]">No recent activity.</p>
+            ) : (
+              (activities || []).map((act) => (
+                <div key={act.id} className="flex items-start gap-4 text-xs pb-3 border-b border-[#e0e0e0] last:border-0 last:pb-0">
+                  <span className="font-mono text-[10px] text-[#999] shrink-0 pt-0.5 w-14">{formatTimeAgo(act.timestamp)}</span>
+                  <p className="flex-1 text-[#444] leading-relaxed">{act.content}</p>
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-[#999] border border-[#d1d5db] px-2 py-0.5 shrink-0">{act.activity_type}</span>
+                </div>
+              ))
+            )}
           </div>
 
-          {/* Bento 8: Achievements */}
-          <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm flex flex-col gap-6">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Key Milestones</h3>
-            
-            <div className="flex flex-col gap-4">
-              {(achievements || []).length === 0 ? (
-                <p className="text-xs text-gray-400 italic">No major milestones logged.</p>
-              ) : (
-                (achievements || []).slice(0, 5).map((ach) => (
-                  <div key={ach.id} className="flex items-start gap-3 text-xs">
-                    <div className="text-lg pt-0.5 shrink-0">🏆</div>
-                    <div>
-                      <span className="font-medium text-primary-900 block leading-tight">{ach.title}</span>
-                      {ach.description && <p className="text-gray-500 text-[10px] mt-0.5 leading-normal">{ach.description}</p>}
-                      <span className="text-[9px] text-gray-400 font-mono mt-1 block">
-                        {new Date(ach.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                      </span>
-                    </div>
+          {/* Achievements */}
+          <div className="card flex flex-col gap-5">
+            <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999]">Key Milestones</h3>
+            {(achievements || []).length === 0 ? (
+              <p className="font-mono text-xs text-[#999]">No milestones logged.</p>
+            ) : (
+              (achievements || []).slice(0, 5).map((ach) => (
+                <div key={ach.id} className="flex items-start gap-3 text-xs">
+                  <div className="text-base pt-0.5 shrink-0">◆</div>
+                  <div>
+                    <span className="font-medium text-[#1a1a1a] block leading-tight">{ach.title}</span>
+                    {ach.description && <p className="text-[#666] text-[10px] mt-0.5">{ach.description}</p>}
+                    <span className="font-mono text-[9px] text-[#999] mt-1 block">
+                      {new Date(ach.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    </span>
                   </div>
-                ))
-              )}
-            </div>
+                </div>
+              ))
+            )}
           </div>
 
         </div>
       </section>
-
     </div>
   )
 }

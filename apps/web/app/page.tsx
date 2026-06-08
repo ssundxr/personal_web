@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "../utils/supabase/server";
 
 export default async function Home() {
@@ -28,7 +27,7 @@ export default async function Home() {
     .order('updated_at', { ascending: false })
     .limit(1);
 
-  // Fetch featured and recent timeline milestones (Part 9)
+  // Fetch timeline events
   const { data: timelineEvents } = await supabase
     .from('timeline_events')
     .select(`
@@ -59,7 +58,6 @@ export default async function Home() {
 
   const typedEntries = (posEntries || []) as PosEntry[];
 
-  // Group entries
   const entryMap = typedEntries.reduce((acc, entry) => {
     if (!acc[entry.section_slug]) acc[entry.section_slug] = [];
     acc[entry.section_slug]!.push(entry);
@@ -86,218 +84,219 @@ export default async function Home() {
   const typedEvents = (timelineEvents || []) as unknown as TimelineEvent[];
 
   return (
-    <div className="flex flex-col items-center w-full">
-      {/* HERO SECTION */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-32 md:py-48">
-        <h1 className="text-5xl md:text-7xl font-medium tracking-tight text-primary-900 max-w-4xl leading-tight">
-          Designing the future of <br className="hidden md:block"/> human-computer interaction.
+    <div className="flex flex-col w-full">
+
+      {/* ═══════════ SECTION 01 — HERO ═══════════ */}
+      <section className="section-full py-28 md:py-40">
+        <span className="section-number">01</span>
+        <div className="section-label">section.start</div>
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#1a1a1a] max-w-4xl leading-[1.1]">
+          Designing the future of<br className="hidden md:block" /> human-computer interaction.
         </h1>
-        <p className="mt-8 text-xl text-gray-500 max-w-2xl leading-relaxed">
-          I am a researcher and builder focusing on spatial computing, artificial intelligence, and digital legacy.
+        <p className="mt-8 text-base md:text-lg text-[#666] max-w-2xl leading-relaxed font-mono">
+          Researcher and builder focusing on spatial computing, artificial intelligence, and digital legacy.
         </p>
-        <div className="mt-12 flex gap-4">
-          <Link href="/projects" className="px-6 py-3 bg-primary-900 text-white font-medium rounded-full hover:bg-primary-900/90 transition-all">
+        <div className="mt-10 flex gap-4">
+          <Link href="/projects" className="px-6 py-3 border border-[#1a1a1a] text-[#1a1a1a] font-mono text-sm hover:bg-[#1a1a1a] hover:text-white transition-all">
             View Projects
           </Link>
-          <Link href="/archive" className="px-6 py-3 bg-gray-100 text-primary-900 font-medium rounded-full hover:bg-gray-200 transition-all">
-            Read Archive
+          <Link href="/now" className="px-6 py-3 border border-[#d1d5db] text-[#666] font-mono text-sm hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-all">
+            /now
           </Link>
         </div>
       </section>
 
-      {/* PERSONAL OS STATUS CARD (Change 3) */}
-      <section className="w-full max-w-6xl mx-auto px-6 pb-24 -mt-12 md:-mt-20">
-        <div className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col justify-between gap-6 shadow-sm">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between border-b border-gray-50 pb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
-                <span className="text-xs uppercase font-bold tracking-widest text-primary-900">Live Status</span>
+      {/* ═══════════ SECTION 02 — LIVE STATUS ═══════════ */}
+      <section className="section-full py-20 border-t border-[#d1d5db]">
+        <span className="section-number">02</span>
+        <div className="section-label">section.status</div>
+        <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-8">Live Status</h2>
+
+        <div className="card">
+          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-[#e0e0e0]">
+            <span className="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse" />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#1a1a1a] font-semibold">Operating System</span>
+            <Link href="/now" className="ml-auto font-mono text-xs text-[#3b5bdb] hover:underline">
+              View full /now →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isVisible('focus') && entryMap['focus']?.[0] && (
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#999]">Current Focus</span>
+                <span className="text-sm text-[#1a1a1a]">{entryMap['focus'][0].title}</span>
               </div>
-              <Link href="/now" className="text-xs font-semibold text-primary-900 hover:underline">
-                View OS /now →
-              </Link>
+            )}
+
+            {isVisible('building') && entryMap['building']?.[0] && (
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#999]">Building</span>
+                <span className="text-sm text-[#1a1a1a]">
+                  {entryMap['building'][0].url ? (
+                    <a href={entryMap['building'][0].url} target="_blank" rel="noopener noreferrer" className="hover:text-[#3b5bdb] underline">
+                      {entryMap['building'][0].title}
+                    </a>
+                  ) : (
+                    entryMap['building'][0].title
+                  )}
+                </span>
+              </div>
+            )}
+
+            {isVisible('reading') && entryMap['reading']?.[0] && (
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#999]">Reading</span>
+                <span className="text-sm text-[#1a1a1a]">
+                  {entryMap['reading'][0].title} <span className="text-[#999]">by {entryMap['reading'][0].subtitle}</span>
+                </span>
+              </div>
+            )}
+
+            {isVisible('location') && entryMap['location']?.[0] && (
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#999]">Location</span>
+                <span className="text-sm text-[#1a1a1a] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+                  {entryMap['location'][0].title}
+                </span>
+              </div>
+            )}
+
+            {isVisible('stack') && (entryMap['stack'] || []).length > 0 && (
+              <div className="flex flex-col gap-1.5">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#999]">Core Stack</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {(entryMap['stack'] || []).slice(0, 5).map((tech) => (
+                    <span key={tech.id} className="tag-pill text-[10px]">
+                      {tech.title}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeResearch?.[0] && (
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#999]">Active Research</span>
+                <span className="text-sm text-[#1a1a1a]">
+                  {activeResearch[0].title} <span className="text-[#3b5bdb] font-mono text-xs font-semibold">({activeResearch[0].progress}%)</span>
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ SECTION 03 — WHO I AM ═══════════ */}
+      <section className="section-full py-20 border-t border-[#d1d5db]">
+        <span className="section-number">03</span>
+        <div className="section-label">section.about</div>
+        <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-8">Who I Am</h2>
+
+        <div className="flex flex-col md:flex-row gap-12 items-start">
+          <div className="flex-1 max-w-xl">
+            <p className="text-lg text-[#444] leading-relaxed">
+              I&apos;m a 21-year-old builder and researcher working at the intersection of spatial computing, AI systems, and digital legacy. I believe the best tools are invisible — and the best stories are lived, not told.
+            </p>
+            <Link href="/now" className="case-link mt-6 inline-flex">
+              More about me
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-px bg-[#e0e0e0] border border-[#e0e0e0]">
+            <div className="bg-white p-6 flex flex-col items-center justify-center text-center">
+              <div><span className="stat-value">21</span></div>
+              <div className="stat-label">years old</div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Focus */}
-              {isVisible('focus') && entryMap['focus']?.[0] && (
-                <div className="flex flex-col gap-1 text-xs">
-                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Current Focus</span>
-                  <span className="text-gray-900 font-medium">{entryMap['focus'][0].title}</span>
-                </div>
-              )}
-
-              {/* Building */}
-              {isVisible('building') && entryMap['building']?.[0] && (
-                <div className="flex flex-col gap-1 text-xs">
-                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Building</span>
-                  <span className="text-gray-900 font-medium">
-                    {entryMap['building'][0].url ? (
-                      <a href={entryMap['building'][0].url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600">
-                        {entryMap['building'][0].title}
-                      </a>
-                    ) : (
-                      entryMap['building'][0].title
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {/* Reading */}
-              {isVisible('reading') && entryMap['reading']?.[0] && (
-                <div className="flex flex-col gap-1 text-xs">
-                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Reading</span>
-                  <span className="text-gray-900 font-medium">
-                    {entryMap['reading'][0].title} <span className="text-gray-400">by {entryMap['reading'][0].subtitle}</span>
-                  </span>
-                </div>
-              )}
-
-              {/* Location */}
-              {isVisible('location') && entryMap['location']?.[0] && (
-                <div className="flex flex-col gap-1 text-xs">
-                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Location</span>
-                  <span className="text-gray-900 font-medium">{entryMap['location'][0].title}</span>
-                </div>
-              )}
-
-              {/* Stack */}
-              {isVisible('stack') && (entryMap['stack'] || []).length > 0 && (
-                <div className="flex flex-col gap-1.5 text-xs">
-                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Core Stack</span>
-                  <div className="flex flex-wrap gap-1">
-                    {(entryMap['stack'] || []).slice(0, 4).map((tech) => (
-                      <span key={tech.id} className="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded text-[10px] font-medium text-gray-700">
-                        {tech.title}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Research */}
-              {activeResearch?.[0] && (
-                <div className="flex flex-col gap-1 text-xs">
-                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Active Research</span>
-                  <span className="text-gray-900 font-medium">
-                    {activeResearch[0].title} <span className="text-primary-800 font-semibold">({activeResearch[0].progress}%)</span>
-                  </span>
-                </div>
-              )}
+            <div className="bg-white p-6 flex flex-col items-center justify-center text-center">
+              <div><span className="stat-value">2</span><span className="stat-suffix">+</span></div>
+              <div className="stat-label">internships</div>
+            </div>
+            <div className="bg-white p-6 flex flex-col items-center justify-center text-center">
+              <div><span className="stat-value">4</span><span className="stat-suffix">+</span></div>
+              <div className="stat-label">trips & explorations</div>
+            </div>
+            <div className="bg-white p-6 flex flex-col items-center justify-center text-center">
+              <div><span className="stat-value">∞</span></div>
+              <div className="stat-label">curiosity</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURED PROJECTS BENTO GRID */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
-        <div className="flex justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl font-medium tracking-tight text-primary-900">Featured Work</h2>
-            <p className="mt-2 text-gray-500">Selected projects and experiments.</p>
-          </div>
-          <Link href="/projects" className="text-sm font-medium text-primary-900 hover:underline">
-            View all →
-          </Link>
-        </div>
+      {/* ═══════════ SECTION 04 — FEATURED WORK ═══════════ */}
+      <section className="section-full py-20 border-t border-[#d1d5db]">
+        <span className="section-number">04</span>
+        <div className="section-label">section.work</div>
+        <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-10">Featured Work</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Bento Item 1 - Large */}
-          <Link href="/projects/spatial-os" className="group relative block aspect-[4/3] md:col-span-2 overflow-hidden rounded-3xl bg-gray-100">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-            <div className="absolute bottom-0 left-0 p-8 z-20">
-              <h3 className="text-3xl font-medium text-white mb-2 group-hover:underline">Spatial OS</h3>
-              <p className="text-white/80">A new paradigm for spatial computing interfaces.</p>
-            </div>
-            {/* Image placeholder - normally would use next/image */}
-            <div className="absolute inset-0 bg-gray-200 group-hover:scale-105 transition-transform duration-700 ease-out" />
-          </Link>
-
-          {/* Bento Item 2 */}
-          <Link href="/projects/neural-engine" className="group relative block aspect-square overflow-hidden rounded-3xl bg-gray-100">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-            <div className="absolute bottom-0 left-0 p-8 z-20">
-              <h3 className="text-2xl font-medium text-white mb-2 group-hover:underline">Neural Engine</h3>
-              <p className="text-white/80">Local LLM inference optimization.</p>
-            </div>
-            <div className="absolute inset-0 bg-gray-300 group-hover:scale-105 transition-transform duration-700 ease-out" />
-          </Link>
-
-          {/* Bento Item 3 */}
-          <Link href="/projects/atlas" className="group relative block aspect-square overflow-hidden rounded-3xl bg-gray-100">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-            <div className="absolute bottom-0 left-0 p-8 z-20">
-              <h3 className="text-2xl font-medium text-white mb-2 group-hover:underline">Atlas Map</h3>
-              <p className="text-white/80">Global journey visualization system.</p>
-            </div>
-            <div className="absolute inset-0 bg-gray-200 group-hover:scale-105 transition-transform duration-700 ease-out" />
-          </Link>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { slug: "spatial-os", title: "Spatial OS", role: "Creator & Researcher", year: "2026", desc: "A new paradigm for spatial computing interfaces, rethinking how humans interact with layered digital spaces.", tags: ["Spatial Computing", "HCI", "XR"] },
+            { slug: "neural-engine", title: "Neural Engine", role: "Builder", year: "2025", desc: "Local LLM inference optimization — reducing memory bandwidth bottlenecks while preserving zero-shot reasoning.", tags: ["AI", "Systems", "Edge"] },
+            { slug: "atlas", title: "Atlas Map", role: "Creator & Developer", year: "2025", desc: "Global journey visualization system plotting life experiences across coordinates and time.", tags: ["Maps", "Data Viz", "Full Stack"] },
+          ].map((project) => (
+            <Link key={project.slug} href={`/projects/${project.slug}`} className="group flex flex-col">
+              <div className="aspect-[4/3] bg-[#e5e5e5] border border-[#d1d5db] mb-4 overflow-hidden">
+                <div className="w-full h-full bg-[#ddd] group-hover:scale-105 transition-transform duration-700" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-mono text-[10px] text-[#3b5bdb] font-semibold">{project.year}</span>
+                <span className="font-mono text-[10px] text-[#999]">{project.role}</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#1a1a1a] mb-2 group-hover:underline">{project.title}</h3>
+              <p className="text-sm text-[#666] leading-relaxed mb-4">{project.desc}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="tag-pill text-[10px]">{tag}</span>
+                ))}
+              </div>
+              <span className="case-link text-sm">View case study</span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* JOURNEY TIMELINE PREVIEW (Change 3 / Part 9) */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
-        <div className="flex justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl font-medium tracking-tight text-primary-900">Journey Timeline</h2>
-            <p className="mt-2 text-gray-500">Key milestones, career pivots, and publications.</p>
-          </div>
-          <Link href="/timeline" className="text-sm font-medium text-primary-900 hover:underline">
-            View full timeline →
-          </Link>
+      {/* ═══════════ SECTION 05 — TIMELINE ═══════════ */}
+      <section className="section-full py-20 border-t border-[#d1d5db]">
+        <span className="section-number">05</span>
+        <div className="section-label">section.timeline</div>
+        <div className="flex justify-between items-end mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a]">Journey Timeline</h2>
+          <Link href="/timeline" className="case-link text-sm">Full timeline</Link>
         </div>
 
-        <div className="relative border-l border-gray-100 pl-8 ml-4 flex flex-col gap-10">
+        <div className="relative border-l border-[#d1d5db] pl-8 ml-4 flex flex-col gap-10">
           {typedEvents.length === 0 ? (
-            <p className="text-xs text-gray-400 italic">No timeline events configured yet.</p>
+            <p className="font-mono text-xs text-[#999]">No timeline events configured yet.</p>
           ) : (
             typedEvents.map((event) => (
-              <div key={event.id} className="relative flex flex-col gap-1">
-                {/* Spine bullet node */}
-                <span className="absolute -left-[38px] top-1.5 w-4 h-4 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center">
-                  <span className="w-1.5 h-1.5 bg-primary-900 rounded-full"></span>
-                </span>
-                
-                <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold text-gray-400">
-                  <span className="font-mono">
+              <div key={event.id} className="relative flex flex-col gap-1.5">
+                <span className="absolute -left-[38px] top-1.5 w-3 h-3 border border-[#d1d5db] bg-[#f0efed]" />
+
+                <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] text-[#999]">
+                  <span>
                     {new Date(event.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                   </span>
-                  <span className="w-1 h-1 rounded-full bg-gray-200 inline-block"></span>
-                  <span className="uppercase text-primary-900 bg-gray-100 px-2 py-0.5 rounded-full">{event.category}</span>
-                  {event.era && (
-                    <>
-                      <span className="w-1 h-1 rounded-full bg-gray-200 inline-block"></span>
-                      <span className="text-amber-800 font-semibold bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">
-                        {event.era}
-                      </span>
-                    </>
-                  )}
+                  <span className="w-1 h-1 bg-[#d1d5db] inline-block" />
+                  <span className="uppercase text-[#1a1a1a] font-semibold">{event.category}</span>
                 </div>
 
-                <h3 className="text-base font-semibold text-primary-900 mt-1 leading-snug">
-                  {event.title}
-                </h3>
+                <h3 className="text-base font-semibold text-[#1a1a1a] leading-snug">{event.title}</h3>
                 {event.description && (
-                  <p className="text-xs text-gray-500 mt-1.5 max-w-xl leading-relaxed">{event.description}</p>
+                  <p className="text-xs text-[#666] max-w-xl leading-relaxed">{event.description}</p>
                 )}
 
-                {/* Event relation action link */}
-                <div className="mt-2.5">
+                <div className="mt-1">
                   {event.story && (
-                    <Link href={`/archive/${event.story.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
-                      Read Story ↗
-                    </Link>
+                    <Link href={`/archive/${event.story.slug}`} className="case-link text-xs">Read Story</Link>
                   )}
                   {event.project && (
-                    <Link href={`/projects/${event.project.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
-                      View Project ↗
-                    </Link>
+                    <Link href={`/projects/${event.project.slug}`} className="case-link text-xs">View Project</Link>
                   )}
                   {event.research && (
-                    <Link href={`/research/${event.research.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
-                      Read Paper ↗
-                    </Link>
+                    <Link href={`/research/${event.research.slug}`} className="case-link text-xs">Read Paper</Link>
                   )}
                 </div>
               </div>
@@ -306,28 +305,55 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* RESEARCH & PUBLICATIONS */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
-        <h2 className="text-3xl font-medium tracking-tight text-primary-900 mb-12">Recent Research</h2>
-        <div className="flex flex-col gap-8">
+      {/* ═══════════ SECTION 06 — LATEST RESEARCH ═══════════ */}
+      <section className="section-full py-20 border-t border-[#d1d5db]">
+        <span className="section-number">06</span>
+        <div className="section-label">section.research</div>
+        <div className="flex justify-between items-end mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a]">Latest Research</h2>
+          <Link href="/research" className="case-link text-sm">All research</Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { year: "2026", title: "Cognitive Load in Spatial Interfaces", venue: "CHI 2026", link: "/research/1" },
-            { year: "2025", title: "Optimizing Edge Inference for On-Device LLMs", venue: "NeurIPS 2025", link: "/research/2" },
-            { year: "2024", title: "The Architecture of Digital Memory", venue: "Personal Archive", link: "/research/3" },
+            { year: "2026", title: "Cognitive Load in Spatial Interfaces", venue: "CHI 2026", tags: ["HCI", "Spatial", "Cognition"] },
+            { year: "2025", title: "Optimizing Edge Inference for On-Device LLMs", venue: "NeurIPS 2025", tags: ["AI", "Systems", "Edge"] },
           ].map((item, idx) => (
-            <Link key={idx} href={item.link} className="group flex flex-col md:flex-row md:items-center gap-4 md:gap-12 py-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 -mx-6 px-6 transition-colors rounded-xl">
-              <div className="text-gray-400 font-mono text-sm w-16 shrink-0">{item.year}</div>
-              <div className="flex-1">
-                <h3 className="text-lg font-medium text-primary-900 group-hover:text-blue-600 transition-colors">{item.title}</h3>
-                <p className="text-gray-500 text-sm mt-1">{item.venue}</p>
+            <div key={idx} className="card flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] text-[#3b5bdb] font-semibold">{item.year}</span>
+                <span className="font-mono text-[10px] text-[#999]">{item.venue}</span>
               </div>
-              <div className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                Read Paper ↗
+              <h3 className="text-lg font-bold text-[#1a1a1a] leading-snug">{item.title}</h3>
+              <div className="flex flex-wrap gap-2">
+                {item.tags.map((tag) => (
+                  <span key={tag} className="tag-pill text-[10px]">{tag}</span>
+                ))}
               </div>
-            </Link>
+              <span className="case-link text-sm mt-auto">Read more</span>
+            </div>
           ))}
         </div>
       </section>
+
+      {/* ═══════════ SECTION 07 — LET'S TALK ═══════════ */}
+      <section className="section-full py-20 border-t border-[#d1d5db]">
+        <span className="section-number">07</span>
+        <div className="text-center py-16">
+          <div className="text-3xl text-[#3b5bdb] mb-4">✦</div>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-4">Let&apos;s Connect</h2>
+          <p className="font-mono text-sm text-[#999] max-w-md mx-auto mb-8">
+            Always open to interesting conversations about technology, research, and building things that matter.
+          </p>
+          <a
+            href="mailto:hello@sunder.dev"
+            className="px-8 py-3 bg-[#3b5bdb] text-white font-mono text-sm hover:bg-[#2b4bcb] transition-colors inline-block"
+          >
+            reach out
+          </a>
+        </div>
+      </section>
+
     </div>
   );
 }

@@ -5,7 +5,7 @@ interface TimelinePageProps {
   searchParams: Promise<{ category?: string }>
 }
 
-export const revalidate = 60 // Cache page for 60 seconds
+export const revalidate = 60
 
 export default async function TimelinePage({ searchParams }: TimelinePageProps) {
   const params = await searchParams
@@ -13,7 +13,6 @@ export default async function TimelinePage({ searchParams }: TimelinePageProps) 
 
   const supabase = await createClient()
 
-  // Fetch timeline events along with related entity titles and slugs
   const { data: rawEvents } = await supabase
     .from('timeline_events')
     .select(`
@@ -27,21 +26,14 @@ export default async function TimelinePage({ searchParams }: TimelinePageProps) 
 
   const events = rawEvents || []
 
-  // Filter events based on active category
   const filteredEvents = activeCategory === 'all'
     ? events
     : events.filter(e => e.category === activeCategory)
 
-  // Extract list of unique years in descending order
   const uniqueYears = Array.from(new Set(events.map(e => e.year))).sort((a, b) => b - a)
 
-  // Filter featured milestones
-  const featuredEvents = events
-    .filter(e => e.is_featured)
-    .sort((a, b) => b.importance_score - a.importance_score)
-
   const categories = [
-    { slug: 'all', label: 'All Milestones' },
+    { slug: 'all', label: 'All' },
     { slug: 'career', label: 'Career' },
     { slug: 'education', label: 'Education' },
     { slug: 'research', label: 'Research' },
@@ -52,102 +44,36 @@ export default async function TimelinePage({ searchParams }: TimelinePageProps) 
   ]
 
   return (
-    <div className="w-full flex flex-col items-center">
-      
-      {/* 1. HERO SECTION */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-20 md:py-28">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6">
-          <div>
-            <span className="text-xs uppercase font-bold tracking-widest text-primary-900 bg-gray-100 px-3 py-1 rounded-full">
-              Ecosystem Spine
-            </span>
-            <h1 className="text-5xl md:text-6xl font-medium tracking-tight text-primary-900 mt-4">
-              Journey Timeline
-            </h1>
-            <p className="mt-4 text-lg text-gray-500 max-w-2xl leading-relaxed">
-              An interactive chronological log tracking education, career milestones, travel logs, academic publications, and personal stories.
-            </p>
-          </div>
-        </div>
+    <div className="flex flex-col w-full">
+
+      {/* HERO */}
+      <section className="section-full py-20 md:py-28">
+        <span className="section-number">01</span>
+        <div className="section-label">section.timeline</div>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#1a1a1a]">Journey Timeline</h1>
+        <p className="mt-4 text-base text-[#666] font-mono max-w-2xl leading-relaxed">
+          An interactive chronological log tracking education, career milestones, travel, publications, and personal stories.
+        </p>
       </section>
 
-      {/* 2. FEATURED MILESTONES (Change 1 & 2) */}
-      {featuredEvents.length > 0 && (
-        <section className="w-full max-w-6xl mx-auto px-6 pb-20">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">Featured Milestones</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredEvents.slice(0, 3).map((event) => (
-              <div key={event.id} className="relative bg-white border border-gray-100 rounded-3xl p-6 flex flex-col justify-between gap-6 shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300">
-                {event.cover_image && (
-                  <div className="absolute inset-0 bg-cover bg-center opacity-5 group-hover:scale-105 transition-transform duration-700 pointer-events-none" style={{ backgroundImage: `url(${event.cover_image})` }} />
-                )}
-                
-                <div className="flex flex-col gap-3">
-                  <div className="flex justify-between items-center text-[10px] font-bold text-gray-400">
-                    <span className="font-mono">{new Date(event.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
-                    <span className="uppercase tracking-widest text-primary-900 bg-gray-100 px-2 py-0.5 rounded-full">{event.category}</span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary-900 leading-snug group-hover:underline">
-                      {event.title}
-                    </h3>
-                    {event.era && (
-                      <span className="text-[10px] text-amber-800 font-semibold bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full mt-1.5 inline-block">
-                        Era: {event.era}
-                      </span>
-                    )}
-                    {event.description && (
-                      <p className="text-xs text-gray-500 mt-2.5 leading-relaxed line-clamp-3">
-                        {event.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Event relation CTA link */}
-                <div className="border-t border-gray-50 pt-4 mt-2">
-                  {event.story && (
-                    <Link href={`/archive/${event.story.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
-                      Read Story ↗
-                    </Link>
-                  )}
-                  {event.project && (
-                    <Link href={`/projects/${event.project.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
-                      View Project ↗
-                    </Link>
-                  )}
-                  {event.research && (
-                    <Link href={`/research/${event.research.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
-                      Read Paper ↗
-                    </Link>
-                  )}
-                  {!event.story && !event.project && !event.research && (
-                    <span className="text-xs text-gray-400 italic font-medium">Verified Milestone</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 3. TIMELINE LAYOUT SECTION */}
-      <section className="w-full max-w-6xl mx-auto px-6 pb-32 border-t border-gray-100 pt-16">
+      {/* TIMELINE LAYOUT */}
+      <section className="section-full pb-32 border-t border-[#d1d5db] pt-12">
         <div className="flex flex-col lg:flex-row gap-12">
-          
-          {/* SIDEBAR: Navigation and Filters */}
-          <div className="lg:w-64 shrink-0 flex flex-col gap-8 lg:sticky lg:top-24 h-fit">
-            
-            {/* Category Filter Badges */}
+
+          {/* SIDEBAR */}
+          <div className="lg:w-56 shrink-0 flex flex-col gap-8 lg:sticky lg:top-24 h-fit">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Filter By</h3>
-              <div className="flex flex-wrap lg:flex-col gap-2">
+              <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-4">Filter</h3>
+              <div className="flex flex-wrap lg:flex-col gap-1.5">
                 {categories.map((cat) => (
                   <Link
                     key={cat.slug}
                     href={`/timeline?category=${cat.slug}`}
-                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border text-left ${activeCategory === cat.slug ? 'bg-primary-900 border-primary-900 text-white' : 'bg-white border-gray-100 hover:border-gray-300 text-gray-600'}`}
+                    className={`px-3 py-1.5 font-mono text-xs transition-all border ${
+                      activeCategory === cat.slug
+                        ? 'bg-[#1a1a1a] border-[#1a1a1a] text-white'
+                        : 'bg-white border-[#d1d5db] text-[#666] hover:border-[#1a1a1a] hover:text-[#1a1a1a]'
+                    }`}
                   >
                     {cat.label}
                   </Link>
@@ -155,119 +81,76 @@ export default async function TimelinePage({ searchParams }: TimelinePageProps) 
               </div>
             </div>
 
-            {/* Year Sidebar Navigator */}
             {uniqueYears.length > 0 && (
               <div className="hidden lg:block">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Navigate Years</h3>
-                <div className="flex flex-col gap-2 border-l border-gray-100 pl-4">
+                <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-4">Years</h3>
+                <div className="flex flex-col gap-1.5 border-l border-[#d1d5db] pl-4">
                   {uniqueYears.map((yr) => (
-                    <a
-                      key={yr}
-                      href={`#year-${yr}`}
-                      className="text-xs font-mono font-bold text-gray-400 hover:text-gray-900 hover:font-bold transition-all py-1 block"
-                    >
-                      {yr}
-                    </a>
+                    <a key={yr} href={`#year-${yr}`} className="font-mono text-xs text-[#999] hover:text-[#1a1a1a] transition-colors py-0.5">{yr}</a>
                   ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* MAIN TIMELINE LIST */}
+          {/* MAIN TIMELINE */}
           <div className="flex-1">
             {filteredEvents.length === 0 ? (
-              <div className="text-center py-20 bg-gray-50 border border-gray-100 rounded-3xl">
-                <span className="text-2xl">🔍</span>
-                <p className="text-sm text-gray-400 mt-2 font-medium">No milestones matching the selected category.</p>
+              <div className="text-center py-20 border border-[#d1d5db] bg-white">
+                <p className="font-mono text-sm text-[#999]">No milestones matching this category.</p>
               </div>
             ) : (
-              <div className="relative border-l border-gray-200 pl-8 ml-4 flex flex-col gap-16">
-                
+              <div className="relative border-l border-[#d1d5db] pl-8 ml-3 flex flex-col gap-12">
                 {filteredEvents.map((event, idx) => {
-                  const showYearHeading = idx === 0 || filteredEvents[idx - 1].year !== event.year
+                  const showYearHeading = idx === 0 || filteredEvents[idx - 1]?.year !== event.year
 
                   return (
-                    <div key={event.id} className="relative flex flex-col gap-4">
-                      {/* Year anchor node */}
+                    <div key={event.id} className="relative flex flex-col gap-3">
                       {showYearHeading && (
-                        <div id={`year-${event.year}`} className="absolute -left-12 -top-10 bg-white border border-gray-200 px-3 py-1 rounded-full font-mono text-xs font-bold text-primary-900 shadow-sm z-10">
+                        <div id={`year-${event.year}`} className="absolute -left-[46px] -top-8 bg-[#f0efed] border border-[#d1d5db] px-2.5 py-1 font-mono text-xs font-bold text-[#1a1a1a] z-10">
                           {event.year}
                         </div>
                       )}
 
-                      {/* Spine bullet indicator */}
-                      <span className="absolute -left-[38px] top-1.5 w-4 h-4 rounded-full border-2 border-primary-900 bg-white shadow-sm flex items-center justify-center">
-                        <span className="w-1.5 h-1.5 bg-primary-900 rounded-full"></span>
-                      </span>
+                      {/* Spine node */}
+                      <span className="absolute -left-[35px] top-2 w-2.5 h-2.5 border border-[#d1d5db] bg-[#f0efed]" />
 
-                      {/* Timeline Card */}
-                      <div className="bg-white border border-gray-100 p-6 rounded-2xl flex flex-col md:flex-row justify-between gap-6 shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex-1 flex flex-col gap-2">
-                          <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold text-gray-400">
-                            <span className="font-mono">
-                              {new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                            </span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-gray-200 inline-block"></span>
-                            <span className="uppercase text-primary-900 bg-gray-100 px-2 py-0.5 rounded-full">{event.category}</span>
-                            {event.era && (
-                              <>
-                                <span className="w-1.5 h-1.5 rounded-full bg-gray-200 inline-block"></span>
-                                <span className="text-amber-800 font-semibold bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">
-                                  {event.era}
-                                </span>
-                              </>
-                            )}
-                          </div>
-
-                          <h3 className="text-lg font-semibold text-primary-900 leading-snug">
-                            {event.title}
-                          </h3>
-
-                          {event.description && (
-                            <p className="text-xs text-gray-500 leading-relaxed max-w-xl">
-                              {event.description}
-                            </p>
-                          )}
-
-                          {/* Related Entity link badge */}
-                          {(event.story || event.project || event.research) && (
-                            <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-gray-50">
-                              {event.story && (
-                                <Link href={`/archive/${event.story.slug}`} className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline bg-blue-50/50 border border-blue-100 px-2.5 py-1 rounded-lg">
-                                  📚 Read Story: {event.story.title} ↗
-                                </Link>
-                              )}
-                              {event.project && (
-                                <Link href={`/projects/${event.project.slug}`} className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline bg-blue-50/50 border border-blue-100 px-2.5 py-1 rounded-lg">
-                                  💻 View Project: {event.project.title} ↗
-                                </Link>
-                              )}
-                              {event.research && (
-                                <Link href={`/research/${event.research.slug}`} className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline bg-blue-50/50 border border-blue-100 px-2.5 py-1 rounded-lg">
-                                  🔬 Read Research: {event.research.title} ↗
-                                </Link>
-                              )}
-                            </div>
+                      {/* Card */}
+                      <div className="card flex flex-col gap-3 hover:border-[#1a1a1a] transition-colors">
+                        <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] text-[#999]">
+                          <span>{new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                          <span className="w-1 h-1 bg-[#d1d5db] inline-block" />
+                          <span className="uppercase text-[#1a1a1a] font-semibold">{event.category}</span>
+                          {event.era && (
+                            <>
+                              <span className="w-1 h-1 bg-[#d1d5db] inline-block" />
+                              <span className="text-[#3b5bdb] font-semibold">{event.era}</span>
+                            </>
                           )}
                         </div>
 
-                        {event.cover_image && (
-                          <div className="w-full md:w-36 aspect-[16/9] md:aspect-square bg-cover bg-center rounded-xl border border-gray-150" style={{ backgroundImage: `url(${event.cover_image})` }} />
+                        <h3 className="text-base font-bold text-[#1a1a1a] leading-snug">{event.title}</h3>
+
+                        {event.description && (
+                          <p className="text-xs text-[#666] leading-relaxed max-w-xl">{event.description}</p>
+                        )}
+
+                        {(event.story || event.project || event.research) && (
+                          <div className="flex flex-wrap gap-3 mt-1 pt-3 border-t border-[#e0e0e0]">
+                            {event.story && <Link href={`/archive/${event.story.slug}`} className="case-link text-xs">Read Story</Link>}
+                            {event.project && <Link href={`/projects/${event.project.slug}`} className="case-link text-xs">View Project</Link>}
+                            {event.research && <Link href={`/research/${event.research.slug}`} className="case-link text-xs">Read Research</Link>}
+                          </div>
                         )}
                       </div>
-
                     </div>
                   )
                 })}
-
               </div>
             )}
           </div>
-
         </div>
       </section>
-
     </div>
   )
 }

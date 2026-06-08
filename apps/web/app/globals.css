@@ -4,15 +4,138 @@
   --color-primary-50: #f8fafc;
   --color-primary-100: #f1f5f9;
   --color-primary-900: #0f172a;
+  --color-accent: #3b5bdb;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
   --font-sans: var(--font-inter), sans-serif;
-  --font-mono: var(--font-fira-code), monospace;
+  --font-mono: var(--font-ibm-plex-mono), 'IBM Plex Mono', monospace;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #f0efed;
+  --foreground: #1a1a1a;
+}
+
+/* ── Section annotation (// section.slug) ── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #999;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+.section-label::before {
+  content: '// ';
+}
+
+/* ── Large background section number ── */
+.section-number {
+  position: absolute;
+  right: 0;
+  top: -0.25rem;
+  font-family: var(--font-mono);
+  font-size: clamp(5rem, 12vw, 10rem);
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.04);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* ── Wireframe grid dots background ── */
+.grid-dots {
+  background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Bordered tag pill ── */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0;
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  color: #374151;
+  transition: all 0.15s ease;
+}
+.tag-pill:hover {
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+/* ── Case study link ── */
+.case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.case-link:hover {
+  color: var(--color-accent);
+}
+.case-link::after {
+  content: ' →';
+}
+
+/* ── Stat card ── */
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #1a1a1a;
+}
+.stat-suffix {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--color-accent);
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: #999;
+  margin-top: 0.25rem;
+}
+
+/* ── Progress bar (wireframe style) ── */
+.progress-track {
+  height: 2px;
+  background: #e5e5e5;
+  width: 100%;
+}
+.progress-fill {
+  height: 2px;
+  background: #1a1a1a;
+}
+
+/* ── Wireframe connector line ── */
+.wire-line {
+  border-color: #d1d5db;
+  border-style: solid;
+}
+
+/* ── Full-bleed section ── */
+.section-full {
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  position: relative;
+}
+
+/* ── Card base ── */
+.card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 2rem;
 }
