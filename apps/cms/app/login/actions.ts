@@ -10,16 +10,34 @@ export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
-  if (error) {
-    // We could return error to display on UI, but for V1 we can throw or redirect back to login
+  if (error || !data.user) {
     redirect('/login?error=true')
+  }
+
+  // Verify that the user has the 'admin' role in public.profiles
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', data.user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    await supabase.auth.signOut()
+    redirect('/login?error=unauthorized')
   }
 
   revalidatePath('/', 'layout')
   redirect('/')
+}
+
+export async function signout() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  revalidatePath('/', 'layout')
+  redirect('/login')
 }

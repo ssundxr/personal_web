@@ -1,7 +1,61 @@
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "../utils/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+
+  // Fetch visible sections
+  const { data: visibleSections } = await supabase
+    .from('pos_sections')
+    .select('slug, is_visible')
+    .eq('is_visible', true);
+
+  const activeSlugs = (visibleSections || []).map((s) => s.slug);
+
+  // Fetch active entries
+  const { data: posEntries } = await supabase
+    .from('pos_entries')
+    .select('*')
+    .eq('status', 'active')
+    .order('order_index', { ascending: true });
+
+  // Fetch top active research tracker
+  const { data: activeResearch } = await supabase
+    .from('pos_research_tracker')
+    .select('*')
+    .neq('status', 'archived')
+    .order('updated_at', { ascending: false })
+    .limit(1);
+
+  // Fetch featured and recent timeline milestones (Part 9)
+  const { data: timelineEvents } = await supabase
+    .from('timeline_events')
+    .select(`
+      id,
+      title,
+      description,
+      category,
+      date,
+      era,
+      is_featured,
+      importance_score,
+      story:story_id(slug),
+      project:project_id(slug),
+      research:research_id(slug)
+    `)
+    .order('date', { ascending: false })
+    .limit(3);
+
+  // Group entries
+  const entryMap = (posEntries || []).reduce((acc, entry) => {
+    if (!acc[entry.section_slug]) acc[entry.section_slug] = [];
+    acc[entry.section_slug].push(entry);
+    return acc;
+  }, {} as Record<string, typeof posEntries>);
+
+  const isVisible = (slug: string) => activeSlugs.includes(slug);
+
   return (
     <div className="flex flex-col items-center w-full">
       {/* HERO SECTION */}
@@ -19,6 +73,91 @@ export default function Home() {
           <Link href="/archive" className="px-6 py-3 bg-gray-100 text-primary-900 font-medium rounded-full hover:bg-gray-200 transition-all">
             Read Archive
           </Link>
+        </div>
+      </section>
+
+      {/* PERSONAL OS STATUS CARD (Change 3) */}
+      <section className="w-full max-w-6xl mx-auto px-6 pb-24 -mt-12 md:-mt-20">
+        <div className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col justify-between gap-6 shadow-sm">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between border-b border-gray-50 pb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
+                <span className="text-xs uppercase font-bold tracking-widest text-primary-900">Live Status</span>
+              </div>
+              <Link href="/now" className="text-xs font-semibold text-primary-900 hover:underline">
+                View OS /now →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Focus */}
+              {isVisible('focus') && entryMap['focus']?.[0] && (
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Current Focus</span>
+                  <span className="text-gray-900 font-medium">{entryMap['focus'][0].title}</span>
+                </div>
+              )}
+
+              {/* Building */}
+              {isVisible('building') && entryMap['building']?.[0] && (
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Building</span>
+                  <span className="text-gray-900 font-medium">
+                    {entryMap['building'][0].url ? (
+                      <a href={entryMap['building'][0].url} target="_blank" rel="noopener noreferrer" className="hover:underline text-blue-600">
+                        {entryMap['building'][0].title}
+                      </a>
+                    ) : (
+                      entryMap['building'][0].title
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {/* Reading */}
+              {isVisible('reading') && entryMap['reading']?.[0] && (
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Reading</span>
+                  <span className="text-gray-900 font-medium">
+                    {entryMap['reading'][0].title} <span className="text-gray-400">by {entryMap['reading'][0].subtitle}</span>
+                  </span>
+                </div>
+              )}
+
+              {/* Location */}
+              {isVisible('location') && entryMap['location']?.[0] && (
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Location</span>
+                  <span className="text-gray-900 font-medium">{entryMap['location'][0].title}</span>
+                </div>
+              )}
+
+              {/* Stack */}
+              {isVisible('stack') && (entryMap['stack'] || []).length > 0 && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Core Stack</span>
+                  <div className="flex flex-wrap gap-1">
+                    {(entryMap['stack'] || []).slice(0, 4).map((tech) => (
+                      <span key={tech.id} className="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded text-[10px] font-medium text-gray-700">
+                        {tech.title}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Research */}
+              {activeResearch?.[0] && (
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="text-gray-400 font-semibold uppercase tracking-wider text-[10px]">Active Research</span>
+                  <span className="text-gray-900 font-medium">
+                    {activeResearch[0].title} <span className="text-primary-800 font-semibold">({activeResearch[0].progress}%)</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -65,6 +204,76 @@ export default function Home() {
             </div>
             <div className="absolute inset-0 bg-gray-200 group-hover:scale-105 transition-transform duration-700 ease-out" />
           </Link>
+        </div>
+      </section>
+
+      {/* JOURNEY TIMELINE PREVIEW (Change 3 / Part 9) */}
+      <section className="w-full max-w-6xl mx-auto px-6 py-24 border-t border-gray-100">
+        <div className="flex justify-between items-end mb-12">
+          <div>
+            <h2 className="text-3xl font-medium tracking-tight text-primary-900">Journey Timeline</h2>
+            <p className="mt-2 text-gray-500">Key milestones, career pivots, and publications.</p>
+          </div>
+          <Link href="/timeline" className="text-sm font-medium text-primary-900 hover:underline">
+            View full timeline →
+          </Link>
+        </div>
+
+        <div className="relative border-l border-gray-100 pl-8 ml-4 flex flex-col gap-10">
+          {(timelineEvents || []).length === 0 ? (
+            <p className="text-xs text-gray-400 italic">No timeline events configured yet.</p>
+          ) : (
+            (timelineEvents || []).map((event) => (
+              <div key={event.id} className="relative flex flex-col gap-1">
+                {/* Spine bullet node */}
+                <span className="absolute -left-[38px] top-1.5 w-4 h-4 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 bg-primary-900 rounded-full"></span>
+                </span>
+                
+                <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold text-gray-400">
+                  <span className="font-mono">
+                    {new Date(event.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-gray-200 inline-block"></span>
+                  <span className="uppercase text-primary-900 bg-gray-100 px-2 py-0.5 rounded-full">{event.category}</span>
+                  {event.era && (
+                    <>
+                      <span className="w-1 h-1 rounded-full bg-gray-200 inline-block"></span>
+                      <span className="text-amber-800 font-semibold bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">
+                        {event.era}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <h3 className="text-base font-semibold text-primary-900 mt-1 leading-snug">
+                  {event.title}
+                </h3>
+                {event.description && (
+                  <p className="text-xs text-gray-500 mt-1.5 max-w-xl leading-relaxed">{event.description}</p>
+                )}
+
+                {/* Event relation action link */}
+                <div className="mt-2.5">
+                  {event.story && (
+                    <Link href={`/archive/${event.story.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
+                      Read Story ↗
+                    </Link>
+                  )}
+                  {event.project && (
+                    <Link href={`/projects/${event.project.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
+                      View Project ↗
+                    </Link>
+                  )}
+                  {event.research && (
+                    <Link href={`/research/${event.research.slug}`} className="text-xs font-semibold text-blue-600 hover:underline">
+                      Read Paper ↗
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </section>
 

@@ -51,9 +51,11 @@ export async function updateSession(request: NextRequest) {
       .single();
 
     if (profile?.role !== 'admin') {
-      // For now, if they are not an admin, we could redirect to a generic unauthorized page,
-      // but let's just let them be redirected to login for simplicity in V1.
-      // Or sign them out.
+      await supabase.auth.signOut();
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("error", "unauthorized");
+      return NextResponse.redirect(url);
     }
   }
 

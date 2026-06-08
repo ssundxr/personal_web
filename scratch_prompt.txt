@@ -1,0 +1,207 @@
+<USER_REQUEST>
+PHASE 6 — GLOBAL JOURNEY MAP
+
+Version 1 is deployed.
+
+Phase 4 (Personal Operating System) is complete.
+
+Phase 5 (Timeline System) is complete.
+
+We are now starting:
+
+PHASE 6 — GLOBAL JOURNEY MAP
+
+Use ALL approved architecture documents, database schemas, POS specifications, Timeline specifications, CMS specifications, and implementation blueprints as the source of truth.
+
+IMPORTANT
+
+This is NOT a planning exercise.
+
+Do NOT redesign the ecosystem.
+
+Do NOT create marketing copy.
+
+Do NOT generate a new PRD.
+
+Generate a production-ready engineering blueprint for the Global Journey Map.
+
+---
+
+## CORE PRINCIPLE
+
+The Map is NOT merely a visual feature.
+
+The Map is a geographic content graph.
+
+It connects:
+
+* Archive Stories
+* Timeline Events
+* Photography Collections
+* Research Travel
+* Conferences
+* Education
+* Personal Travel
+* Career Milestones
+
+Every location should become an entry point into the ecosystem.
+
+---
+
+## OBJECTIVE
+
+Create:
+
+/map
+
+An interactive global map showing:
+
+* Countries visited
+* Cities visited
+* Conferences attended
+* Research locations
+* Travel routes
+* Timeline-linked locations
+
+Users should be able to explore life experiences geographically.
+
+---
+
+PART 1
+DATABASE DESIGN
+---------------
+
+Design:
+
+locations
+
+Required fields:
+
+* id
+* name
+* city
+* state
+* country
+* latitude
+* longitude
+* location_type
+* description
+* cover_image
+* visit_date
+* first_visit_date
+* last_visit_date
+* metadata
+* is_featured
+* created_at
+* updated_at
+
+Provide:
+
+* Data types
+* Constraints
+* Relationships
+* Indexes
+
+Use PostGIS.
+
+Design geospatial strategy.
+
+---
+
+PART 2
+LOCATION TYPES
+--------------
+
+Support:
+
+* Travel
+* Research
+* Conference
+* Education
+* Career
+* Personal
+* Project
+
+Define:
+
+* Taxonomy
+* Validation rules
+* Extensibility model
+
+---
+
+PART 3
+MAP RELATIONSHIP ENGINE
+-----------------------
+
+Locations must connect to:
+
+Stories
+
+Projects
+
+Research
+
+
+<truncated 2791 bytes>
+6. Frontend Tasks
+7. Timeline Integration Tasks
+8. Testing Tasks
+9. Deployment Tasks
+
+---
+
+PART 15
+FUTURE EXTENSIBILITY
+--------------------
+
+Support future:
+
+* Photography Platform
+* AI Search
+* Travel Analytics
+* Memory Discovery
+* Route Visualization
+
+without major schema redesign.
+
+---
+
+## OUTPUT REQUIREMENTS
+
+Provide:
+
+1. Complete Global Journey Map Engineering Blueprint
+2. Database Architecture
+3. PostGIS Architecture
+4. CMS Architecture
+5. API Architecture
+6. Frontend Architecture
+7. Relationship Engine Design
+8. Security Design
+9. Performance Design
+10. Build Sequence
+11. Dependency Graph
+12. Risk Assessment
+
+Do not generate application code.
+
+Generate an implementation-ready engineering specification suitable for immediate development.
+
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-06-08T17:41:33+05:30.
+
+The user's current state is as follows:
+Active Document: c:\Users\sdshy\OneDrive\Dokumen\projects\GitHub\personal_web\supabase\migrations\20260608000002_timeline_schema.sql (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 141
+Other open documents:
+- c:\Users\sdshy\OneDrive\Dokumen\projects\GitHub\personal_web\apps\cms\app\timeline\actions.ts (LANGUAGE_TYPESCRIPT)
+- c:\Users\sdshy\OneDrive\Dokumen\projects\GitHub\personal_web\supabase\migrations\20260608000002_timeline_schema.sql (LANGUAGE_UNSPECIFIED)
+- c:\Users\sdshy\OneDrive\Dokumen\projects\GitHub\personal_web\supabase\migrations\20260608000001_pos_schema.sql (LANGUAGE_UNSPECIFIED)
+- c:\Users\sdshy\OneDrive\Dokumen\projects\GitHub\personal_web\package-lock.json (LANGUAGE_JSON)
+- c:\Users\sdshy\OneDrive\Dokumen\projects\GitHub\personal_web\.env (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from Gemini 3.5 Flash (Medium) to Gemini 3.1 Pro (High). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>

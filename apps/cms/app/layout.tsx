@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import { createClient } from "../utils/supabase/server";
+import { signout } from "./login/actions";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -10,11 +12,27 @@ export const metadata: Metadata = {
   description: "Internal content management system.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // If user is not authenticated, render without the sidebar
+  if (!user) {
+    return (
+      <html lang="en">
+        <body className={`${inter.variable} font-sans bg-gray-50 text-foreground antialiased min-h-screen flex items-center justify-center`}>
+          {children}
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans bg-gray-50 text-foreground antialiased min-h-screen flex`}>
@@ -39,11 +57,22 @@ export default function RootLayout({
             <Link href="/research" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
               Research
             </Link>
+            <Link href="/pos" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+              Personal OS
+            </Link>
+            <Link href="/timeline" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+              Timeline
+            </Link>
+            <Link href="/locations" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+              Locations
+            </Link>
           </nav>
           <div className="p-4 border-t border-gray-100">
-            <button className="w-full px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 text-left transition-colors">
-              Sign out
-            </button>
+            <form action={signout}>
+              <button type="submit" className="w-full px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 text-left transition-colors">
+                Sign out
+              </button>
+            </form>
           </div>
         </aside>
 

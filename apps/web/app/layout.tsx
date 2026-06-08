@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
+import { CommandPalette } from "../components/CommandPalette";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} font-sans bg-background text-foreground antialiased min-h-screen flex flex-col`}>
+        <CommandPalette />
         <Navbar />
         <main className="flex-1 pt-20">
           {children}
