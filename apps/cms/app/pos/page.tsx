@@ -75,12 +75,37 @@ export default async function POSManagerPage() {
     .order('timestamp', { ascending: false })
     .limit(15)
 
+  type PosEntry = {
+    id: string
+    section_slug: string
+    title: string
+    subtitle: string | null
+    url: string | null
+    progress: number | null
+    updated_at: string
+  }
+
+  const typedEntries = (entries || []) as PosEntry[]
+
+  type ResearchTracker = {
+    id: string
+    title: string
+    description: string | null
+    status: string
+    progress: number
+    target_date: string | null
+    related_research_id: string | null
+    research: { title: string } | null
+  }
+
+  const typedTrackers = (researchTrackers || []) as unknown as ResearchTracker[]
+
   // Group entries by section_slug
-  const entryMap = (entries || []).reduce((acc, entry) => {
+  const entryMap = typedEntries.reduce((acc, entry) => {
     if (!acc[entry.section_slug]) acc[entry.section_slug] = []
-    acc[entry.section_slug].push(entry)
+    acc[entry.section_slug]!.push(entry)
     return acc
-  }, {} as Record<string, typeof entries>)
+  }, {} as Record<string, PosEntry[]>)
 
   const getVitalValue = (slug: string) => {
     const list = entryMap[slug] || []
@@ -294,10 +319,10 @@ export default async function POSManagerPage() {
             
             {/* List active research trackers */}
             <div className="flex flex-col gap-4 mb-6">
-              {(researchTrackers || []).length === 0 ? (
+              {typedTrackers.length === 0 ? (
                 <p className="text-xs text-gray-400 italic">No research trackers active.</p>
               ) : (
-                (researchTrackers || []).map((tracker) => (
+                typedTrackers.map((tracker) => (
                   <div key={tracker.id} className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
