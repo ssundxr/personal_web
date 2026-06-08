@@ -31,7 +31,8 @@ export default async function NowPage() {
       status,
       progress,
       target_date,
-      related_research_id
+      related_research_id,
+      updated_at
     `)
     .order('updated_at', { ascending: false })
 
