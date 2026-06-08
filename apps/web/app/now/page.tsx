@@ -56,12 +56,24 @@ export default async function NowPage() {
     .order('timestamp', { ascending: false })
     .limit(12)
 
+  type PosEntry = {
+    id: string
+    section_slug: string
+    title: string
+    subtitle: string | null
+    url: string | null
+    progress: number | null
+    updated_at: string
+  }
+
+  const typedEntries = (entries || []) as PosEntry[]
+
   // Group entries by section_slug
-  const entryMap = (entries || []).reduce((acc, entry) => {
+  const entryMap = typedEntries.reduce((acc, entry) => {
     if (!acc[entry.section_slug]) acc[entry.section_slug] = []
-    acc[entry.section_slug].push(entry)
+    acc[entry.section_slug]!.push(entry)
     return acc
-  }, {} as Record<string, typeof entries>)
+  }, {} as Record<string, PosEntry[]>)
 
   const isSectionVisible = (slug: string) => activeSlugs.includes(slug)
 
@@ -111,12 +123,12 @@ export default async function NowPage() {
 
   // Group stack elements by subtitle category
   const stackItems = entryMap['stack'] || []
-  const groupedStack = stackItems.reduce((acc, item) => {
+  const groupedStack = stackItems.reduce((acc: Record<string, PosEntry[]>, item: PosEntry) => {
     const cat = item.subtitle || 'General'
     if (!acc[cat]) acc[cat] = []
-    acc[cat].push(item)
+    acc[cat]!.push(item)
     return acc
-  }, {} as Record<string, typeof stackItems>)
+  }, {} as Record<string, PosEntry[]>)
 
   return (
     <div className="w-full flex flex-col items-center">

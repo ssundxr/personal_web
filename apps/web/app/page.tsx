@@ -47,14 +47,43 @@ export default async function Home() {
     .order('date', { ascending: false })
     .limit(3);
 
+  type PosEntry = {
+    id: string;
+    section_slug: string;
+    title: string;
+    subtitle: string | null;
+    url: string | null;
+    progress: number | null;
+    updated_at: string;
+  };
+
+  const typedEntries = (posEntries || []) as PosEntry[];
+
   // Group entries
-  const entryMap = (posEntries || []).reduce((acc, entry) => {
+  const entryMap = typedEntries.reduce((acc, entry) => {
     if (!acc[entry.section_slug]) acc[entry.section_slug] = [];
-    acc[entry.section_slug].push(entry);
+    acc[entry.section_slug]!.push(entry);
     return acc;
-  }, {} as Record<string, typeof posEntries>);
+  }, {} as Record<string, PosEntry[]>);
 
   const isVisible = (slug: string) => activeSlugs.includes(slug);
+
+  type TimelineRelation = { slug: string };
+  type TimelineEvent = {
+    id: string;
+    title: string;
+    description: string | null;
+    category: string;
+    date: string;
+    era: string | null;
+    is_featured: boolean;
+    importance_score: number;
+    story: TimelineRelation | null;
+    project: TimelineRelation | null;
+    research: TimelineRelation | null;
+  };
+
+  const typedEvents = (timelineEvents || []) as unknown as TimelineEvent[];
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -220,10 +249,10 @@ export default async function Home() {
         </div>
 
         <div className="relative border-l border-gray-100 pl-8 ml-4 flex flex-col gap-10">
-          {(timelineEvents || []).length === 0 ? (
+          {typedEvents.length === 0 ? (
             <p className="text-xs text-gray-400 italic">No timeline events configured yet.</p>
           ) : (
-            (timelineEvents || []).map((event) => (
+            typedEvents.map((event) => (
               <div key={event.id} className="relative flex flex-col gap-1">
                 {/* Spine bullet node */}
                 <span className="absolute -left-[38px] top-1.5 w-4 h-4 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center">
