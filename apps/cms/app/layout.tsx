@@ -60,11 +60,17 @@ export default async function RootLayout({
             <Link href="/pos" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
               Personal OS
             </Link>
+            <Link href="/photography" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+              Photography
+            </Link>
             <Link href="/timeline" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
               Timeline
             </Link>
             <Link href="/locations" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
               Locations
+            </Link>
+            <Link href="/tags" className="px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+              Taxonomy (Tags)
             </Link>
           </nav>
           <div className="p-4 border-t border-gray-100">

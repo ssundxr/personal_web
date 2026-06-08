@@ -10,8 +10,10 @@ export function Navbar() {
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
           <Link href="/projects" className="hover:text-primary-900 transition-colors">Projects</Link>
           <Link href="/research" className="hover:text-primary-900 transition-colors">Research</Link>
-          <Link href="/archive" className="hover:text-primary-900 transition-colors">Archive</Link>
-          <Link href="/contact" className="hover:text-primary-900 transition-colors">Contact</Link>
+          <Link href="/now" className="hover:text-primary-900 transition-colors">Now</Link>
+          <Link href="/timeline" className="hover:text-primary-900 transition-colors">Timeline</Link>
+          <Link href="/map" className="hover:text-primary-900 transition-colors">Map</Link>
+          <Link href="/photography" className="hover:text-primary-900 transition-colors">Photography</Link>
         </nav>
         {/* Mobile Menu Button placeholder */}
         <button className="md:hidden p-2 text-gray-600">
