@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import Map, { Marker, NavigationControl, Popup } from 'react-map-gl/mapbox'
+import { useEffect, useRef, useState } from 'react'
+import Map, { MapRef, Marker, NavigationControl, Popup } from 'react-map-gl/mapbox'
+import Link from 'next/link'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 export interface LocationData {
@@ -16,11 +17,32 @@ export interface LocationData {
   description: string
   era: string
   cover_image?: string
+  storySlug?: string
 }
 
-export default function GlobalMap({ locations }: { locations: LocationData[] }) {
+export default function GlobalMap({ 
+  locations, 
+  activeLocation,
+  onPinClick
+}: { 
+  locations: LocationData[], 
+  activeLocation?: LocationData | null,
+  onPinClick?: (id: string) => void
+}) {
   const [popupInfo, setPopupInfo] = useState<LocationData | null>(null)
+  const mapRef = useRef<MapRef>(null)
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+
+  useEffect(() => {
+    if (activeLocation && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [activeLocation.longitude, activeLocation.latitude],
+        zoom: 4,
+        duration: 2000
+      })
+      setPopupInfo(activeLocation)
+    }
+  }, [activeLocation])
 
   if (!mapboxToken) {
     return (
@@ -33,8 +55,9 @@ export default function GlobalMap({ locations }: { locations: LocationData[] }) 
 
   // Choose a subtle, premium dark style for the personal OS theme
   return (
-    <div className="w-full h-[calc(100vh-64px)] relative bg-gray-900">
+    <div className="w-full h-full relative bg-[#1a1a1a]">
       <Map
+        ref={mapRef}
         initialViewState={{
           longitude: 10,
           latitude: 30,
@@ -44,7 +67,7 @@ export default function GlobalMap({ locations }: { locations: LocationData[] }) 
         mapboxAccessToken={mapboxToken}
         cursor="grab"
       >
-        <NavigationControl position="top-right" />
+        <NavigationControl position="bottom-right" />
         
         {locations.map(loc => (
           <Marker
@@ -55,6 +78,7 @@ export default function GlobalMap({ locations }: { locations: LocationData[] }) 
             onClick={(e: any) => {
               e.originalEvent.stopPropagation()
               setPopupInfo(loc)
+              if (onPinClick) onPinClick(loc.id)
             }}
           >
             <div className="w-3.5 h-3.5 bg-primary-500 rounded-full border-[2.5px] border-white shadow-[0_0_10px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-150 transition-transform duration-200" />
@@ -90,6 +114,14 @@ export default function GlobalMap({ locations }: { locations: LocationData[] }) 
               )}
               {popupInfo.description && (
                 <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed mt-1">{popupInfo.description}</p>
+              )}
+              {popupInfo.storySlug && (
+                <Link 
+                  href={`/journal/archive/${popupInfo.storySlug}`}
+                  className="mt-2 w-full text-center font-mono text-[10px] uppercase bg-primary-600 text-white py-1.5 rounded hover:bg-primary-700 transition-colors"
+                >
+                  Read It
+                </Link>
               )}
             </div>
           </Popup>

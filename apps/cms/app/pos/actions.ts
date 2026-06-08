@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '../../utils/supabase/server'
+import { createAdminClient } from '../../utils/supabase/admin'
 
 // 1. Update Core Vitals (Mission, Focus, Location, Travel)
 export async function saveVitals(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const mission = formData.get('mission') as string
   const focus = formData.get('focus') as string
@@ -53,7 +53,7 @@ export async function saveVitals(formData: FormData) {
 
 // 2. Toggle Section Visibility
 export async function toggleSection(slug: string, isVisible: boolean) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase
     .from('pos_sections')
@@ -67,7 +67,7 @@ export async function toggleSection(slug: string, isVisible: boolean) {
 
 // 3. Add dynamic shelf entry (Tech stack, Reading, Listening, Building, Learning)
 export async function addEntry(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const section_slug = formData.get('section_slug') as string
   const title = formData.get('title') as string
@@ -98,7 +98,7 @@ export async function addEntry(formData: FormData) {
 
 // 4. Archive / Hard Delete shelf entry
 export async function deleteEntry(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase.from('pos_entries').delete().eq('id', id)
 
@@ -109,7 +109,7 @@ export async function deleteEntry(id: string) {
 
 // 5. Add Research Tracker item
 export async function addResearchTracker(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const description = formData.get('description') as string
@@ -136,7 +136,7 @@ export async function addResearchTracker(formData: FormData) {
 
 // 6. Update Research Tracker progress
 export async function updateResearchProgress(id: string, progress: number, status: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase
     .from('pos_research_tracker')
@@ -150,7 +150,7 @@ export async function updateResearchProgress(id: string, progress: number, statu
 
 // 7. Delete Research Tracker item
 export async function deleteResearchTracker(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase.from('pos_research_tracker').delete().eq('id', id)
 
@@ -161,7 +161,7 @@ export async function deleteResearchTracker(id: string) {
 
 // 8. Add Goal
 export async function addGoal(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const quarter = formData.get('quarter') as string
   const title = formData.get('title') as string
@@ -188,7 +188,7 @@ export async function addGoal(formData: FormData) {
 
 // 9. Update Goal Progress
 export async function updateGoalProgress(id: string, progress: number, status: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase
     .from('pos_goals')
@@ -202,7 +202,7 @@ export async function updateGoalProgress(id: string, progress: number, status: s
 
 // 10. Delete Goal
 export async function deleteGoal(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase.from('pos_goals').delete().eq('id', id)
 
@@ -213,7 +213,7 @@ export async function deleteGoal(id: string) {
 
 // 11. Add Achievement
 export async function addAchievement(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const description = formData.get('description') as string
@@ -236,7 +236,7 @@ export async function addAchievement(formData: FormData) {
 
 // 12. Delete Achievement
 export async function deleteAchievement(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase.from('pos_achievements').delete().eq('id', id)
 
@@ -247,7 +247,7 @@ export async function deleteAchievement(id: string) {
 
 // 13. Add Manual Activity log
 export async function addActivity(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const content = formData.get('content') as string
   const activity_type = formData.get('activity_type') as string
@@ -265,7 +265,7 @@ export async function addActivity(formData: FormData) {
 
 // 14. Delete Activity Log
 export async function deleteActivity(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase.from('pos_activity').delete().eq('id', id)
 

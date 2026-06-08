@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { createClient } from "../../utils/supabase/server"
+import { createClient } from "../../../utils/supabase/server"
 
 export const revalidate = 60
 
@@ -11,7 +11,7 @@ export default async function NowPage() {
     .select('slug, title')
     .eq('is_visible', true)
 
-  const activeSlugs = (visibleSections || []).map((s) => s.slug)
+  const activeSlugs = (visibleSections || []).map((s: any) => s.slug)
 
   const { data: entries } = await supabase
     .from('pos_entries')
@@ -75,10 +75,10 @@ export default async function NowPage() {
   const getLastUpdated = () => {
     let maxTime = 0
     const check = (t?: string | null) => { if (t) { const v = new Date(t).getTime(); if (v > maxTime) maxTime = v; } };
-    (entries || []).forEach((e) => check(e.updated_at));
-    (researchTrackers || []).forEach((r) => check(r.updated_at));
-    (goals || []).forEach((g) => check(g.updated_at));
-    (activities || []).forEach((a) => check(a.timestamp));
+    (entries || []).forEach((e: any) => check(e.updated_at));
+    (researchTrackers || []).forEach((r: any) => check(r.updated_at));
+    (goals || []).forEach((g: any) => check(g.updated_at));
+    (activities || []).forEach((a: any) => check(a.timestamp));
     if (maxTime === 0) return 'Recent'
     return new Date(maxTime).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
   }
@@ -178,7 +178,7 @@ export default async function NowPage() {
             {(researchTrackers || []).length === 0 ? (
               <p className="font-mono text-xs text-[#999]">No research currently tracked.</p>
             ) : (
-              (researchTrackers || []).slice(0, 3).map((r) => (
+              (researchTrackers || []).slice(0, 3).map((r: any) => (
                 <div key={r.id} className="flex flex-col gap-2 pb-4 border-b border-[#e0e0e0] last:border-0 last:pb-0">
                   <div className="flex justify-between items-start gap-2">
                     <span className="text-sm font-semibold text-[#1a1a1a] leading-tight">{r.title}</span>
@@ -236,7 +236,7 @@ export default async function NowPage() {
             {(goals || []).length === 0 ? (
               <p className="font-mono text-xs text-[#999]">No targets set.</p>
             ) : (
-              (goals || []).slice(0, 4).map((goal) => (
+              (goals || []).slice(0, 4).map((goal: any) => (
                 <div key={goal.id} className="flex flex-col gap-1 text-xs">
                   <div className="flex justify-between items-start gap-2">
                     <span className="font-medium text-[#1a1a1a] leading-tight">{goal.title}</span>
@@ -257,7 +257,7 @@ export default async function NowPage() {
             {(activities || []).length === 0 ? (
               <p className="font-mono text-xs text-[#999]">No recent activity.</p>
             ) : (
-              (activities || []).map((act) => (
+              (activities || []).map((act: any) => (
                 <div key={act.id} className="flex items-start gap-4 text-xs pb-3 border-b border-[#e0e0e0] last:border-0 last:pb-0">
                   <span className="font-mono text-[10px] text-[#999] shrink-0 pt-0.5 w-14">{formatTimeAgo(act.timestamp)}</span>
                   <p className="flex-1 text-[#444] leading-relaxed">{act.content}</p>
@@ -273,7 +273,7 @@ export default async function NowPage() {
             {(achievements || []).length === 0 ? (
               <p className="font-mono text-xs text-[#999]">No milestones logged.</p>
             ) : (
-              (achievements || []).slice(0, 5).map((ach) => (
+              (achievements || []).slice(0, 5).map((ach: any) => (
                 <div key={ach.id} className="flex items-start gap-3 text-xs">
                   <div className="text-base pt-0.5 shrink-0">◆</div>
                   <div>

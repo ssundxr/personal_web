@@ -1,25 +1,25 @@
 import Link from "next/link";
 
 const links = [
-  { name: "projects", path: "/projects" },
-  { name: "research", path: "/research" },
-  { name: "now", path: "/now" },
-  { name: "timeline", path: "/timeline" },
-  { name: "map", path: "/map" },
-  { name: "photography", path: "/photography" },
+  { name: "Archive", path: "/journal/projects" },
+  { name: "Research", path: "/journal/research" },
+  { name: "Timeline", path: "/journal/timeline" },
+  { name: "Map", path: "/journal/map" },
+  { name: "Photography", path: "/journal/photography" },
+  { name: "Current Chapter", path: "/journal/now" },
 ];
 
 export function Navbar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#f0efed] border-b border-[#d1d5db]">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#f0efed]/70 backdrop-blur-xl border-b border-[#d1d5db]/50 transition-all duration-300">
+      <div className="w-full px-6 md:px-12 h-20 flex items-center justify-between">
         <Link
           href="/"
-          className="font-mono text-sm font-semibold tracking-tight text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors"
+          className="font-mono text-xl md:text-2xl font-bold tracking-tight text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors"
         >
-          Sunder
+          Sunder.
         </Link>
-        <nav className="hidden md:flex items-center gap-6 font-mono text-xs text-[#666]">
+        <nav className="hidden md:flex items-center gap-8 font-mono text-sm md:text-base text-[#666]">
           {links.map((link) => (
             <Link
               key={link.path}

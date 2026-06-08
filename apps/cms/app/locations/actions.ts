@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '../../utils/supabase/server'
+import { createAdminClient } from '../../utils/supabase/admin'
 
 // 1. Add Location
 export async function addLocation(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const name = formData.get('name') as string
   const city = formData.get('city') as string
@@ -52,7 +52,7 @@ export async function addLocation(formData: FormData) {
 
 // 2. Delete Location
 export async function deleteLocation(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   await supabase.from('locations').delete().eq('id', id)
   revalidatePath('/locations')
   revalidatePath('/map')
@@ -60,7 +60,7 @@ export async function deleteLocation(id: string) {
 
 // 3. Toggle Featured Location
 export async function toggleFeaturedLocation(id: string, isFeatured: boolean) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   await supabase
     .from('locations')
     .update({ is_featured: isFeatured, updated_at: new Date().toISOString() })

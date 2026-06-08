@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '../../utils/supabase/server'
+import { createAdminClient } from '../../utils/supabase/admin'
 
 // 1. Add manual timeline event
 export async function addTimelineEvent(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const description = formData.get('description') as string
@@ -48,7 +48,7 @@ export async function addTimelineEvent(formData: FormData) {
 
 // 2. Update existing timeline event
 export async function updateTimelineEvent(id: string, formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const description = formData.get('description') as string
@@ -86,7 +86,7 @@ export async function updateTimelineEvent(id: string, formData: FormData) {
 
 // 3. Delete timeline event
 export async function deleteTimelineEvent(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase.from('timeline_events').delete().eq('id', id)
 
@@ -96,7 +96,7 @@ export async function deleteTimelineEvent(id: string) {
 
 // 4. Toggle Featured status
 export async function toggleFeatured(id: string, isFeatured: boolean) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   await supabase
     .from('timeline_events')

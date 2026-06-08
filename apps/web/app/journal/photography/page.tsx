@@ -1,4 +1,4 @@
-import { createClient } from '../../utils/supabase/server'
+import { createClient } from '../../../utils/supabase/server'
 import { GalleryClient } from './GalleryClient'
 import { Metadata } from 'next'
 
@@ -39,7 +39,7 @@ export default async function PhotographyPage() {
         <section className="section-full pb-16 border-t border-[#d1d5db] pt-12">
           <h2 className="font-mono text-[10px] uppercase tracking-widest text-[#999] mb-6">Collections</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {albums.map((album) => (
+            {albums.map((album: any) => (
               <div key={album.id} className="group cursor-pointer relative overflow-hidden aspect-[4/3] bg-[#e5e5e5] border border-[#d1d5db] flex flex-col justify-end">
                 {album.cover_image_url && (
                   <img

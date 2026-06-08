@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '../../utils/supabase/server'
+import { createAdminClient } from '../../utils/supabase/admin'
 
 export async function uploadMedia(formData: FormData) {
   const file = formData.get('file') as File;
@@ -31,7 +31,7 @@ export async function uploadMedia(formData: FormData) {
   }
 
   // 2. Save reference to Supabase
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { error } = await supabase.from('media').insert({
     url: data.secure_url,
     // we can also store format, size, etc. inside exif_data

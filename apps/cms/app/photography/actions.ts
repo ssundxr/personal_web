@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '../../utils/supabase/server'
+import { createAdminClient } from '../../utils/supabase/admin'
 import exifr from 'exifr'
 
 // Helper to sanitize filename
@@ -11,7 +11,7 @@ function sanitizeFileName(name: string) {
 
 // 1. Upload Photo & Extract EXIF
 export async function uploadPhoto(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   
   const file = formData.get('file') as File
   const title = formData.get('title') as string
@@ -75,37 +75,37 @@ export async function uploadPhoto(formData: FormData) {
   const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(uploadData.path)
 
   // Insert to photos table
-  const { data: photoData, error: insertError } = await supabase.from('photos').insert({
+  const photoInsert: any = {
     title: title || 'Untitled',
-    caption: caption || null,
+    description: caption || null,
     image_url: publicUrl,
-    camera_make,
-    camera_model,
-    lens,
-    focal_length,
-    aperture,
-    shutter_speed,
-    iso,
-    resolution,
-    capture_date,
-    latitude,
-    longitude,
-    era: era || null,
+    thumbnail_url: publicUrl, // Defaulting to full image since thumbnail logic isn't present
+    exif_camera: camera_make || camera_model ? `${camera_make || ''} ${camera_model || ''}`.trim() : null,
+    exif_lens: lens,
+    exif_focal_length: focal_length,
+    exif_aperture: aperture,
+    exif_shutter: shutter_speed,
+    exif_iso: iso,
+    date_taken: capture_date,
+    metadata: {
+      resolution,
+      latitude,
+      longitude,
+      era
+    },
     importance_score
-  }).select('id').single()
+  }
+
+  // If album provided, link it directly in the photos table
+  if (albumId) {
+    photoInsert.album_id = albumId
+  }
+
+  const { data: photoData, error: insertError } = await supabase.from('photos').insert(photoInsert).select('id').single()
 
   if (insertError) {
     console.error('DB Insert Error:', insertError)
     throw new Error('Failed to save photo metadata')
-  }
-
-  // If album provided, link it
-  if (albumId && photoData) {
-    await supabase.from('album_photos').insert({
-      album_id: albumId,
-      photo_id: photoData.id,
-      order_index: 0
-    })
   }
 
   revalidatePath('/photography')
@@ -114,7 +114,7 @@ export async function uploadPhoto(formData: FormData) {
 
 // 2. Add Album
 export async function addAlbum(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const title = formData.get('title') as string
   const slug = formData.get('slug') as string
   const description = formData.get('description') as string
@@ -126,9 +126,8 @@ export async function addAlbum(formData: FormData) {
 
   await supabase.from('albums').insert({
     title,
-    slug,
     description: description || null,
-    cover_image_url: cover_image_url || null,
+    cover_image: cover_image_url || null,
     era: era || null,
     importance_score
   })
@@ -139,7 +138,7 @@ export async function addAlbum(formData: FormData) {
 
 // 3. Delete Photo
 export async function deletePhoto(id: string, imageUrl: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   
   // Extract path from publicUrl
   const urlParts = imageUrl.split('/photos/')
