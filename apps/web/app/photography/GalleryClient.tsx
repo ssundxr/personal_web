@@ -36,7 +36,7 @@ export function GalleryClient({ photos }: { photos: PhotoRecord[] }) {
     let h = 800
     if (photo.resolution) {
       const parts = photo.resolution.split('x')
-      if (parts.length === 2) {
+      if (parts.length === 2 && parts[0] && parts[1]) {
         w = parseInt(parts[0], 10)
         h = parseInt(parts[1], 10)
       }
@@ -73,26 +73,6 @@ export function GalleryClient({ photos }: { photos: PhotoRecord[] }) {
         }}
         spacing={16}
         onClick={({ index }) => setIndex(index)}
-        renderPhoto={({ photo, imageProps: { alt, title, sizes, className, onClick } }) => (
-          <div className="relative group cursor-zoom-in overflow-hidden rounded-xl bg-gray-100">
-            <img
-              {...{ alt, title, sizes, className, onClick }}
-              className={`${className} transition-transform duration-700 group-hover:scale-105`}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-              <div>
-                <h3 className="text-white font-medium truncate">{photo.title}</h3>
-                {photo.photoRecord?.camera_model && (
-                  <p className="text-white/80 text-xs mt-1 flex items-center gap-1.5">
-                    <Camera className="w-3 h-3" />
-                    {photo.photoRecord.camera_make} {photo.photoRecord.camera_model}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       />
 
       <Lightbox
