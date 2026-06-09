@@ -1,141 +1,91 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #f8fafc;
-  --color-primary-100: #f1f5f9;
-  --color-primary-900: #0f172a;
-  --color-accent: #3b5bdb;
-
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-border-subtle: var(--border-subtle);
 
+  --font-heading: var(--font-cormorant), serif;
   --font-sans: var(--font-inter), sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), 'IBM Plex Mono', monospace;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
 :root {
-  --background: #f0efed;
-  --foreground: #1a1a1a;
+  /* Light Mode - Luxury Digital Journal */
+  --background: #F5F3EE;
+  --surface: #FAF9F7;
+  --foreground: #111111;
+  --secondary: #6B6B6B;
+  --accent: #8C6A4A;
+  --border-subtle: #E7E2DB;
 }
 
-/* ── Section annotation (// section.slug) ── */
-.section-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: #999;
-  letter-spacing: 0.02em;
-  margin-bottom: 0.5rem;
-}
-.section-label::before {
-  content: '// ';
+.dark {
+  /* Dark Mode - Museum Exhibition at Night / Cinematic */
+  --background: #0B0D0F;
+  --surface: #12161A;
+  --foreground: #F5F5F5;
+  --secondary: #A5A5A5;
+  --accent: #D4B483;
+  --border-subtle: #1A1F24;
 }
 
-/* ── Large background section number ── */
-.section-number {
-  position: absolute;
-  right: 0;
-  top: -0.25rem;
-  font-family: var(--font-mono);
-  font-size: clamp(5rem, 12vw, 10rem);
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.04);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
+/* 1200ms Sunset Transition for Dark Mode Switch */
+*, ::before, ::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 1200ms;
 }
 
-/* ── Wireframe grid dots background ── */
-.grid-dots {
-  background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* ── Bordered tag pill ── */
-.tag-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0;
-  font-size: 0.75rem;
-  font-family: var(--font-sans);
-  color: #374151;
-  transition: all 0.15s ease;
-}
-.tag-pill:hover {
-  border-color: #1a1a1a;
-  color: #1a1a1a;
-}
-
-/* ── Case study link ── */
-.case-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  color: #1a1a1a;
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-.case-link:hover {
-  color: var(--color-accent);
-}
-.case-link::after {
-  content: ' →';
-}
-
-/* ── Stat card ── */
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1;
-  color: #1a1a1a;
-}
-.stat-suffix {
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: var(--color-accent);
-}
-.stat-label {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: #999;
-  margin-top: 0.25rem;
-}
-
-/* ── Progress bar (wireframe style) ── */
-.progress-track {
-  height: 2px;
-  background: #e5e5e5;
-  width: 100%;
-}
-.progress-fill {
-  height: 2px;
-  background: #1a1a1a;
-}
-
-/* ── Wireframe connector line ── */
-.wire-line {
-  border-color: #d1d5db;
-  border-style: solid;
-}
-
-/* ── Full-bleed section ── */
-.section-full {
-  width: 100%;
-  max-width: 72rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+/* Ambient Background Systems */
+.ambient-light {
+  /* Soft radial lighting */
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.7) 0%, transparent 60%), var(--background);
   position: relative;
 }
+.ambient-light::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  /* subtle grain */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 50;
+  mix-blend-mode: multiply;
+}
 
-/* ── Card base ── */
-.card {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  padding: 2rem;
+.ambient-dark {
+  /* Cinematic depth */
+  background: radial-gradient(circle at 50% -20%, rgba(20, 25, 30, 0.8) 0%, transparent 70%), var(--background);
+  position: relative;
+}
+.ambient-dark::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  /* subtle grain */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 50;
+  mix-blend-mode: screen;
+}
+
+/* Hide scrollbar for smooth experience */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
 }
