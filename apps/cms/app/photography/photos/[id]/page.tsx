@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createAdminClient } from '../../../../utils/supabase/admin'
 import { updatePhoto, deletePhoto } from '../../actions'
-import DeleteButton from '../../../../components/DeleteButton'
+import DeleteButton from '../../../components/DeleteButton'
 
 export const dynamic = 'force-dynamic';
 
