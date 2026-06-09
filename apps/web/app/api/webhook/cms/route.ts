@@ -47,7 +47,8 @@ export async function POST(request: Request) {
     // Purge the requested tags
     tags.forEach(tag => {
       console.log(`[Webhook] Revalidating tag: ${tag}`);
-      revalidateTag(tag);
+      // Workaround for Next.js 16.2.0 type signature which expects 2 arguments
+      (revalidateTag as any)(tag);
     });
 
     return NextResponse.json({ revalidated: true, tags, now: Date.now() });

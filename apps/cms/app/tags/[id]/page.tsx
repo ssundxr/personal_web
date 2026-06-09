@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createAdminClient } from '../../../utils/supabase/admin'
 import { updateTag, deleteTag } from '../actions'
+import DeleteButton from '../../components/DeleteButton'
 
 export const dynamic = 'force-dynamic';
 
@@ -31,13 +32,12 @@ export default async function EditTag({ params }: { params: Promise<{ id: string
           <h1 className="text-3xl font-semibold text-gray-900">Edit Tag</h1>
         </div>
         <form action={deleteTag.bind(null, tag.id)}>
-          <button
-            type="submit"
+          <DeleteButton 
             className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
-            onClick={(e) => { if (!confirm('Delete this tag? This cannot be undone.')) e.preventDefault() }}
+            confirmMessage="Delete this tag? This cannot be undone."
           >
             Delete Tag
-          </button>
+          </DeleteButton>
         </form>
       </div>
 

@@ -3,6 +3,7 @@ import { updateStory, deleteStory } from "../actions";
 import { createAdminClient } from "../../../utils/supabase/admin";
 import { notFound } from "next/navigation";
 import SubmitButton from "../../components/SubmitButton";
+import DeleteButton from "../../components/DeleteButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -34,13 +35,10 @@ export default async function EditStory({ params }: { params: Promise<{ id: stri
           <h1 className="text-3xl font-semibold text-gray-900">Edit Story</h1>
         </div>
         <form action={deleteStory.bind(null, story.id)}>
-          <button 
-            type="submit" 
+          <DeleteButton 
             className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
-            onClick={(e) => { if (!confirm('Delete this story? This cannot be undone.')) e.preventDefault() }}
-          >
-            Delete Story
-          </button>
+            confirmMessage="Delete this story? This cannot be undone."
+          />
         </form>
       </div>
       

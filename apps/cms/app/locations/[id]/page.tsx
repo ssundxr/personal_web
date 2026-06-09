@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createAdminClient } from '../../../utils/supabase/admin'
 import { updateLocation, deleteLocation } from '../actions'
 import MapPickerField from '../MapPickerField'
+import DeleteButton from '../../components/DeleteButton'
 
 export const dynamic = 'force-dynamic';
 
@@ -31,13 +32,12 @@ export default async function EditLocation({ params }: { params: Promise<{ id: s
           <h1 className="text-3xl font-semibold text-gray-900">Edit Location</h1>
         </div>
         <form action={deleteLocation.bind(null, location.id)}>
-          <button
-            type="submit"
+          <DeleteButton 
             className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
-            onClick={(e) => { if (!confirm('Delete this location pin? This cannot be undone.')) e.preventDefault() }}
+            confirmMessage="Delete this location pin? This cannot be undone."
           >
-            Delete Pin
-          </button>
+            Delete Location
+          </DeleteButton>
         </form>
       </div>
 
