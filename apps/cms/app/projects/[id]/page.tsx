@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { updateProject, deleteProject } from "../../actions";
-import { createClient } from "../../../../utils/supabase/server";
+import { updateProject, deleteProject } from "../actions";
+import { createClient } from "../../../utils/supabase/server";
 import { notFound } from "next/navigation";
 
 export default async function EditProject({ params }: { params: { id: string } }) {

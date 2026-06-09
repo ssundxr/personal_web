@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { createResearch } from "../../actions";
-import { createClient } from "../../../../utils/supabase/server";
+import { createResearch } from "../actions";
+import { createClient } from "../../../utils/supabase/server";
 
 export default async function NewResearch() {
   const supabase = await createClient();

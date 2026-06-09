@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { updateResearch, deleteResearch } from "../../actions";
-import { createClient } from "../../../../utils/supabase/server";
+import { updateResearch, deleteResearch } from "../actions";
+import { createClient } from "../../../utils/supabase/server";
 import { notFound } from "next/navigation";
 
 export default async function EditResearch({ params }: { params: { id: string } }) {

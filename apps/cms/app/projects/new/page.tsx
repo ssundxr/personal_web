@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { createProject } from "../../actions";
-import { createClient } from "../../../../utils/supabase/server";
+import { createProject } from "../actions";
+import { createClient } from "../../../utils/supabase/server";
 
 export default async function NewProject() {
   const supabase = await createClient();

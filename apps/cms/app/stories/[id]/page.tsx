@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { updateStory, deleteStory } from "../../actions";
-import { createClient } from "../../../../utils/supabase/server";
+import { updateStory, deleteStory } from "../actions";
+import { createClient } from "../../../utils/supabase/server";
 import { notFound } from "next/navigation";
 
 export default async function EditStory({ params }: { params: Promise<{ id: string }> }) {
