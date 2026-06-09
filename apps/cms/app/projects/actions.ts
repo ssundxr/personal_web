@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '../../utils/supabase/admin'
+import { revalidateWeb } from '../../utils/revalidateWeb'
+
 
 export async function createProject(formData: FormData) {
   const supabase = createAdminClient()
@@ -32,6 +34,7 @@ export async function createProject(formData: FormData) {
   }
 
   revalidatePath('/projects')
+  await revalidateWeb(['projects', `project-${slug}`])
   redirect('/projects')
 }
 
@@ -67,6 +70,7 @@ export async function updateProject(formData: FormData) {
   }
 
   revalidatePath('/projects')
+  await revalidateWeb(['projects', `project-${slug}`])
   redirect('/projects')
 }
 
@@ -78,4 +82,5 @@ export async function deleteProject(id: string) {
     throw new Error(`Failed to delete project: ${error.message}`)
   }
   revalidatePath('/projects')
+  await revalidateWeb(['projects'])
 }

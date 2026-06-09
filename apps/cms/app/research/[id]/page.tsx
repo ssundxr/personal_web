@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { updateResearch, deleteResearch } from "../actions";
-import { createClient } from "../../../utils/supabase/server";
+import { createAdminClient } from "../../../utils/supabase/admin";
 import { notFound } from "next/navigation";
 
-export default async function EditResearch({ params }: { params: { id: string } }) {
-  const supabase = await createClient();
+export const dynamic = 'force-dynamic';
+
+
+export default async function EditResearch({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = createAdminClient();
   
   const [{ data: paper }, { data: locations }] = await Promise.all([
-    supabase.from("research").select("*").eq("id", params.id).single(),
+    supabase.from("research").select("*").eq("id", id).single(),
     supabase.from('locations').select('id, name, city, country').order('name')
   ]);
 

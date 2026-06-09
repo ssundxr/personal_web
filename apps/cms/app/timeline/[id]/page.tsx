@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { createClient } from '../../../utils/supabase/server'
+import { createAdminClient } from '../../../utils/supabase/admin'
 import { updateTimelineEvent, deleteTimelineEvent } from '../actions'
+
+export const dynamic = 'force-dynamic';
+
 
 export default async function EditTimelineEvent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
+
 
   const [
     { data: event },

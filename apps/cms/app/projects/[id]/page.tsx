@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { updateProject, deleteProject } from "../actions";
-import { createClient } from "../../../utils/supabase/server";
+import { createAdminClient } from "../../../utils/supabase/admin";
 import { notFound } from "next/navigation";
 
-export default async function EditProject({ params }: { params: { id: string } }) {
-  const supabase = await createClient();
+export const dynamic = 'force-dynamic';
+
+
+export default async function EditProject({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = createAdminClient();
   
   const [{ data: project }, { data: locations }] = await Promise.all([
-    supabase.from("projects").select("*").eq("id", params.id).single(),
+    supabase.from("projects").select("*").eq("id", id).single(),
     supabase.from('locations').select('id, name, city, country').order('name')
   ]);
 

@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { createClient } from '../../../../utils/supabase/server'
+import { createAdminClient } from '../../../../utils/supabase/admin'
 import { updatePhoto, deletePhoto } from '../../actions'
+
+export const dynamic = 'force-dynamic';
+
 
 export default async function EditPhoto({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
+
 
   const [{ data: photo }, { data: albums }] = await Promise.all([
     supabase.from('photos').select('*').eq('id', id).single(),

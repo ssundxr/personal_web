@@ -1,16 +1,24 @@
 import Link from "next/link";
 import { updateStory, deleteStory } from "../actions";
-import { createClient } from "../../../utils/supabase/server";
+import { createAdminClient } from "../../../utils/supabase/admin";
 import { notFound } from "next/navigation";
+import SubmitButton from "../../components/SubmitButton";
+
+export const dynamic = 'force-dynamic';
+
 
 export default async function EditStory({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   
-  const [{ data: story }, { data: locations }] = await Promise.all([
+  const [storyRes, locationsRes] = await Promise.all([
     supabase.from('stories').select('*').eq('id', id).single(),
     supabase.from('locations').select('id, name, city, country').order('name')
   ]);
+
+  const story = storyRes.data;
+  const locations = locationsRes.data;
+
 
   if (!story) {
     notFound();
@@ -107,10 +115,16 @@ export default async function EditStory({ params }: { params: Promise<{ id: stri
           <label htmlFor="is_published" className="text-sm font-medium text-gray-700">Published</label>
         </div>
 
-        <div className="pt-6 border-t border-gray-100 flex justify-end">
-          <button type="submit" className="px-6 py-2 bg-primary-900 text-white font-medium rounded-lg hover:bg-primary-900/90 transition-colors">
-            Update Story
-          </button>
+        <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
+          <Link
+            href="/stories"
+            className="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </Link>
+          <SubmitButton className="px-6 py-2 bg-primary-900 text-white font-medium rounded-lg hover:bg-primary-900/90 transition-colors">
+            Save Changes
+          </SubmitButton>
         </div>
       </form>
     </div>

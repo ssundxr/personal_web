@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '../../utils/supabase/admin'
+import { revalidateWeb } from '../../utils/revalidateWeb'
+
 
 export async function createResearch(formData: FormData) {
   const supabase = createAdminClient()
@@ -30,6 +32,7 @@ export async function createResearch(formData: FormData) {
   }
 
   revalidatePath('/research')
+  await revalidateWeb(['research', `research-${slug}`])
   redirect('/research')
 }
 
@@ -63,6 +66,7 @@ export async function updateResearch(formData: FormData) {
   }
 
   revalidatePath('/research')
+  await revalidateWeb(['research', `research-${slug}`])
   redirect('/research')
 }
 
@@ -74,4 +78,5 @@ export async function deleteResearch(id: string) {
     throw new Error(`Failed to delete research: ${error.message}`)
   }
   revalidatePath('/research')
+  await revalidateWeb(['research'])
 }

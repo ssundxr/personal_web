@@ -124,25 +124,46 @@ ALTER TABLE public.timeline_event_tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.location_tags ENABLE ROW LEVEL SECURITY;
 
 -- Select Policies (Public Read)
+DROP POLICY IF EXISTS "Public Read Tags" ON public.tags;
 CREATE POLICY "Public Read Tags" ON public.tags FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Collections" ON public.collections;
 CREATE POLICY "Public Read Collections" ON public.collections FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Albums" ON public.albums;
 CREATE POLICY "Public Read Albums" ON public.albums FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Photos" ON public.photos;
 CREATE POLICY "Public Read Photos" ON public.photos FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Photo Tags" ON public.photo_tags;
 CREATE POLICY "Public Read Photo Tags" ON public.photo_tags FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Story Tags" ON public.story_tags;
 CREATE POLICY "Public Read Story Tags" ON public.story_tags FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Project Tags" ON public.project_tags;
 CREATE POLICY "Public Read Project Tags" ON public.project_tags FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Research Tags" ON public.research_tags;
 CREATE POLICY "Public Read Research Tags" ON public.research_tags FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Timeline Tags" ON public.timeline_event_tags;
 CREATE POLICY "Public Read Timeline Tags" ON public.timeline_event_tags FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public Read Location Tags" ON public.location_tags;
 CREATE POLICY "Public Read Location Tags" ON public.location_tags FOR SELECT USING (true);
 
 -- Admin Modify Policies
+DROP POLICY IF EXISTS "Admin Modify Tags" ON public.tags;
 CREATE POLICY "Admin Modify Tags" ON public.tags FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Collections" ON public.collections;
 CREATE POLICY "Admin Modify Collections" ON public.collections FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Albums" ON public.albums;
 CREATE POLICY "Admin Modify Albums" ON public.albums FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Photos" ON public.photos;
 CREATE POLICY "Admin Modify Photos" ON public.photos FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Photo Tags" ON public.photo_tags;
 CREATE POLICY "Admin Modify Photo Tags" ON public.photo_tags FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Story Tags" ON public.story_tags;
 CREATE POLICY "Admin Modify Story Tags" ON public.story_tags FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Project Tags" ON public.project_tags;
 CREATE POLICY "Admin Modify Project Tags" ON public.project_tags FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Research Tags" ON public.research_tags;
 CREATE POLICY "Admin Modify Research Tags" ON public.research_tags FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Timeline Tags" ON public.timeline_event_tags;
 CREATE POLICY "Admin Modify Timeline Tags" ON public.timeline_event_tags FOR ALL USING (public.is_admin());
+DROP POLICY IF EXISTS "Admin Modify Location Tags" ON public.location_tags;
 CREATE POLICY "Admin Modify Location Tags" ON public.location_tags FOR ALL USING (public.is_admin());
+

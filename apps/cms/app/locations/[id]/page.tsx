@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { createClient } from '../../../utils/supabase/server'
+import { createAdminClient } from '../../../utils/supabase/admin'
 import { updateLocation, deleteLocation } from '../actions'
+import MapPickerField from '../MapPickerField'
+
+export const dynamic = 'force-dynamic';
 
 export default async function EditLocation({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
+
 
   const { data: location } = await supabase
     .from('locations')
