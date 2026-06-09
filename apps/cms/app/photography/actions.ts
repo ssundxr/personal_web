@@ -151,3 +151,57 @@ export async function deletePhoto(id: string, imageUrl: string) {
   
   revalidatePath('/photography')
 }
+// 4. Update Album
+export async function updateAlbum(formData: FormData) {
+  const supabase = createAdminClient()
+  const id = formData.get('id') as string
+  const title = formData.get('title') as string
+  const slug = formData.get('slug') as string
+  const description = formData.get('description') as string
+  const cover_image_url = formData.get('cover_image_url') as string
+  const era = formData.get('era') as string
+  const importanceStr = formData.get('importance_score') as string
+  const importance_score = importanceStr ? parseInt(importanceStr, 10) : 5
+
+  await supabase
+    .from('albums')
+    .update({
+      title,
+      slug,
+      description: description || null,
+      cover_image: cover_image_url || null,
+      era: era || null,
+      importance_score,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', id)
+
+  revalidatePath('/photography')
+  revalidatePath('/albums')
+}
+
+// 5. Update Photo metadata
+export async function updatePhoto(formData: FormData) {
+  const supabase = createAdminClient()
+  const id = formData.get('id') as string
+  const title = formData.get('title') as string
+  const description = formData.get('description') as string
+  const album_id = formData.get('album_id') as string
+  const era = formData.get('era') as string
+  const importanceStr = formData.get('importance_score') as string
+  const importance_score = importanceStr ? parseInt(importanceStr, 10) : 5
+
+  await supabase
+    .from('photos')
+    .update({
+      title,
+      description: description || null,
+      album_id: album_id || null,
+      metadata: { era: era || null },
+      importance_score,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', id)
+
+  revalidatePath('/photography')
+}

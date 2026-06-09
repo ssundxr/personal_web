@@ -4,6 +4,8 @@ import {
   deleteTimelineEvent,
   toggleFeatured
 } from './actions'
+import Link from 'next/link'
+
 
 export default async function TimelineCMSPage() {
   const supabase = await createClient()
@@ -224,6 +226,12 @@ export default async function TimelineCMSPage() {
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
+                    <Link
+                      href={`/timeline/${event.id}`}
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-900 transition-colors"
+                    >
+                      Edit
+                    </Link>
                     <form action={toggleFeatured.bind(null, event.id, !event.is_featured)}>
                       <button type="submit" className="text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors">
                         {event.is_featured ? 'Unstar' : 'Star'}

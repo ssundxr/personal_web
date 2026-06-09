@@ -50,7 +50,55 @@ export async function addLocation(formData: FormData) {
   revalidatePath('/map')
 }
 
-// 2. Delete Location
+// 2. Update Location
+export async function updateLocation(formData: FormData) {
+  const supabase = createAdminClient()
+
+  const id = formData.get('id') as string
+  const name = formData.get('name') as string
+  const city = formData.get('city') as string
+  const state = formData.get('state') as string
+  const country = formData.get('country') as string
+  const latitudeStr = formData.get('latitude') as string
+  const longitudeStr = formData.get('longitude') as string
+  const location_type = formData.get('location_type') as string
+  const description = formData.get('description') as string
+  const cover_image = formData.get('cover_image') as string
+  const visit_date = formData.get('visit_date') as string
+  const era = formData.get('era') as string
+  const importanceStr = formData.get('importance_score') as string
+  const isFeaturedStr = formData.get('is_featured') as string
+
+  const latitude = parseFloat(latitudeStr)
+  const longitude = parseFloat(longitudeStr)
+  const importance_score = importanceStr ? parseInt(importanceStr, 10) : 5
+  const is_featured = isFeaturedStr === 'true'
+
+  await supabase
+    .from('locations')
+    .update({
+      name,
+      city: city || null,
+      state: state || null,
+      country,
+      latitude,
+      longitude,
+      location_type,
+      description: description || null,
+      cover_image: cover_image || null,
+      visit_date: visit_date || null,
+      era: era || null,
+      importance_score,
+      is_featured,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', id)
+
+  revalidatePath('/locations')
+  revalidatePath('/map')
+}
+
+// 3. Delete Location
 export async function deleteLocation(id: string) {
   const supabase = createAdminClient()
   await supabase.from('locations').delete().eq('id', id)

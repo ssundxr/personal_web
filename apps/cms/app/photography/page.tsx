@@ -2,6 +2,7 @@ import { createClient } from '../../utils/supabase/server'
 import { addAlbum, uploadPhoto, deletePhoto } from './actions'
 import Link from 'next/link'
 
+
 export default async function PhotographyCMSPage() {
   const supabase = await createClient()
 
@@ -126,9 +127,17 @@ export default async function PhotographyCMSPage() {
                   <div key={photo.id} className="flex flex-col gap-2 group">
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
                       <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover" />
-                      <form action={deletePhoto.bind(null, photo.id, photo.image_url)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button type="submit" className="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs shadow-md hover:bg-red-600">×</button>
-                      </form>
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Link
+                          href={`/photography/photos/${photo.id}`}
+                          className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          Edit
+                        </Link>
+                        <form action={deletePhoto.bind(null, photo.id, photo.image_url)}>
+                          <button type="submit" className="bg-red-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-red-600 transition-colors">Delete</button>
+                        </form>
+                      </div>
                     </div>
                     <div>
                       <h3 className="text-xs font-semibold text-gray-900 truncate">{photo.title}</h3>
@@ -223,6 +232,12 @@ export default async function PhotographyCMSPage() {
                       <h3 className="text-sm font-semibold text-gray-900 truncate">{album.title}</h3>
                       <p className="text-[10px] text-gray-500 font-mono mt-0.5 truncate">/{album.slug}</p>
                     </div>
+                    <Link
+                      href={`/photography/albums/${album.id}`}
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-900 opacity-0 group-hover:opacity-100 transition-all"
+                    >
+                      Edit
+                    </Link>
                   </div>
                 ))
               )}

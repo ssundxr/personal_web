@@ -1,6 +1,8 @@
 import { createClient } from '../../utils/supabase/server'
 import { addLocation, deleteLocation, toggleFeaturedLocation } from './actions'
 import MapPickerField from './MapPickerField'
+import Link from 'next/link'
+
 
 export default async function LocationsCMSPage() {
   const supabase = await createClient()
@@ -138,6 +140,12 @@ export default async function LocationsCMSPage() {
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
+                    <Link
+                      href={`/locations/${loc.id}`}
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-900 transition-colors"
+                    >
+                      Edit
+                    </Link>
                     <form action={toggleFeaturedLocation.bind(null, loc.id, !loc.is_featured)}>
                       <button type="submit" className="text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors">
                         {loc.is_featured ? 'Unstar' : 'Star'}

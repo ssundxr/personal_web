@@ -1,5 +1,7 @@
 import { createClient } from '../../utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import Link from 'next/link'
+
 
 export default async function TagsCMSPage() {
   const supabase = await createClient()
@@ -84,6 +86,12 @@ export default async function TagsCMSPage() {
                 <div key={tag.id} className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                   <span className="font-medium text-gray-900">{tag.name}</span>
                   <span className="text-[10px] text-gray-400 font-mono">/{tag.slug}</span>
+                  <Link
+                    href={`/tags/${tag.id}`}
+                    className="text-[10px] font-semibold text-blue-600 hover:text-blue-900 ml-1"
+                  >
+                    edit
+                  </Link>
                   <form action={deleteTag.bind(null, tag.id)}>
                     <button type="submit" className="text-gray-400 hover:text-red-500 font-bold ml-1">×</button>
                   </form>
