@@ -16,9 +16,10 @@ const getArticleData = (slug: string) => {
 };
 
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
+  props: { params: Promise<{ slug: string }> },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const params = await props.params;
   const article = getArticleData(params.slug);
   const ogImageUrl = `https://sunder.dev/api/og?title=${encodeURIComponent(article.title)}&category=${encodeURIComponent(article.category)}&location=${encodeURIComponent(article.location)}&readTime=${encodeURIComponent(article.readTime)}&image=${encodeURIComponent(article.image)}`;
 
@@ -50,7 +51,11 @@ export async function generateMetadata(
   };
 }
 
-export default function EditorialReadingPage({ params, searchParams }: { params: { slug: string }, searchParams: { ref?: string } }) {
+export default async function EditorialReadingPage(
+  props: { params: Promise<{ slug: string }>, searchParams: Promise<{ ref?: string }> }
+) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const article = getArticleData(params.slug);
   const isSharedLink = searchParams.ref === 'share';
 

@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Command } from 'cmdk'
-import { Search, FileText, Briefcase, FlaskConical, MapPin, Camera, Clock, X, Loader2 } from 'lucide-react'
+import { Search, FileText, Briefcase, FlaskConical, MapPin, Camera, Clock, X, Loader2, type LucideIcon } from 'lucide-react'
 import { searchDiscovery, SearchResult } from '../app/actions/search'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -98,14 +98,14 @@ export function CommandPalette() {
                   const filtered = results.filter(r => r.type === type);
                   if (filtered.length === 0) return null;
                   
-                  const icons: Record<string, React.ElementType> = {
+                  const icons: Record<string, LucideIcon> = {
                     story: FileText,
                     project: Briefcase,
                     research: FlaskConical,
                     location: MapPin,
                     photo: Camera
                   };
-                  const Icon = icons[type];
+                  const Icon = icons[type] || FileText;
                   
                   return (
                     <Command.Group key={type} heading={type.charAt(0).toUpperCase() + type.slice(1) + 's'} className="text-xs font-mono text-[var(--secondary)] px-2 py-2">
