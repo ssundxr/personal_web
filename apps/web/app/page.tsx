@@ -144,7 +144,8 @@ export default function Home() {
               role: "Full-Stack AI Engineer", 
               year: "2026", 
               desc: "AI-powered VS Code extension providing repository-aware developer assistance using RAG, Azure OpenAI, and FAISS for semantic retrieval with sub-second response times.",
-              imagePath: "/projects/coderag/cover.png"
+              imagePath: "/projects/coderag/cover.png",
+              link: "https://marketplace.visualstudio.com/items?itemName=ssundxr.coderag-extension"
             },
             { 
               title: "Recruitment Intelligence System", 
@@ -185,6 +186,16 @@ export default function Home() {
                   <button className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-secondary cursor-not-allowed opacity-50">
                     <Lock className="w-4 h-4" /> Case Study Locked
                   </button>
+                ) : project.link ? (
+                  <motion.a 
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ x: 10 }}
+                    className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-foreground hover:text-accent transition-colors cursor-pointer"
+                  >
+                    View Project <ArrowRight className="w-4 h-4" />
+                  </motion.a>
                 ) : (
                   <motion.button 
                     whileHover={{ x: 10 }}
