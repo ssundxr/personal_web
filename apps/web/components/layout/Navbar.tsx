@@ -7,7 +7,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 
-const links: { name: string, path: string }[] = [];
+const links: { name: string, path: string }[] = [
+  { name: "Projects", path: "#projects" },
+  { name: "Experience", path: "#experience" },
+  { name: "Contact", path: "#contact" },
+];
 
 export function Navbar() {
   const pathname = usePathname();
@@ -51,7 +55,7 @@ export function Navbar() {
                   </div>
                   <div>
                     <span className="text-[var(--secondary)]">Currently Reading:</span>
-                    <div className="text-[var(--foreground)] mt-0.5">Atomic Habits</div>
+                    <div className="text-[var(--foreground)] mt-0.5">It Starts With Us</div>
                   </div>
                   <div>
                     <span className="text-[var(--secondary)]">Current City:</span>
@@ -59,7 +63,7 @@ export function Navbar() {
                   </div>
                   <div>
                     <span className="text-[var(--secondary)]">Current Focus:</span>
-                    <div className="text-[var(--foreground)] mt-0.5">Machine Learning</div>
+                    <div className="text-[var(--foreground)] mt-0.5">Fulltime Job</div>
                   </div>
                 </div>
               </motion.div>
