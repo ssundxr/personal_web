@@ -7,7 +7,7 @@ import { CommandPalette } from "../components/CommandPalette";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { SmoothScroller } from "../components/layout/SmoothScroller";
 import { CustomCursor } from "../components/ui/CustomCursor";
-import { Preloader } from "../components/ui/Preloader";
+
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -48,7 +48,6 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           <SmoothScroller>
-            <Preloader />
             <CustomCursor />
             {/* Ambient background container managed via global css matching the theme */}
             <div className="fixed inset-0 pointer-events-none -z-10 dark:ambient-dark ambient-light" />
