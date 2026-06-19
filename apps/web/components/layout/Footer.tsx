@@ -24,6 +24,7 @@ export function Footer() {
           <div className="flex flex-col gap-6">
             <span className="font-mono text-sm uppercase tracking-widest text-secondary mb-4 border-b border-border-subtle pb-4 transition-colors duration-[1200ms]">Index</span>
             <Link href="/" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">Home</Link>
+            <Link href="/gallery" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">Gallery</Link>
           </div>
 
           <div className="flex flex-col gap-6">

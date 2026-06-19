@@ -5,6 +5,9 @@ import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import { CommandPalette } from "../components/CommandPalette";
 import { ThemeProvider } from "../components/ThemeProvider";
+import { SmoothScroller } from "../components/layout/SmoothScroller";
+import { CustomCursor } from "../components/ui/CustomCursor";
+import { Preloader } from "../components/ui/Preloader";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -44,15 +47,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          {/* Ambient background container managed via global css matching the theme */}
-          <div className="fixed inset-0 pointer-events-none -z-10 dark:ambient-dark ambient-light" />
-          
-          <CommandPalette />
-          <Navbar />
-          <main className="flex-1 pt-24 z-0">
-            {children}
-          </main>
-          <Footer />
+          <SmoothScroller>
+            <Preloader />
+            <CustomCursor />
+            {/* Ambient background container managed via global css matching the theme */}
+            <div className="fixed inset-0 pointer-events-none -z-10 dark:ambient-dark ambient-light" />
+            
+            <CommandPalette />
+            <Navbar />
+            <main className="flex-1 pt-24 z-0">
+              {children}
+            </main>
+            <Footer />
+          </SmoothScroller>
         </ThemeProvider>
       </body>
     </html>

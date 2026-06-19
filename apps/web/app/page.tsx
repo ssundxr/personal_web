@@ -1,9 +1,18 @@
 "use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Lock } from "lucide-react";
+import { useRef } from "react";
 
 export default function Home() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  const portraitY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 40 },
     visible: (custom: number) => ({
@@ -48,29 +57,37 @@ export default function Home() {
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
                   className="w-12 md:w-20 lg:w-32 h-[3px] bg-accent origin-left"
                 />
-                <motion.h2 
-                  custom={1}
-                  initial="hidden"
-                  animate="visible"
-                  variants={fadeUpVariant}
-                  className="text-5xl md:text-7xl lg:text-[7.5rem] font-serif italic text-foreground leading-none tracking-wide"
-                >
-                  Shyam
-                </motion.h2>
+                <div className="overflow-hidden">
+                  <motion.h2 
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-5xl md:text-7xl lg:text-[7.5rem] font-serif italic text-foreground leading-none tracking-wide"
+                  >
+                    Shyam
+                  </motion.h2>
+                </div>
               </div>
               
               <motion.h1 
-                custom={2}
-                initial="hidden"
-                animate="visible"
-                variants={fadeUpVariant}
-                className="relative z-10 text-[14vw] sm:text-[9.5rem] md:text-[13rem] lg:text-[16rem] font-extrabold tracking-[-0.07em] text-foreground leading-[0.8] uppercase ml-[-0.05em]"
+                className="relative z-10 text-[14vw] sm:text-[9.5rem] md:text-[13rem] lg:text-[16rem] font-extrabold tracking-[-0.07em] text-foreground leading-[0.8] uppercase ml-[-0.05em] flex overflow-hidden"
               >
-                SUNDER<motion.span 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  transition={{ delay: 1.2, duration: 1 }}
-                  className="text-accent"
+                {"SUNDER".split("").map((char, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ y: "100%", rotateZ: 5 }}
+                    animate={{ y: 0, rotateZ: 0 }}
+                    transition={{ delay: 0.7 + index * 0.05, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    className="inline-block"
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+                <motion.span 
+                  initial={{ opacity: 0, scale: 0 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
+                  transition={{ delay: 0.7 + 6 * 0.05 + 0.2, duration: 0.8, type: "spring", bounce: 0.5 }} 
+                  className="text-accent origin-bottom"
                 >.</motion.span>
               </motion.h1>
             </div>
@@ -104,17 +121,18 @@ export default function Home() {
               <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-foreground z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
               <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-foreground z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
 
-              <div className="absolute inset-4 overflow-hidden bg-surface">
-                <img 
+              <motion.div className="absolute inset-4 overflow-hidden bg-surface" style={{ y: portraitY }}>
+                <Image 
                   src="/shyam.jpg" 
                   alt="Sunder" 
-                  className="w-full h-full object-cover grayscale transition-all duration-700 ease-in-out group-hover:grayscale-0 group-hover:scale-105" 
+                  fill
+                  className="object-cover grayscale transition-all duration-700 ease-in-out group-hover:grayscale-0 group-hover:scale-105" 
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-[length:100px_100px] opacity-10 mix-blend-multiply dark:mix-blend-screen" />
-              </div>
+              </motion.div>
 
             </motion.div>
           </div>
@@ -134,7 +152,7 @@ export default function Home() {
           className="flex justify-between items-end mb-16 md:mb-24"
         >
           <div className="font-mono text-xs uppercase tracking-widest text-secondary">section.projects</div>
-          <h2 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground uppercase">Selected Works</h2>
+          <h2 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground uppercase">Works</h2>
         </motion.div>
 
         <div className="flex flex-col gap-24 w-full">
@@ -171,7 +189,7 @@ export default function Home() {
                      <span className="font-mono text-xs uppercase tracking-widest">Confidential / NDA</span>
                    </div>
                  ) : (
-                   project.imagePath && <img src={project.imagePath} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                   project.imagePath && <Image src={project.imagePath} alt={project.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                  )}
                  <div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity duration-700 pointer-events-none" />
               </div>
@@ -303,11 +321,12 @@ export default function Home() {
             const content = (
               <>
                 {award.imagePath && (
-                  <img 
+                  <Image 
                     src={award.imagePath} 
                     alt={award.title} 
-                    className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-700" 
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} 
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent opacity-90" />

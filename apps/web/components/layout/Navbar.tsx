@@ -8,9 +8,10 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 
 const links: { name: string, path: string }[] = [
-  { name: "Projects", path: "#projects" },
-  { name: "Experience", path: "#experience" },
-  { name: "Contact", path: "#contact" },
+  { name: "Projects", path: "/#projects" },
+  { name: "Experience", path: "/#experience" },
+  { name: "Gallery", path: "/gallery" },
+  { name: "Contact", path: "/#contact" },
 ];
 
 export function Navbar() {
