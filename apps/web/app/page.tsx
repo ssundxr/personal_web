@@ -24,10 +24,32 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-background text-foreground relative overflow-hidden font-sans selection:bg-accent selection:text-white transition-colors duration-[1200ms]">
+    <div className="flex flex-col w-full min-h-screen bg-background text-foreground relative font-sans selection:bg-accent selection:text-white transition-colors duration-[1200ms]">
       
+      {/* ═══════════ LIVE BACKGROUND ═══════════ */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <motion.div
+          animate={{
+            x: ["0%", "5%", "-5%", "0%"],
+            y: ["0%", "-5%", "5%", "0%"],
+            scale: [1, 1.1, 0.9, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            x: ["0%", "-5%", "5%", "0%"],
+            y: ["0%", "5%", "-5%", "0%"],
+            scale: [1, 0.9, 1.1, 1],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-accent/5 blur-[150px]"
+        />
+      </div>
+
       {/* ═══════════ SECTION 01 — HERO & PORTRAIT HOOK ═══════════ */}
-      <section className="w-full min-h-screen px-6 md:px-12 pt-32 pb-20 flex flex-col justify-center relative">
+      <section className="w-full min-h-screen px-6 md:px-12 pt-32 pb-20 flex flex-col justify-center relative z-10">
         <motion.span 
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.02 }}
@@ -123,7 +145,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════ SECTION 02 — PROJECTS ═══════════ */}
-      <section id="projects" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative scroll-m-20">
+      <section id="projects" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative z-10 scroll-m-20">
         <span className="opacity-[0.02] text-[20vw] absolute right-0 top-10 pointer-events-none font-bold tracking-tighter transition-colors duration-[1200ms]">02</span>
         <motion.div 
           initial="hidden"
@@ -211,7 +233,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════ SECTION 03 — EXPERIENCE & EDUCATION ═══════════ */}
-      <section id="experience" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative bg-surface transition-colors duration-[1200ms] scroll-m-20">
+      <section id="experience" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative z-10 bg-surface/40 backdrop-blur-xl transition-colors duration-[1200ms] scroll-m-20">
         <span className="opacity-[0.02] text-[20vw] absolute right-0 top-10 pointer-events-none font-bold tracking-tighter">03</span>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-24 w-full">
@@ -265,7 +287,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════ SECTION 04 — ACHIEVEMENTS ═══════════ */}
-      <section className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative bg-background transition-colors duration-[1200ms]">
+      <section className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative z-10 bg-background/40 backdrop-blur-xl transition-colors duration-[1200ms]">
         <span className="opacity-[0.02] text-[20vw] absolute right-0 top-10 pointer-events-none font-bold tracking-tighter">04</span>
         <motion.div 
           initial="hidden"
@@ -306,11 +328,11 @@ export default function Home() {
                   <img 
                     src={award.imagePath} 
                     alt={award.title} 
-                    className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-700" 
+                    className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-700" 
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent opacity-90" />
                 
                 <div className="flex flex-col gap-2 relative z-10">
                   <span className="font-mono text-sm text-secondary group-hover:text-foreground transition-colors duration-500">{award.year}</span>
@@ -347,7 +369,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════ SECTION 05 — LET'S TALK ═══════════ */}
-      <section id="contact" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative flex flex-col justify-center min-h-[60vh] bg-surface text-foreground transition-colors duration-[1200ms] scroll-m-20">
+      <section id="contact" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative z-10 flex flex-col justify-center min-h-[60vh] bg-surface/40 backdrop-blur-xl text-foreground transition-colors duration-[1200ms] scroll-m-20">
         <motion.div 
           initial="hidden"
           whileInView="visible"

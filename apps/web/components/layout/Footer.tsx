@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-background border-t border-border-subtle transition-colors duration-[1200ms]">
+    <footer className="w-full bg-background/40 backdrop-blur-xl border-t border-border-subtle transition-colors duration-[1200ms] relative z-10">
       <div className="w-full px-6 md:px-12 py-20 flex flex-col md:flex-row justify-between items-start gap-16 md:gap-8">
         
         {/* Left Side: Brand & Ethos */}
@@ -11,7 +11,7 @@ export function Footer() {
             Sunder.
           </Link>
           <p className="font-mono text-xl md:text-2xl text-secondary leading-relaxed mb-16 transition-colors duration-[1200ms]">
-            The measure of a life is its journey. Designing and building the future of human-computer interaction, spatial computing, and digital legacy.
+            Training models, shipping pipelines, and building the next era of intelligent systems. Code that scales. Aesthetics that hit.
           </p>
           <span className="font-mono text-sm uppercase tracking-widest text-secondary opacity-70 transition-colors duration-[1200ms]">
             © {new Date().getFullYear()} All Rights Reserved
