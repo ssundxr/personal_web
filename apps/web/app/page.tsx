@@ -286,31 +286,63 @@ export default function Home() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {[
-            { title: "Published in Scientific Reports", year: "2026", desc: "A Manta Ray-Bayesian Optimization Approach for Hyperparameter-Tuned CNNs in Lung Cancer Classification.", imagePath: "/honors/publication/cover.jpg" },
-            { title: "3rd Place Microsoft Hackathon", year: "2025", desc: "Awarded 3rd place for innovative AI integration.", imagePath: "/honors/hackathon/cover.jpg" },
-          ].map((award, i) => (
-            <motion.div 
-              key={i} 
-              variants={fadeUpVariant}
-              className="group relative p-10 border border-border-subtle bg-surface hover:border-accent transition-colors duration-500 flex flex-col justify-between aspect-square overflow-hidden"
-            >
-              {award.imagePath && (
-                <img 
-                  src={award.imagePath} 
-                  alt={award.title} 
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-700" 
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent opacity-80" />
-              
-              <div className="flex flex-col gap-2 relative z-10">
-                <span className="font-mono text-sm text-secondary group-hover:text-foreground transition-colors duration-500">{award.year}</span>
-                <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{award.title}</h3>
-              </div>
-              <p className="text-sm text-secondary leading-relaxed mt-8 relative z-10 group-hover:text-foreground transition-colors duration-500">{award.desc}</p>
-            </motion.div>
-          ))}
+            { 
+              title: "Published in Scientific Reports", 
+              year: "2026", 
+              desc: "A Manta Ray-Bayesian Optimization Approach for Hyperparameter-Tuned CNNs in Lung Cancer Classification.", 
+              imagePath: "/honors/publication/cover.jpg",
+              link: "https://pmc.ncbi.nlm.nih.gov/articles/PMC13168308/"
+            },
+            { 
+              title: "3rd Place Microsoft Hackathon", 
+              year: "2025", 
+              desc: "Awarded 3rd place for innovative AI integration.", 
+              imagePath: "/honors/hackathon/cover.jpg" 
+            },
+          ].map((award, i) => {
+            const content = (
+              <>
+                {award.imagePath && (
+                  <img 
+                    src={award.imagePath} 
+                    alt={award.title} 
+                    className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-700" 
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent opacity-80" />
+                
+                <div className="flex flex-col gap-2 relative z-10">
+                  <span className="font-mono text-sm text-secondary group-hover:text-foreground transition-colors duration-500">{award.year}</span>
+                  <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{award.title}</h3>
+                </div>
+                <p className="text-sm text-secondary leading-relaxed mt-8 relative z-10 group-hover:text-foreground transition-colors duration-500">{award.desc}</p>
+              </>
+            );
+
+            const className = "group relative p-10 border border-border-subtle bg-surface hover:border-accent transition-colors duration-500 flex flex-col justify-between aspect-square overflow-hidden cursor-pointer";
+
+            return award.link ? (
+              <motion.a 
+                href={award.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={i} 
+                variants={fadeUpVariant}
+                className={className}
+              >
+                {content}
+              </motion.a>
+            ) : (
+              <motion.div 
+                key={i} 
+                variants={fadeUpVariant}
+                className={className}
+              >
+                {content}
+              </motion.div>
+            );
+          })}
         </motion.div>
       </section>
 
@@ -356,15 +388,15 @@ export default function Home() {
             variants={staggerContainer}
             className="flex flex-col gap-4 font-mono text-lg md:text-xl w-full max-w-md"
           >
-            <motion.a variants={fadeUpVariant} href="mailto:hello@sunder.dev" className="group flex items-center justify-between gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
-              <span className="group-hover:text-accent transition-colors duration-500">hello@sunder.dev</span> 
+            <motion.a variants={fadeUpVariant} href="mailto:shyamsundxr@gmail.com" className="group flex items-center justify-between gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
+              <span className="group-hover:text-accent transition-colors duration-500">shyamsundxr@gmail.com</span> 
               <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500">↗</motion.span>
             </motion.a>
             <motion.a variants={fadeUpVariant} href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
               <span className="group-hover:text-accent transition-colors duration-500">Twitter</span> 
               <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500">↗</motion.span>
             </motion.a>
-            <motion.a variants={fadeUpVariant} href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
+            <motion.a variants={fadeUpVariant} href="https://linkedin.com/in/sundxrr" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
               <span className="group-hover:text-accent transition-colors duration-500">LinkedIn</span> 
               <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500">↗</motion.span>
             </motion.a>

@@ -28,9 +28,9 @@ export function Footer() {
 
           <div className="flex flex-col gap-6">
             <span className="font-mono text-sm uppercase tracking-widest text-secondary mb-4 border-b border-border-subtle pb-4 transition-colors duration-[1200ms]">Connect</span>
-            <a href="mailto:hello@sunder.dev" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">Email</a>
+            <a href="mailto:shyamsundxr@gmail.com" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">Email</a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">Twitter</a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">LinkedIn</a>
+            <a href="https://linkedin.com/in/sundxrr" target="_blank" rel="noopener noreferrer" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">LinkedIn</a>
             <a href="https://github.com/ssundxr" target="_blank" rel="noopener noreferrer" className="font-mono text-xl md:text-2xl text-foreground hover:text-accent transition-colors duration-500">GitHub</a>
           </div>
 
