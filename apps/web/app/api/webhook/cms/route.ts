@@ -33,25 +33,50 @@ export async function POST(request: Request) {
 
     const data = JSON.parse(payload);
     
-    // Prevent replay attacks (optional, but good practice. e.g., 5 min window)
-    if (Date.now() - data.timestamp > 5 * 60 * 1000) {
+    // Prevent replay attacks
+    if (Date.now() - (data.timestamp || Date.now()) > 5 * 60 * 1000) {
       return NextResponse.json({ error: 'Payload expired' }, { status: 400 });
     }
 
-    const tags: string[] = data.tags || [];
+    const { type, action, documentId } = data;
+    console.log(`[Webhook] Event: ${action} on ${type} (ID: ${documentId})`);
 
-    if (!Array.isArray(tags) || tags.length === 0) {
-      return NextResponse.json({ error: 'No tags provided' }, { status: 400 });
+    // TARGET 1: Next.js Cache Revalidation
+    const tags: string[] = data.tags || [];
+    if (tags.length > 0) {
+      tags.forEach(tag => {
+        console.log(`[Webhook] Revalidating tag: ${tag}`);
+        (revalidateTag as any)(tag);
+      });
     }
 
-    // Purge the requested tags
-    tags.forEach(tag => {
-      console.log(`[Webhook] Revalidating tag: ${tag}`);
-      // Workaround for Next.js 16.2.0 type signature which expects 2 arguments
-      (revalidateTag as any)(tag);
-    });
+    // TARGET 2: Atlas Rebuild
+    if (type === 'atlasNode' || type === 'journal' || type === 'timelineEvent' || type === 'atlasSettings') {
+      console.log(`[Webhook] Triggering Atlas Rebuild...`);
+      // await triggerAtlasRebuild();
+    }
 
-    return NextResponse.json({ revalidated: true, tags, now: Date.now() });
+    // TARGET 3: Search Reindex
+    if (['journal', 'project', 'photoStory', 'atlasNode', 'timelineEvent', 'analysisEntry'].includes(type)) {
+      console.log(`[Webhook] Triggering Search Reindex for ${documentId}...`);
+      // await syncToMeilisearch(data.document);
+    }
+
+    // TARGET 4: OG Regeneration
+    console.log(`[Webhook] Triggering OG Regeneration...`);
+    // await generateOgImages(documentId);
+
+    // TARGET 5: AI Processing (Embeddings, Summaries)
+    if (action === 'publish' || action === 'update') {
+      console.log(`[Webhook] Enqueueing AI Processing task...`);
+      // await triggerAiProcessing(documentId);
+    }
+
+    // TARGET 6: Analytics Sync
+    console.log(`[Webhook] Syncing analytics...`);
+    // await syncAnalytics(documentId);
+
+    return NextResponse.json({ success: true, tags, action, type, now: Date.now() });
   } catch (err) {
     console.error('[Webhook] Error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -5,94 +5,9 @@ import { motion, useSpring, useMotionValue, AnimatePresence } from "framer-motio
 import { ArrowRight, X } from "lucide-react";
 
 export default function Home() {
-  const [isHoveringPortrait, setIsHoveringPortrait] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Physics for Magnetic Pull
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { damping: 25, stiffness: 300, mass: 0.5 };
-  const magneticX = useSpring(mouseX, springConfig);
-  const magneticY = useSpring(mouseY, springConfig);
-
-  useEffect(() => {
-    // Show premium popup after 1.5 seconds
-    const timer = setTimeout(() => {
-      setShowPopup(true);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const { left, top, width, height } = containerRef.current.getBoundingClientRect();
-    const centerPointX = left + width / 2;
-    const centerPointY = top + height / 2;
-    
-    const x = (e.clientX - centerPointX) * 0.15;
-    const y = (e.clientY - centerPointY) * 0.15;
-    
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHoveringPortrait(false);
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#f0efed] relative overflow-hidden font-sans selection:bg-[#3b5bdb] selection:text-white">
       
-      {/* ═══════════ MINIMAL TOAST POPUP ═══════════ */}
-      <AnimatePresence>
-        {showPopup && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className="fixed bottom-6 right-6 z-50 w-full max-w-sm bg-[#111111] border border-[#222] p-5 shadow-2xl rounded-sm flex flex-col gap-4"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex flex-col gap-1">
-                <h3 className="text-[#f5f5f5] font-mono text-xs uppercase tracking-widest font-bold">
-                  Enter The Archive
-                </h3>
-                <p className="text-[#a5a5a5] text-sm leading-relaxed mt-1">
-                  Explore the new spatial timeline and interactive mapping system.
-                </p>
-              </div>
-              <button 
-                onClick={() => setShowPopup(false)}
-                className="text-[#666] hover:text-[#f5f5f5] transition-colors"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="flex gap-3">
-              <Link 
-                href="/journal" 
-                onClick={() => setShowPopup(false)}
-                className="flex-1 bg-[#222] hover:bg-[#3b5bdb] text-[#f5f5f5] text-xs font-mono uppercase tracking-widest py-2 px-4 text-center transition-colors border border-[#333]"
-              >
-                Explore
-              </Link>
-              <button 
-                onClick={() => setShowPopup(false)}
-                className="flex-1 bg-transparent hover:bg-[#222] text-[#888] hover:text-[#f5f5f5] text-xs font-mono uppercase tracking-widest py-2 px-4 transition-colors border border-[#333]"
-              >
-                Not Now
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ═══════════ SECTION 01 — HERO & PORTRAIT HOOK ═══════════ */}
       <section className="w-full min-h-screen px-6 md:px-12 pt-32 pb-20 flex flex-col justify-center relative">
@@ -152,13 +67,9 @@ export default function Home() {
           {/* Right Column: Portrait & Physics Pop-up */}
           <div className="w-full lg:w-5/12 flex justify-center lg:justify-end relative mt-12 lg:mt-0">
             <motion.div 
-              ref={containerRef}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
-              onMouseMove={handleMouseMove}
-              onMouseEnter={() => setIsHoveringPortrait(true)}
-              onMouseLeave={handleMouseLeave}
               className="relative w-full max-w-[450px] aspect-[2/3] flex items-center justify-center cursor-pointer group"
             >
               <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#1a1a1a] z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
@@ -178,44 +89,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-[length:100px_100px] opacity-10 mix-blend-multiply" />
               </div>
 
-              {/* Physics-Based Message Box */}
-              <motion.div 
-                style={{ x: magneticX, y: magneticY }}
-                className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
-              >
-                <Link href="/journal" className="pointer-events-auto">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
-                      y: [0, -5, 0]
-                    }}
-                    transition={{ 
-                      opacity: { duration: 0.8 },
-                      scale: { duration: 0.8 },
-                      y: { duration: 4, ease: "easeInOut", repeat: Infinity }
-                    }}
-                    className="bg-white/90 backdrop-blur-md px-6 py-4 shadow-2xl border border-white/50 flex items-center gap-4 rounded-xl relative"
-                  >
-                    <motion.div 
-                      animate={{ y: [-2, 2, -2] }}
-                      transition={{ duration: 3, ease: "easeInOut", repeat: Infinity }}
-                      className="w-2 h-2 rounded-full bg-[#3b5bdb]"
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-[#999]">Interactive Archive</span>
-                      <span className="font-bold text-[#1a1a1a] text-lg tracking-tight">Enter My World</span>
-                    </div>
-                    <motion.div
-                      animate={{ x: isHoveringPortrait ? [0, 4, 0] : 0 }}
-                      transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity, delay: 0.5 }}
-                    >
-                      <ArrowRight className="w-4 h-4 text-[#3b5bdb]" />
-                    </motion.div>
-                  </motion.div>
-                </Link>
-              </motion.div>
+
 
             </motion.div>
           </div>

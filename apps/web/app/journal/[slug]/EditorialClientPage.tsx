@@ -4,6 +4,20 @@ import Link from "next/link";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShareMenu } from "../../../components/ShareMenu";
+import { PortableText } from '@portabletext/react';
+
+const components = {
+  types: {
+    videoBlock: ({ value }: any) => {
+      // Basic fallback renderer for now
+      return (
+        <div className="w-full aspect-video bg-zinc-900 rounded-lg overflow-hidden my-8 flex items-center justify-center">
+          <a href={value.videoUrl} target="_blank" rel="noreferrer" className="text-zinc-400 underline">Play Video</a>
+        </div>
+      )
+    }
+  }
+}
 
 export default function EditorialClientPage({ 
   article, 
@@ -113,68 +127,13 @@ export default function EditorialClientPage({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.8 }}
-          className="font-sans text-lg md:text-xl text-[var(--secondary)] font-light leading-[2.2] space-y-12"
+          className="font-sans text-lg md:text-xl text-[var(--secondary)] font-light leading-[2.2] space-y-8 portable-text-container"
         >
-          
-          {/* Drop Cap Paragraph */}
-          <p className="relative">
-            <span className="float-left text-8xl font-heading leading-[0.8] pr-4 pt-2 text-[var(--foreground)]">W</span>
-            hen we first think about digital interaction, we think about flat screens. For decades, our entire access to the sum of human knowledge has been funneled through 2D glass rectangles. We scroll, we tap, we swipe—but we do not inhabit. The paradigm of computing has always been a window that we look *into*, rather than a room that we step *inside*. But what happens when the frame disappears? When computing becomes ambient and spatial?
-          </p>
-
-          <p>
-            During the early days of development, the breakthrough wasn't algorithmic—it was philosophical. We realized that memory is intrinsically spatial. You rarely remember a piece of information in a vacuum; you remember *where* you were when you learned it. You remember the quality of the light, the sound of the street outside, the physical weight of the moment.
-          </p>
-
-          {/* Left Floating Image */}
-          <figure className="float-left w-full md:w-[50%] md:-ml-32 md:mr-12 mb-8 mt-4 relative group">
-            <div className="overflow-hidden rounded-sm aspect-[3/4]">
-              <img 
-                src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?q=80&w=2670&auto=format&fit=crop" 
-                alt="San Francisco fog" 
-                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
-              />
-            </div>
-            <figcaption className="font-mono text-[9px] uppercase tracking-widest text-[var(--border-subtle)] mt-3 text-right">
-              01. The fog over the bay.
-            </figcaption>
-          </figure>
-
-          <p>
-            This led to the creation of the system we now use to map human experiences back onto the physical world. By anchoring digital journals to physical coordinates, the reading experience transformed from passive consumption to an exploratory journey. The cognitive load of navigating a flat list is replaced by the intuitive understanding of geography.
-          </p>
-
-          <p>
-            Think about how a museum works. A museum does not hand you a spreadsheet of historical facts. It guides you through physical space, using architecture, lighting, and placement to give context to artifacts. An exhibit panel emerges gracefully beside a sculpture. You walk around it. You experience it.
-          </p>
-
-          {/* Blockquote */}
-          <blockquote className="border-l-2 border-[var(--accent)] pl-8 my-16 py-4 font-heading text-4xl text-[var(--foreground)] leading-snug italic">
-            "The future of the web isn't pages. It's places. We must build tools that respect the spatial nature of human cognition."
-          </blockquote>
-
-          <p>
-            As we move forward, the tools we build must respect this spatial nature. We are entering an era where the digital and physical will seamlessly overlap. The Atlas is just a glimpse—a small experiment in treating our personal history with the reverence of a physical archive.
-          </p>
-
-          {/* Wide Landscape Image */}
-          <figure className="w-full md:w-[120%] md:-ml-[10%] my-24 relative group">
-            <div className="overflow-hidden rounded-sm aspect-[21/9]">
-              <img 
-                src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=2020&auto=format&fit=crop" 
-                alt="Parisian architecture" 
-                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
-              />
-            </div>
-            <figcaption className="font-mono text-[9px] uppercase tracking-widest text-[var(--border-subtle)] mt-3 text-center">
-              02. A physical anchor for a digital memory.
-            </figcaption>
-          </figure>
-
-          <p>
-            When you build software that feels like an artifact, users treat it differently. They don't just "use" it; they curate it. They tend to it. It becomes less like a utility and more like a garden.
-          </p>
-
+          {article.content ? (
+            <PortableText value={article.content} components={components} />
+          ) : (
+            <p>No content provided for this journal.</p>
+          )}
         </motion.article>
 
         {/* Footer */}

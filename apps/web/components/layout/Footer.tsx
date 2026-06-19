@@ -19,22 +19,11 @@ export function Footer() {
         </div>
 
         {/* Right Side: Navigation Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-12 lg:gap-x-24 gap-y-16 w-full md:w-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24 gap-y-16 w-full md:w-auto">
           
           <div className="flex flex-col gap-6">
             <span className="font-mono text-sm uppercase tracking-widest text-[#999] mb-4 border-b border-[#d1d5db] pb-4">Index</span>
             <Link href="/" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Home</Link>
-            <Link href="/journal" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Journal Hub</Link>
-            <Link href="/journal/now" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Current Chapter</Link>
-          </div>
-
-          <div className="flex flex-col gap-6">
-            <span className="font-mono text-sm uppercase tracking-widest text-[#999] mb-4 border-b border-[#d1d5db] pb-4">Archives</span>
-            <Link href="/journal/projects" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Selected Works</Link>
-            <Link href="/journal/research" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Research</Link>
-            <Link href="/journal/photography" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Photography</Link>
-            <Link href="/journal/timeline" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Timeline</Link>
-            <Link href="/journal/map" className="font-mono text-xl md:text-2xl text-[#1a1a1a] hover:text-[#3b5bdb] transition-colors">Global Atlas</Link>
           </div>
 
           <div className="flex flex-col gap-6">
