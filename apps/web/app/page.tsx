@@ -49,7 +49,28 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row w-full gap-16 lg:gap-24 items-center justify-between z-10">
           
           <div className="flex flex-col w-full lg:w-7/12">
-            <div className="relative mb-16 lg:mb-24 w-full cursor-default select-none pt-12 md:pt-20">
+            <div className="flex flex-col mb-16 lg:mb-24 w-full cursor-default select-none pt-8 md:pt-16">
+              
+              {/* Floating Name & Line */}
+              <div className="flex items-center gap-6 md:gap-10 mb-8 md:mb-12 pl-2 md:pl-4">
+                <motion.div 
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 1.2 }}
+                  className="w-12 md:w-20 lg:w-32 h-[2px] bg-accent origin-left"
+                />
+                <div className="overflow-hidden">
+                  <motion.h2 
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    transition={{ delay: 1.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+                    className="text-5xl md:text-7xl lg:text-[7rem] font-serif italic text-foreground leading-none tracking-wide"
+                  >
+                    Shyam
+                  </motion.h2>
+                </div>
+              </div>
+
               {/* Massive Base Text */}
               <motion.h1 
                 className="relative z-10 text-[13vw] sm:text-[8.5rem] md:text-[11rem] lg:text-[13.5rem] font-extrabold tracking-[-0.06em] text-foreground leading-[0.8] uppercase ml-[-0.05em] flex overflow-hidden pr-4 md:pr-8"
@@ -59,7 +80,7 @@ export default function Home() {
                     key={index}
                     initial={{ y: "100%", rotateZ: 5 }}
                     animate={{ y: 0, rotateZ: 0 }}
-                    transition={{ delay: 0.7 + index * 0.05, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ delay: 0.7 + index * 0.05, duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
                     className="inline-block"
                   >
                     {char}
@@ -72,26 +93,6 @@ export default function Home() {
                   className="text-accent origin-bottom"
                 >.</motion.span>
               </motion.h1>
-
-              {/* Overlapping Floating Text */}
-              <div className="absolute top-0 left-[5%] md:left-[8%] flex items-center gap-6 md:gap-10 z-20 pointer-events-none mix-blend-difference text-white">
-                <motion.div 
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 1.2 }}
-                  className="w-16 md:w-24 lg:w-40 h-[3px] bg-white origin-left"
-                />
-                <div className="overflow-hidden">
-                  <motion.h2 
-                    initial={{ y: "100%", rotateZ: -5 }}
-                    animate={{ y: 0, rotateZ: 0 }}
-                    transition={{ delay: 1.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-6xl md:text-8xl lg:text-[9.5rem] font-serif italic leading-none tracking-wider"
-                  >
-                    Shyam
-                  </motion.h2>
-                </div>
-              </div>
             </div>
             
             <motion.div 
