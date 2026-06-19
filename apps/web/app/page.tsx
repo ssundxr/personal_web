@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 
 export default function Home() {
   const fadeUpVariant = {
@@ -144,14 +144,14 @@ export default function Home() {
               role: "Full-Stack AI Engineer", 
               year: "2026", 
               desc: "AI-powered VS Code extension providing repository-aware developer assistance using RAG, Azure OpenAI, and FAISS for semantic retrieval with sub-second response times.",
-              imagePath: "/projects/coderag/cover.jpg"
+              imagePath: "/projects/coderag/cover.png"
             },
             { 
               title: "Recruitment Intelligence System", 
               role: "Machine Learning Intern", 
               year: "2025", 
               desc: "Explainable recruitment system for automated candidate evaluation, semantic scoring, and candidate-job matching leveraging OpenAI Codex.",
-              imagePath: "/projects/recruitment-system/cover.jpg"
+              isLocked: true
             },
           ].map((project, idx) => (
             <motion.div 
@@ -163,8 +163,15 @@ export default function Home() {
               custom={idx}
               className="group flex flex-col md:flex-row gap-8 md:gap-16 items-start w-full"
             >
-              <div className="w-full md:w-1/2 aspect-[16/9] bg-surface border border-border-subtle relative overflow-hidden transition-colors duration-[1200ms]">
-                 {project.imagePath && <img src={project.imagePath} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />}
+              <div className="w-full md:w-1/2 aspect-[16/9] bg-surface border border-border-subtle relative overflow-hidden transition-colors duration-[1200ms] flex items-center justify-center">
+                 {project.isLocked ? (
+                   <div className="flex flex-col items-center gap-4 text-secondary opacity-60">
+                     <Lock className="w-8 h-8" />
+                     <span className="font-mono text-xs uppercase tracking-widest">Confidential / NDA</span>
+                   </div>
+                 ) : (
+                   project.imagePath && <img src={project.imagePath} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                 )}
                  <div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity duration-700 pointer-events-none" />
               </div>
               <div className="w-full md:w-1/2 flex flex-col items-start pt-4">
@@ -174,12 +181,18 @@ export default function Home() {
                 </div>
                 <h3 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight group-hover:text-accent transition-colors duration-500">{project.title}</h3>
                 <p className="text-lg text-secondary leading-relaxed mb-8 max-w-lg">{project.desc}</p>
-                <motion.button 
-                  whileHover={{ x: 10 }}
-                  className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-foreground hover:text-accent transition-colors"
-                >
-                  View Case Study <ArrowRight className="w-4 h-4" />
-                </motion.button>
+                {project.isLocked ? (
+                  <button className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-secondary cursor-not-allowed opacity-50">
+                    <Lock className="w-4 h-4" /> Case Study Locked
+                  </button>
+                ) : (
+                  <motion.button 
+                    whileHover={{ x: 10 }}
+                    className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-foreground hover:text-accent transition-colors"
+                  >
+                    View Case Study <ArrowRight className="w-4 h-4" />
+                  </motion.button>
+                )}
               </div>
             </motion.div>
           ))}
@@ -262,19 +275,29 @@ export default function Home() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {[
-            { title: "Published in Scientific Reports (Nature Portfolio)", year: "2026", desc: "A Manta Ray-Bayesian Optimization Approach for Hyperparameter-Tuned CNNs in Lung Cancer Classification." },
-            { title: "3rd Place Microsoft Hackathon", year: "2025", desc: "Awarded 3rd place for innovative AI integration." },
+            { title: "Published in Scientific Reports", year: "2026", desc: "A Manta Ray-Bayesian Optimization Approach for Hyperparameter-Tuned CNNs in Lung Cancer Classification.", imagePath: "/honors/publication/cover.jpg" },
+            { title: "3rd Place Microsoft Hackathon", year: "2025", desc: "Awarded 3rd place for innovative AI integration.", imagePath: "/honors/hackathon/cover.jpg" },
           ].map((award, i) => (
             <motion.div 
               key={i} 
               variants={fadeUpVariant}
-              className="p-10 border border-border-subtle bg-surface hover:border-accent transition-colors duration-500 flex flex-col justify-between aspect-square group"
+              className="group relative p-10 border border-border-subtle bg-surface hover:border-accent transition-colors duration-500 flex flex-col justify-between aspect-square overflow-hidden"
             >
-              <div className="flex flex-col gap-2">
-                <span className="font-mono text-sm text-secondary">{award.year}</span>
+              {award.imagePath && (
+                <img 
+                  src={award.imagePath} 
+                  alt={award.title} 
+                  className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-700" 
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent opacity-80" />
+              
+              <div className="flex flex-col gap-2 relative z-10">
+                <span className="font-mono text-sm text-secondary group-hover:text-foreground transition-colors duration-500">{award.year}</span>
                 <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{award.title}</h3>
               </div>
-              <p className="text-sm text-secondary leading-relaxed mt-8 opacity-80">{award.desc}</p>
+              <p className="text-sm text-secondary leading-relaxed mt-8 relative z-10 group-hover:text-foreground transition-colors duration-500">{award.desc}</p>
             </motion.div>
           ))}
         </motion.div>
