@@ -83,10 +83,10 @@ export default function Home() {
               className="flex flex-col gap-10 max-w-3xl"
             >
               <p className="text-2xl md:text-4xl text-foreground leading-snug font-medium tracking-tight">
-                Designing the future of human-computer interaction, spatial computing, and digital legacy.
+                Final-year B.Tech student specializing in AI & ML, building production LLM applications and NLP systems.
               </p>
               <p className="font-mono text-sm md:text-base text-secondary leading-relaxed max-w-xl">
-                Award-winning researcher and builder focusing on creating systems that augment human cognition and preserve digital memory.
+                Published researcher in Scientific Reports with expertise in Generative AI, RAG pipelines, deep learning, and cloud deployment on Azure and AWS.
               </p>
             </motion.div>
           </div>
@@ -139,8 +139,20 @@ export default function Home() {
 
         <div className="flex flex-col gap-24 w-full">
           {[
-            { title: "Spatial OS", role: "Creator", year: "2026", desc: "A new paradigm for spatial computing interfaces, rethinking how humans interact with layered digital spaces." },
-            { title: "Neural Engine", role: "Builder", year: "2025", desc: "Local LLM inference optimization — reducing memory bandwidth bottlenecks while preserving zero-shot reasoning." },
+            { 
+              title: "CodeRAG", 
+              role: "Full-Stack AI Engineer", 
+              year: "2026", 
+              desc: "AI-powered VS Code extension providing repository-aware developer assistance using RAG, Azure OpenAI, and FAISS for semantic retrieval with sub-second response times.",
+              imagePath: "/projects/coderag/cover.jpg"
+            },
+            { 
+              title: "Recruitment Intelligence System", 
+              role: "Machine Learning Intern", 
+              year: "2025", 
+              desc: "Explainable recruitment system for automated candidate evaluation, semantic scoring, and candidate-job matching leveraging OpenAI Codex.",
+              imagePath: "/projects/recruitment-system/cover.jpg"
+            },
           ].map((project, idx) => (
             <motion.div 
               key={idx} 
@@ -152,7 +164,8 @@ export default function Home() {
               className="group flex flex-col md:flex-row gap-8 md:gap-16 items-start w-full"
             >
               <div className="w-full md:w-1/2 aspect-[16/9] bg-surface border border-border-subtle relative overflow-hidden transition-colors duration-[1200ms]">
-                 <div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity duration-700" />
+                 {project.imagePath && <img src={project.imagePath} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />}
+                 <div className="absolute inset-0 bg-foreground opacity-0 group-hover:opacity-5 transition-opacity duration-700 pointer-events-none" />
               </div>
               <div className="w-full md:w-1/2 flex flex-col items-start pt-4">
                 <div className="flex items-center gap-4 mb-6">
@@ -188,8 +201,9 @@ export default function Home() {
             <motion.h2 variants={fadeUpVariant} className="text-4xl md:text-5xl font-bold tracking-tight text-foreground uppercase mb-16">Experience</motion.h2>
             <div className="flex flex-col gap-12">
               {[
-                { role: "Senior UX Engineer", company: "Google", time: "2024 - Present" },
-                { role: "Frontend Architect", company: "Vercel", time: "2021 - 2024" },
+                { role: "AI Engineer Intern", company: "Enarin Business Solutions", time: "Mar 2026 - May 2026" },
+                { role: "Machine Learning Intern", company: "Enarin Business Solutions", time: "Dec 2025 - Feb 2026" },
+                { role: "Undergraduate AI Researcher", company: "Alliance University", time: "Aug 2025 - Jan 2026" },
               ].map((exp, i) => (
                 <motion.div key={i} variants={fadeUpVariant} className="flex flex-col border-l-2 border-border-subtle pl-6 relative hover:border-accent transition-colors duration-500 group">
                   <div className="absolute w-3 h-3 bg-accent -left-[7px] top-1.5 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full" />
@@ -211,13 +225,13 @@ export default function Home() {
             <motion.h2 variants={fadeUpVariant} className="text-4xl md:text-5xl font-bold tracking-tight text-foreground uppercase mb-16">Education</motion.h2>
             <div className="flex flex-col gap-12">
               {[
-                { degree: "M.S. Computer Science", school: "Stanford University", time: "2019 - 2021" },
-                { degree: "B.S. Software Engineering", school: "MIT", time: "2015 - 2019" },
+                { degree: "B.Tech, CSE - AI & ML", school: "Alliance University", time: "2023 - 2027", meta: "CGPA: 8.45/10" },
               ].map((edu, i) => (
                 <motion.div key={i} variants={fadeUpVariant} className="flex flex-col border-l-2 border-border-subtle pl-6 relative hover:border-accent transition-colors duration-500 group">
                   <div className="absolute w-3 h-3 bg-accent -left-[7px] top-1.5 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full" />
                   <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors duration-500">{edu.degree}</h3>
                   <p className="text-lg text-secondary mt-1">{edu.school}</p>
+                  {edu.meta && <p className="font-mono text-xs text-accent mt-2">{edu.meta}</p>}
                   <p className="font-mono text-xs text-secondary opacity-60 mt-4 tracking-widest">{edu.time}</p>
                 </motion.div>
               ))}
@@ -248,17 +262,19 @@ export default function Home() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {[
-            { title: "Awwwards Site of the Month", year: "2025" },
-            { title: "Apple Design Award", year: "2024" },
-            { title: "FWA of the Day", year: "2023" },
+            { title: "Published in Scientific Reports (Nature Portfolio)", year: "2026", desc: "A Manta Ray-Bayesian Optimization Approach for Hyperparameter-Tuned CNNs in Lung Cancer Classification." },
+            { title: "3rd Place Microsoft Hackathon", year: "2025", desc: "Awarded 3rd place for innovative AI integration." },
           ].map((award, i) => (
             <motion.div 
               key={i} 
               variants={fadeUpVariant}
               className="p-10 border border-border-subtle bg-surface hover:border-accent transition-colors duration-500 flex flex-col justify-between aspect-square group"
             >
-              <span className="font-mono text-sm text-secondary">{award.year}</span>
-              <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{award.title}</h3>
+              <div className="flex flex-col gap-2">
+                <span className="font-mono text-sm text-secondary">{award.year}</span>
+                <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{award.title}</h3>
+              </div>
+              <p className="text-sm text-secondary leading-relaxed mt-8 opacity-80">{award.desc}</p>
             </motion.div>
           ))}
         </motion.div>
