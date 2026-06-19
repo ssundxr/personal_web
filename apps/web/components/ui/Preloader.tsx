@@ -28,20 +28,32 @@ export function Preloader() {
       {isVisible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, y: "-100%" }}
-          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-background text-foreground"
+          exit={{ y: "-100%" }}
+          transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
+          className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-background text-foreground overflow-hidden"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-7xl md:text-9xl font-extrabold tracking-tighter font-serif italic"
-          >
-            {progress}%
-          </motion.div>
-          <div className="absolute bottom-10 font-mono text-sm uppercase tracking-widest text-secondary">
-            Loading Experience
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-[length:100px_100px] opacity-[0.03]" />
+          
+          <div className="relative overflow-hidden mix-blend-difference z-10">
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
+              className="text-[25vw] md:text-[20rem] font-extrabold tracking-tighter leading-none text-white"
+            >
+              {progress}
+            </motion.div>
+          </div>
+          
+          <div className="absolute bottom-12 left-0 right-0 flex items-center justify-center px-12">
+            <div className="w-full max-w-md h-[1px] bg-border-subtle relative overflow-hidden">
+              <motion.div 
+                className="absolute top-0 left-0 bottom-0 bg-foreground"
+                initial={{ width: "0%" }}
+                animate={{ width: `${progress}%` }}
+                transition={{ ease: "linear", duration: 0.1 }}
+              />
+            </div>
           </div>
         </motion.div>
       )}

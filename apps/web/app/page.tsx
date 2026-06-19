@@ -70,7 +70,7 @@ export default function Home() {
               </div>
               
               <motion.h1 
-                className="relative z-10 text-[14vw] sm:text-[9.5rem] md:text-[13rem] lg:text-[16rem] font-extrabold tracking-[-0.07em] text-foreground leading-[0.8] uppercase ml-[-0.05em] flex overflow-hidden"
+                className="relative z-10 text-[13vw] sm:text-[8.5rem] md:text-[11rem] lg:text-[13.5rem] font-extrabold tracking-[-0.06em] text-foreground leading-[0.8] uppercase ml-[-0.05em] flex overflow-hidden pr-4 md:pr-8"
               >
                 {"SUNDER".split("").map((char, index) => (
                   <motion.span
