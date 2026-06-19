@@ -54,7 +54,7 @@ export default function GalleryPage() {
     visible: (custom: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: custom * 0.1, duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+      transition: { delay: custom * 0.1, duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }
     })
   };
 
@@ -93,7 +93,7 @@ export default function GalleryPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "100px" }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: (idx % 3) * 0.1 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: (idx % 3) * 0.1 }}
               className="break-inside-avoid relative"
             >
               <GalleryImage baseName={baseName} />
