@@ -1,18 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, animate, useMotionValue, useTransform } from "framer-motion";
 
 export function Preloader() {
   const [isVisible, setIsVisible] = useState(true);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  
+  // Keep motion value strictly for the progress bar width
   const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
 
   useEffect(() => {
     // Ultra-smooth 2.5 second interpolation
-    const controls = animate(count, 100, {
+    const controls = animate(0, 100, {
       duration: 2.5,
       ease: [0.16, 1, 0.3, 1], // Cinematic kinetic easing
+      onUpdate: (latest) => {
+        count.set(latest);
+        // Direct DOM mutation prevents SSR/hydration child errors
+        if (counterRef.current) {
+          counterRef.current.textContent = Math.round(latest).toString();
+        }
+      },
       onComplete: () => {
         setTimeout(() => setIsVisible(false), 200);
       }
@@ -41,9 +50,9 @@ export function Preloader() {
             className="flex flex-col items-center z-10"
           >
             <div className="flex items-start">
-              <motion.span className="text-[20vw] md:text-[18rem] font-bold tracking-tighter leading-none">
-                {rounded}
-              </motion.span>
+              <span ref={counterRef} className="text-[20vw] md:text-[18rem] font-bold tracking-tighter leading-none">
+                0
+              </span>
               <span className="text-2xl md:text-6xl font-mono mt-4 md:mt-8 opacity-40">%</span>
             </div>
           </motion.div>
