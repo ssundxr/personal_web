@@ -9,7 +9,7 @@ export default function Home() {
     visible: (custom: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: custom * 0.1, duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+      transition: { delay: custom * 0.1, duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }
     })
   };
 
