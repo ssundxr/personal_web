@@ -2,12 +2,12 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-background/40 backdrop-blur-xl border-t border-border-subtle transition-colors duration-[1200ms] relative z-10">
+    <footer className="w-full bg-background border-t border-border-subtle transition-colors duration-[1200ms]">
       <div className="w-full px-6 md:px-12 py-20 flex flex-col md:flex-row justify-between items-start gap-16 md:gap-8">
         
         {/* Left Side: Brand & Ethos */}
         <div className="flex flex-col max-w-xl">
-          <Link href="/" className="text-6xl md:text-[6rem] font-bold tracking-tighter text-foreground mb-8 leading-none transition-colors duration-[1200ms]">
+          <Link href="/" className="text-4xl md:text-[6rem] font-bold tracking-tighter text-foreground mb-8 leading-none transition-colors duration-[1200ms]">
             Sunder.
           </Link>
           <p className="font-mono text-xl md:text-2xl text-secondary leading-relaxed mb-16 transition-colors duration-[1200ms]">
