@@ -4,53 +4,31 @@ import { motion } from "framer-motion";
 
 export default function SignatureMarqueeSection() {
   return (
-    <div className="absolute inset-0 z-0 flex flex-col items-center justify-center overflow-hidden pointer-events-none select-none">
-      <div className="flex w-full flex-col gap-4 py-10 md:gap-8">
-        {/* Top Row */}
-        <div className="flex w-full overflow-hidden">
-          <motion.div
-            animate={{ x: [0, -1000] }}
-            transition={{
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: 20,
-              ease: "linear",
-            }}
-            className="flex whitespace-nowrap"
-          >
-            {[...Array(4)].map((_, i) => (
-              <h2
-                key={i}
-                className="font-brier text-[#D1FF1C] px-4 text-[12vw] leading-[0.9] tracking-tight md:text-[8vw]"
-              >
-                ENGINEERING INTELLIGENCE ENGINEERING INTELLIGENCE ENGINEERING INTELLIGENCE ENGINEERING INTELLIGENCE
+    <div className="absolute bottom-0 left-0 right-0 z-20 flex w-full flex-col overflow-hidden pointer-events-none select-none bg-background/50 backdrop-blur-md border-t border-border-subtle py-4">
+      <div className="flex w-full overflow-hidden">
+        <motion.div
+          animate={{ x: [0, -1000] }}
+          transition={{
+            repeat: Infinity,
+            repeatType: "loop",
+            duration: 20,
+            ease: "linear",
+          }}
+          className="flex whitespace-nowrap items-center"
+        >
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="flex items-center">
+              <h2 className="font-brier text-[#D1FF1C] px-4 text-2xl md:text-4xl leading-none tracking-tight">
+                ENGINEERING INTELLIGENCE
               </h2>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Bottom Row */}
-        <div className="flex w-full overflow-hidden">
-          <motion.div
-            animate={{ x: [0, -1000] }}
-            transition={{
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: 25,
-              ease: "linear",
-            }}
-            className="flex whitespace-nowrap"
-          >
-            {[...Array(4)].map((_, i) => (
-              <h2
-                key={i}
-                className="font-oswald text-white px-4 text-[12vw] font-bold leading-[0.9] tracking-tighter uppercase md:text-[8vw]"
-              >
-                FROM RESEARCH TO PRODUCTION FROM RESEARCH TO PRODUCTION FROM RESEARCH TO PRODUCTION FROM RESEARCH TO PRODUCTION
+              <span className="text-white/30 px-4 text-2xl md:text-4xl">•</span>
+              <h2 className="font-oswald text-white px-4 text-xl md:text-3xl font-bold leading-none tracking-tighter uppercase">
+                FROM RESEARCH TO PRODUCTION
               </h2>
-            ))}
-          </motion.div>
-        </div>
+              <span className="text-white/30 px-4 text-2xl md:text-4xl">•</span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );
