@@ -52,6 +52,7 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange={false}
+          storageKey="portfolio-theme-v2"
         >
           <SmoothScroller>
             <CustomCursor />
