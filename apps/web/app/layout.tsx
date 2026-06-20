@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
+import { Inter, Cormorant_Garamond, JetBrains_Mono, Oswald } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
@@ -26,6 +26,12 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
+const oswald = Oswald({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-oswald",
+});
+
 export const metadata: Metadata = {
   title: "Sunder — Builder, Researcher, Explorer",
   description: "A luxury interactive autobiography where travel, AI projects, photography, reflections, personal growth, and current affairs are woven together into a living digital archive.",
@@ -39,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body 
-        className={`${inter.variable} ${cormorant.variable} ${jetbrainsMono.variable} font-sans bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen flex flex-col transition-colors duration-[1200ms]`}
+        className={`${inter.variable} ${cormorant.variable} ${jetbrainsMono.variable} ${oswald.variable} font-sans bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen flex flex-col transition-colors duration-[1200ms]`}
       >
         <ThemeProvider
           attribute="class"

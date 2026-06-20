@@ -4,7 +4,8 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Lock } from "lucide-react";
 import { useRef } from "react";
-
+import Preloader from "../components/hero/preloader";
+import HeroSection from "../components/hero/hero-section";
 export default function Home() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -33,117 +34,13 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-background text-foreground relative font-sans selection:bg-accent selection:text-white transition-colors duration-[1200ms]">
+    <>
+      <Preloader />
+      <div className="flex flex-col w-full min-h-screen bg-background text-foreground relative font-sans selection:bg-accent selection:text-white transition-colors duration-[1200ms]">
 
-      {/* ═══════════ SECTION 01 — HERO & PORTRAIT HOOK ═══════════ */}
-      <section className="w-full min-h-screen px-6 md:px-12 pt-32 pb-20 flex flex-col justify-center relative">
-        <motion.span 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.02 }}
-          transition={{ duration: 2 }}
-          className="text-[20vw] absolute right-0 top-10 pointer-events-none font-bold tracking-tighter"
-        >
-          01
-        </motion.span>
-        
-        <div className="flex flex-col lg:flex-row w-full gap-16 lg:gap-24 items-center justify-between z-10">
-          
-          <div className="flex flex-col w-full lg:w-7/12">
-            <div className="flex flex-col mb-16 lg:mb-24 w-full cursor-default select-none pt-8 md:pt-16">
-              
-              {/* Floating Name & Line */}
-              <div className="flex items-center gap-6 md:gap-10 mb-8 md:mb-12 pl-2 md:pl-4">
-                <motion.div 
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 1.2 }}
-                  className="w-12 md:w-20 lg:w-32 h-[2px] bg-accent origin-left"
-                />
-                <div className="overflow-hidden">
-                  <motion.h2 
-                    initial={{ y: "100%" }}
-                    animate={{ y: 0 }}
-                    transition={{ delay: 1.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-                    className="text-5xl md:text-7xl lg:text-[7rem] font-serif italic text-foreground leading-none tracking-wide"
-                  >
-                    Shyam
-                  </motion.h2>
-                </div>
-              </div>
+        <HeroSection />
 
-              {/* Massive Base Text */}
-              <motion.h1 
-                className="relative z-10 text-[13vw] sm:text-[8.5rem] md:text-[11rem] lg:text-[13.5rem] font-extrabold tracking-[-0.06em] text-foreground leading-[0.8] uppercase ml-[-0.05em] flex overflow-hidden pr-4 md:pr-8"
-              >
-                {"SUNDER".split("").map((char, index) => (
-                  <motion.span
-                    key={index}
-                    initial={{ y: "100%", rotateZ: 5 }}
-                    animate={{ y: 0, rotateZ: 0 }}
-                    transition={{ delay: 0.7 + index * 0.05, duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-                    className="inline-block"
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-                <motion.span 
-                  initial={{ opacity: 0, scale: 0 }} 
-                  animate={{ opacity: 1, scale: 1 }} 
-                  transition={{ delay: 0.7 + 6 * 0.05 + 0.2, duration: 0.8, type: "spring", bounce: 0.5 }} 
-                  className="text-accent origin-bottom"
-                >.</motion.span>
-              </motion.h1>
-            </div>
-            
-            <motion.div 
-              custom={4}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUpVariant}
-              className="flex flex-col gap-10 max-w-3xl"
-            >
-              <p className="text-2xl md:text-4xl text-foreground leading-snug font-medium tracking-tight">
-                Final-year B.Tech student specializing in AI & ML, building production LLM applications and NLP systems.
-              </p>
-              <p className="font-mono text-sm md:text-base text-secondary leading-relaxed max-w-xl">
-                Published researcher in Scientific Reports with expertise in Generative AI, RAG pipelines, deep learning, and cloud deployment on Azure and AWS.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Right Column: Portrait */}
-          <div className="w-full lg:w-5/12 flex justify-center lg:justify-end relative mt-12 lg:mt-0">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
-              className="relative w-full max-w-[450px] aspect-[2/3] flex items-center justify-center cursor-pointer group"
-            >
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-foreground z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-foreground z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-foreground z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-foreground z-10 opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
-
-              <motion.div className="absolute inset-4 overflow-hidden bg-surface" style={{ y: portraitY }}>
-                <Image 
-                  src="/shyam.jpg" 
-                  alt="Sunder" 
-                  fill
-                  className="object-cover grayscale transition-all duration-700 ease-in-out group-hover:grayscale-0 group-hover:scale-105" 
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-[length:100px_100px] opacity-10 mix-blend-multiply dark:mix-blend-screen" />
-              </motion.div>
-
-            </motion.div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ═══════════ SECTION 02 — PROJECTS ═══════════ */}
+        {/* ═══════════ SECTION 02 — PROJECTS ═══════════ */}
       <section id="projects" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative scroll-m-20">
         <span className="opacity-[0.02] text-[20vw] absolute right-0 top-10 pointer-events-none font-bold tracking-tighter transition-colors duration-[1200ms]">02</span>
         <motion.div 
@@ -427,5 +324,6 @@ export default function Home() {
       </section>
 
     </div>
+    </>
   );
 }
