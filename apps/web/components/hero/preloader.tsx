@@ -11,10 +11,10 @@ const stickers = [
   { id: 5, bottom: "20%", left: "15%", rotate: 30, delay: 0.5, width: "150px" },
   { id: 6, bottom: "25%", right: "20%", rotate: -10, delay: 0.6, width: "140px" },
   { id: 7, top: "5%", left: "40%", rotate: 5, delay: 0.7, width: "110px" },
-  { id: 8, bottom: "10%", right: "40%", rotate: -15, delay: 0.8, width: "135px" },
+  { id: 8, bottom: "5%", right: "10%", rotate: -15, delay: 0.8, width: "135px" },
   { id: 9, top: "25%", left: "25%", rotate: 45, delay: 0.9, width: "125px" },
   { id: 10, top: "30%", right: "25%", rotate: -35, delay: 1.0, width: "145px" },
-  { id: 11, bottom: "35%", left: "30%", rotate: 15, delay: 1.1, width: "115px" },
+  { id: 11, bottom: "10%", left: "5%", rotate: 15, delay: 1.1, width: "115px" },
 ];
 
 export default function Preloader() {
@@ -40,7 +40,7 @@ export default function Preloader() {
           initial={{ y: 0 }}
           exit={{ y: "-100%" }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#e60000] text-white overflow-hidden"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#e60000] text-[#EBE9E1] overflow-hidden"
         >
           {/* Scattered Aesthetic Stickers */}
           <div className="absolute inset-0 z-0 pointer-events-none">
@@ -71,7 +71,7 @@ export default function Preloader() {
             ))}
           </div>
 
-          <div className="relative z-10 overflow-hidden px-4 text-center mix-blend-difference">
+          <div className="relative z-10 overflow-hidden px-4 text-center">
             <motion.h1
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
