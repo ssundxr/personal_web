@@ -18,14 +18,14 @@ export default function SignatureMarqueeSection() {
         >
           {[...Array(6)].map((_, i) => (
             <div key={i} className="flex items-center">
-              <h2 className="font-brier text-[#D1FF1C] px-4 text-2xl md:text-4xl leading-none tracking-tight uppercase">
+              <h2 className="font-brier text-green-700 dark:text-[#D1FF1C] px-4 text-2xl md:text-4xl leading-none tracking-tight uppercase">
                 AI ENGINEER
               </h2>
-              <span className="text-white/30 px-4 text-2xl md:text-4xl">•</span>
-              <h2 className="font-oswald text-white px-4 text-xl md:text-3xl font-bold leading-none tracking-tighter uppercase">
+              <span className="text-foreground/30 px-4 text-2xl md:text-4xl">•</span>
+              <h2 className="font-oswald text-foreground px-4 text-xl md:text-3xl font-bold leading-none tracking-tighter uppercase">
                 UNDERGRAD RESEARCHER
               </h2>
-              <span className="text-white/30 px-4 text-2xl md:text-4xl">•</span>
+              <span className="text-foreground/30 px-4 text-2xl md:text-4xl">•</span>
             </div>
           ))}
         </motion.div>

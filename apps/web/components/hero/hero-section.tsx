@@ -42,7 +42,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen w-full bg-[#0B0D0F] overflow-hidden flex flex-col justify-center pb-32">
+    <section className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col justify-center pb-32 transition-colors duration-[1200ms]">
       
       {/* Subtle Ambient Background Gradient */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -64,7 +64,7 @@ export default function HeroSection() {
               >
                 <div className="w-12 h-[2px] bg-accent" />
                 <span className="font-oswald uppercase tracking-widest text-sm text-secondary">
-                  Engineering Intelligence
+                  AI-Engineer
                 </span>
               </motion.div>
               
@@ -72,7 +72,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="font-brier text-6xl md:text-8xl lg:text-[8.5rem] text-white leading-[0.85] tracking-tighter"
+                className="font-brier text-6xl md:text-8xl lg:text-[8.5rem] text-foreground leading-[0.85] tracking-tighter"
               >
                 SHYAM <br /> SUNDER<span className="text-accent">.</span>
               </motion.h1>
@@ -108,18 +108,18 @@ export default function HeroSection() {
               />
               
               {/* Glassmorphic Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D0F] via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80 transition-colors duration-[1200ms]" />
               
               {/* Floating Status Badge */}
               <motion.div 
                 style={{ transform: "translateZ(50px)" }}
-                className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-between"
+                className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-foreground/5 backdrop-blur-md border border-foreground/10 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#D1FF1C] animate-pulse" />
-                  <span className="font-mono text-xs text-white uppercase tracking-wider">Status</span>
+                  <div className="w-2 h-2 rounded-full bg-green-500 dark:bg-[#D1FF1C] animate-pulse" />
+                  <span className="font-mono text-xs text-foreground uppercase tracking-wider">Status</span>
                 </div>
-                <span className="font-mono text-xs text-white/90 font-medium">Active Internship</span>
+                <span className="font-mono text-xs text-foreground/90 font-medium">Active Internship</span>
               </motion.div>
             </motion.div>
           )}
