@@ -42,7 +42,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col justify-center pb-32 transition-colors duration-[1200ms]">
+    <section className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col justify-center pb-32 transition-colors duration-[1200ms] -mt-24">
       
       {/* Subtle Ambient Background Gradient */}
       <div className="absolute inset-0 z-0 pointer-events-none">

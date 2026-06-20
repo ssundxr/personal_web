@@ -31,6 +31,7 @@
   --secondary: #6B6B6B;
   --accent: #e60000; /* Bold Preloader Red */
   --border-subtle: #E7E2DB;
+  --marquee-accent: #e60000; /* Red in light mode */
 }
 
 .dark {
@@ -41,6 +42,7 @@
   --secondary: #A5A5A5;
   --accent: #D4B483;
   --border-subtle: #1A1F24;
+  --marquee-accent: #D1FF1C; /* Neon green in dark mode */
 }
 
 /* 1200ms Sunset Transition for Dark Mode Switch */

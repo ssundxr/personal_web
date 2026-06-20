@@ -18,7 +18,7 @@ export default function SignatureMarqueeSection() {
         >
           {[...Array(6)].map((_, i) => (
             <div key={i} className="flex items-center">
-              <h2 className="font-brier text-[#e60000] dark:text-[#D1FF1C] px-4 text-2xl md:text-4xl leading-none tracking-tight uppercase">
+              <h2 className="font-brier px-4 text-2xl md:text-4xl leading-none tracking-tight uppercase" style={{ color: "var(--marquee-accent)" }}>
                 AI ENGINEER
               </h2>
               <span className="text-foreground/30 px-4 text-2xl md:text-4xl">•</span>
