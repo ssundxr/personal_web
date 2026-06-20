@@ -3,6 +3,20 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const stickers = [
+  { id: 1, top: "10%", left: "10%", rotate: -15, delay: 0.1, width: "140px" },
+  { id: 2, top: "15%", right: "15%", rotate: 20, delay: 0.2, width: "120px" },
+  { id: 3, top: "40%", left: "5%", rotate: 10, delay: 0.3, width: "160px" },
+  { id: 4, top: "50%", right: "10%", rotate: -25, delay: 0.4, width: "130px" },
+  { id: 5, bottom: "20%", left: "15%", rotate: 30, delay: 0.5, width: "150px" },
+  { id: 6, bottom: "25%", right: "20%", rotate: -10, delay: 0.6, width: "140px" },
+  { id: 7, top: "5%", left: "40%", rotate: 5, delay: 0.7, width: "110px" },
+  { id: 8, bottom: "10%", right: "40%", rotate: -15, delay: 0.8, width: "135px" },
+  { id: 9, top: "25%", left: "25%", rotate: 45, delay: 0.9, width: "125px" },
+  { id: 10, top: "30%", right: "25%", rotate: -35, delay: 1.0, width: "145px" },
+  { id: 11, bottom: "35%", left: "30%", rotate: 15, delay: 1.1, width: "115px" },
+];
+
 export default function Preloader() {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -26,9 +40,38 @@ export default function Preloader() {
           initial={{ y: 0 }}
           exit={{ y: "-100%" }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#e60000] text-white"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#e60000] text-white overflow-hidden"
         >
-          <div className="relative overflow-hidden px-4 text-center">
+          {/* Scattered Aesthetic Stickers */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            {stickers.map((sticker) => (
+              <motion.img
+                key={sticker.id}
+                src={`/pic${sticker.id}.png`}
+                alt={`Sticker ${sticker.id}`}
+                initial={{ opacity: 0, scale: 0.5, rotate: sticker.rotate - 20 }}
+                animate={{ opacity: 1, scale: 1, rotate: sticker.rotate }}
+                transition={{
+                  delay: sticker.delay,
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 15,
+                }}
+                style={{
+                  position: "absolute",
+                  top: sticker.top,
+                  left: sticker.left,
+                  right: sticker.right,
+                  bottom: sticker.bottom,
+                  width: sticker.width,
+                  height: "auto",
+                }}
+                className="drop-shadow-2xl"
+              />
+            ))}
+          </div>
+
+          <div className="relative z-10 overflow-hidden px-4 text-center mix-blend-difference">
             <motion.h1
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -40,7 +83,7 @@ export default function Preloader() {
           </div>
 
           {/* Aesthetic Minimal Loading Bar */}
-          <div className="absolute bottom-16 md:bottom-24 w-48 md:w-64 h-[2px] bg-white/20 overflow-hidden rounded-full">
+          <div className="absolute bottom-16 md:bottom-24 w-48 md:w-64 h-[2px] bg-white/20 overflow-hidden rounded-full z-10">
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
