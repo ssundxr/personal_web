@@ -17,7 +17,7 @@
 
 @font-face {
   font-family: "Brier";
-  src: url("YOUR_BRIER_BOLD_FONT_URL") format("woff2");
+  src: local("Brier"); /* Replace with url("/fonts/Brier-Bold.woff2") when you have the file */
   font-weight: bold;
   font-style: normal;
   font-display: swap;
