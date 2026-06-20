@@ -77,12 +77,13 @@ export default function Home() {
               key={idx} 
               initial="hidden"
               whileInView="visible"
+              whileHover={{ y: -10 }}
               viewport={{ once: true, margin: "-100px" }}
               variants={fadeUpVariant}
               custom={idx}
               className="group flex flex-col md:flex-row gap-8 md:gap-16 items-start w-full"
             >
-              <div className="w-full md:w-1/2 aspect-[16/9] bg-surface border border-border-subtle relative overflow-hidden transition-colors duration-[1200ms] flex items-center justify-center">
+              <div className="w-full md:w-1/2 aspect-[16/9] bg-surface border border-border-subtle relative overflow-hidden transition-all duration-700 flex items-center justify-center rounded-xl shadow-lg group-hover:shadow-accent/20 group-hover:border-accent/50">
                  {project.isLocked ? (
                    <div className="flex flex-col items-center gap-4 text-secondary opacity-60">
                      <Lock className="w-8 h-8" />
@@ -239,7 +240,7 @@ export default function Home() {
               </>
             );
 
-            const className = "group relative p-10 border border-border-subtle bg-surface hover:border-accent transition-colors duration-500 flex flex-col justify-between aspect-square overflow-hidden cursor-pointer";
+            const className = "group relative p-10 border border-border-subtle bg-surface hover:border-accent/50 transition-all duration-700 flex flex-col justify-between aspect-square overflow-hidden cursor-pointer rounded-xl shadow-lg hover:shadow-accent/20";
 
             return award.link ? (
               <motion.a 
@@ -248,6 +249,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 key={i} 
                 variants={fadeUpVariant}
+                whileHover={{ y: -10 }}
                 className={className}
               >
                 {content}
@@ -256,6 +258,7 @@ export default function Home() {
               <motion.div 
                 key={i} 
                 variants={fadeUpVariant}
+                whileHover={{ y: -10 }}
                 className={className}
               >
                 {content}

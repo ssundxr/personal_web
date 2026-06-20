@@ -119,7 +119,7 @@ export default function HeroSection() {
                   <div className="w-2 h-2 rounded-full bg-[#D1FF1C] animate-pulse" />
                   <span className="font-mono text-xs text-white uppercase tracking-wider">Status</span>
                 </div>
-                <span className="font-mono text-xs text-white/70">Training Models...</span>
+                <span className="font-mono text-xs text-white/90 font-medium">Active Internship</span>
               </motion.div>
             </motion.div>
           )}
