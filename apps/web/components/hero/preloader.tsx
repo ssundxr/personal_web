@@ -28,38 +28,26 @@ export default function Preloader() {
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#e60000] text-white"
         >
-          <div className="relative">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{
-                delay: 0.5,
-                type: "spring",
-                stiffness: 200,
-                damping: 20,
-              }}
-              className="absolute left-1/2 -top-4 md:-top-8 -translate-x-1/2 font-brier text-2xl md:text-4xl"
-            >
-              s
-            </motion.div>
+          <div className="relative overflow-hidden px-4 text-center">
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="font-brier text-6xl tracking-tighter uppercase md:text-8xl lg:text-9xl"
+              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="font-brier text-5xl tracking-tighter uppercase md:text-8xl lg:text-9xl"
             >
-              SHYAM
+              SHYAM SUNDER
             </motion.h1>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="absolute bottom-12 font-oswald text-sm font-bold tracking-widest uppercase md:text-base"
-          >
-            LOAD PORTFOLIO
-          </motion.div>
+          {/* Aesthetic Minimal Loading Bar */}
+          <div className="absolute bottom-16 md:bottom-24 w-48 md:w-64 h-[2px] bg-white/20 overflow-hidden rounded-full">
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: "0%" }}
+              transition={{ duration: 2.5, ease: "easeInOut", delay: 0.4 }}
+              className="w-full h-full bg-white rounded-full"
+            />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

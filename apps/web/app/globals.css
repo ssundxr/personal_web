@@ -29,7 +29,7 @@
   --surface: #FAF9F7;
   --foreground: #111111;
   --secondary: #6B6B6B;
-  --accent: #8C6A4A;
+  --accent: #e60000; /* Bold Preloader Red */
   --border-subtle: #E7E2DB;
 }
 
