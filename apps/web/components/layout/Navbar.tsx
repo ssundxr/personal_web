@@ -26,7 +26,7 @@ export function Navbar() {
 
   return (
     <header className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[70%] max-w-4xl z-50 transition-colors duration-[1200ms]">
-      <div className="relative flex items-center justify-between h-14 px-6 rounded-full bg-[var(--surface)]/70 backdrop-blur-md border border-[var(--border-subtle)] shadow-sm">
+      <div className="relative flex items-center justify-between h-14 px-6 rounded-full bg-transparent">
         
         {/* Profile Orb */}
         <div 
