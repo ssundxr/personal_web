@@ -53,7 +53,7 @@ export default function HeroSection() {
       <div className="relative z-10 container mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-16 pt-24 pb-16">
         
         {/* Left Column: Typography */}
-        <div className="w-full lg:w-1/2 flex flex-col">
+        <div className="w-full lg:w-[55%] flex flex-col">
           {showContent && (
             <div className="flex flex-col gap-6">
               <motion.div
@@ -72,7 +72,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="font-brier text-6xl md:text-8xl lg:text-[8.5rem] text-foreground leading-[0.85] tracking-tighter"
+                className="font-heading text-6xl md:text-8xl lg:text-[9rem] text-foreground leading-[0.85] tracking-tight"
               >
                 SHYAM <br /> SUNDER<span className="text-accent">.</span>
               </motion.h1>
@@ -90,7 +90,7 @@ export default function HeroSection() {
         </div>
 
         {/* Right Column: 3D Portrait Card */}
-        <div className="w-full lg:w-1/2 flex justify-center lg:justify-end" style={{ perspective: 1200 }}>
+        <div className="w-full lg:w-[45%] flex justify-center lg:justify-end" style={{ perspective: 1200 }}>
           {showContent && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
@@ -99,12 +99,12 @@ export default function HeroSection() {
               style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              className="relative w-full max-w-[420px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl cursor-default group border border-white/10"
+              className="relative w-full max-w-[500px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl cursor-default group border border-white/10"
             >
               <img
                 src="/shyam.jpg"
                 alt="Shyam Sunder"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
               />
               
               {/* Glassmorphic Overlay Gradient */}
