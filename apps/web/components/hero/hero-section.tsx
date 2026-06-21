@@ -1,12 +1,11 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
-import { useEffect, useState, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
 import SignatureMarqueeSection from "./signature-marquee-section";
 
 export default function HeroSection() {
   const [showContent, setShowContent] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -15,14 +14,6 @@ export default function HeroSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  
   // 3D Tilt Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -30,8 +21,8 @@ export default function HeroSection() {
   const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15 });
   const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15 });
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -51,152 +42,90 @@ export default function HeroSection() {
   };
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center justify-center transition-colors duration-[1200ms] -mt-24 pt-24" 
-      onMouseMove={handleMouseMove} 
-      onMouseLeave={handleMouseLeave}
-    >
+    <section className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col justify-center pb-32 transition-colors duration-[1200ms] -mt-24">
       
-      {/* Ambient Glow tied to mouse */}
-      <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
-        <motion.div 
-          style={{ x: mouseXSpring, y: mouseYSpring }} 
-          className="w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] rounded-full bg-accent/10 dark:bg-accent/5 blur-[100px] md:blur-[150px] mix-blend-screen opacity-50 transition-opacity duration-1000"
-        />
+      {/* Subtle Ambient Background Glow */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/10 dark:bg-accent/5 blur-[120px] mix-blend-screen opacity-50 transition-opacity duration-1000" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-blue-900/10 dark:bg-blue-900/5 blur-[150px] mix-blend-screen opacity-40 transition-opacity duration-1000" />
       </div>
 
-      {/* Background Solid Typography (z-0) */}
-      <div className="absolute inset-0 w-full flex flex-col items-center justify-center pointer-events-none px-4 z-0 mt-[15vh]">
-        {showContent && (
-          <motion.div 
-            style={{ y: yText }}
-            className="flex flex-col items-center text-foreground"
-          >
-            <div className="overflow-hidden flex justify-center w-full">
-               <motion.span
-                 initial={{ y: "110%", rotate: 2 }}
-                 animate={{ y: "0%", rotate: 0 }}
-                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-                 className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase"
-               >
-                 SHYAM
-               </motion.span>
-            </div>
-            <div className="overflow-hidden flex justify-center w-full mt-[-2vw] md:mt-[-4vw]">
-               <motion.span
-                 initial={{ y: "110%", rotate: 2 }}
-                 animate={{ y: "0%", rotate: 0 }}
-                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                 className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase flex items-baseline"
-               >
-                 SUNDER<span className="text-accent opacity-90 text-[18vw]">.</span>
-               </motion.span>
-            </div>
-          </motion.div>
-        )}
-      </div>
+      <div className="relative z-10 container mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center pt-32 pb-16">
+        
+        {/* Left Column: Clean Typography */}
+        <div className="w-full flex flex-col justify-center order-2 lg:order-1">
+          {showContent && (
+            <div className="flex flex-col gap-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="flex items-center gap-4"
+              >
+                <div className="w-12 h-[2px] bg-accent" />
+                <span className="font-oswald uppercase tracking-widest text-sm text-secondary">
+                  AI-Engineer
+                </span>
+              </motion.div>
+              
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="font-heading text-6xl md:text-8xl lg:text-[7rem] text-foreground leading-[0.9] tracking-tight"
+              >
+                SHYAM <br /> SUNDER<span className="text-accent">.</span>
+              </motion.h1>
 
-      {/* Cinematic Image Pillar (z-10) */}
-      <div className="relative z-10 flex items-center justify-center pointer-events-none pt-12 md:pt-24 pb-32">
-        {showContent && (
-          <motion.div
-            initial={{ scale: 1.1, opacity: 0, filter: "blur(20px)" }}
-            animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            style={{ y: yImage, rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className="relative w-full max-w-[320px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] h-[60vh] md:h-[75vh] rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 dark:border-white/5"
-          >
-            <img 
-              src="/shyam.jpg" 
-              alt="Shyam Sunder" 
-              className="absolute inset-0 w-full h-full object-cover object-[center_top]" 
-            />
-            {/* Inner Vignette / Shadow */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-          </motion.div>
-        )}
-      </div>
-
-      {/* Foreground Outline Typography (z-20) */}
-      <div className="absolute inset-0 w-full flex flex-col items-center justify-center pointer-events-none px-4 z-20 mt-[15vh]">
-        {showContent && (
-          <motion.div 
-            style={{ y: yText, WebkitTextStroke: "2px var(--foreground)", color: "transparent" }}
-            className="flex flex-col items-center"
-          >
-            <div className="overflow-hidden flex justify-center w-full">
-               <motion.span
-                 initial={{ y: "110%", rotate: 2 }}
-                 animate={{ y: "0%", rotate: 0 }}
-                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-                 className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase"
-               >
-                 SHYAM
-               </motion.span>
-            </div>
-            <div className="overflow-hidden flex justify-center w-full mt-[-2vw] md:mt-[-4vw]">
-               <motion.span
-                 initial={{ y: "110%", rotate: 2 }}
-                 animate={{ y: "0%", rotate: 0 }}
-                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                 className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase flex items-baseline"
-               >
-                 SUNDER<span className="text-accent opacity-90 text-[18vw]" style={{ WebkitTextStroke: "0px", color: "var(--accent)" }}>.</span>
-               </motion.span>
-            </div>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Floating Elements (Badges, subtitle) */}
-      <div className="absolute inset-0 z-30 container mx-auto px-6 md:px-12 pointer-events-none flex flex-col justify-between py-32 md:py-40">
-         {/* Top Left Badge */}
-         <div className="self-start md:mt-10">
-           {showContent && (
-             <motion.div
-               initial={{ opacity: 0, x: -20, filter: "blur(10px)" }}
-               animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-               transition={{ duration: 1, delay: 0.8 }}
-               className="flex items-center gap-4 backdrop-blur-md bg-foreground/5 p-3 pr-6 rounded-full border border-foreground/10 pointer-events-auto shadow-xl"
-             >
-               <div className="w-8 h-[2px] bg-accent" />
-               <span className="font-oswald uppercase tracking-widest text-xs md:text-sm text-foreground/90">
-                 AI-Engineer
-               </span>
-             </motion.div>
-           )}
-         </div>
-         
-         {/* Bottom Split (Description and Status) */}
-         <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mt-auto mb-16 md:mb-8 gap-6 md:gap-0">
-            {showContent && (
-              <motion.p 
-                initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 1, delay: 1 }}
-                className="text-foreground/80 max-w-sm text-sm md:text-base pointer-events-auto backdrop-blur-xl bg-background/40 p-6 rounded-2xl border border-foreground/10 shadow-2xl leading-relaxed font-sans"
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="text-lg md:text-xl text-secondary max-w-md leading-relaxed font-sans mt-2"
               >
                 AI & Machine Learning Engineer specializing in generative models, scalable RAG pipelines, and turning complex research into production-grade systems.
               </motion.p>
-            )}
+            </div>
+          )}
+        </div>
 
-            {showContent && (
+        {/* Right Column: 3D Portrait Image (No Overlap) */}
+        <div className="w-full flex justify-center lg:justify-end order-1 lg:order-2" style={{ perspective: 1200 }}>
+          {showContent && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, rotateY: 15 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              className="relative w-full max-w-[400px] md:max-w-[480px] lg:max-w-[500px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl cursor-default group border border-foreground/5 dark:border-white/5 bg-surface"
+            >
+              <img
+                src="/shyam.jpg"
+                alt="Shyam Sunder"
+                className="absolute inset-0 w-full h-full object-cover object-[center_top] transition-transform duration-[1500ms] group-hover:scale-105"
+              />
+              
+              {/* Subtle Inner Vignette for depth */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-80 transition-colors duration-[1200ms]" />
+              
+              {/* Floating Status Badge within the image frame */}
               <motion.div 
-                initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 1, delay: 1.1 }}
-                className="pointer-events-auto backdrop-blur-xl bg-background/40 p-4 rounded-xl border border-foreground/10 shadow-2xl flex items-center gap-4"
+                style={{ transform: "translateZ(60px)" }}
+                className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-background/60 backdrop-blur-md border border-foreground/10 flex flex-row items-center justify-between"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500 dark:bg-[#D1FF1C] animate-pulse shadow-[0_0_10px_rgba(49,255,28,0.5)]" />
-                  <span className="font-mono text-xs text-foreground/70 uppercase tracking-wider">Status</span>
+                  <span className="font-mono text-xs text-foreground/80 uppercase tracking-wider">Status</span>
                 </div>
-                <div className="w-[1px] h-4 bg-foreground/20" />
+                <div className="w-[1px] h-4 bg-foreground/20 hidden sm:block" />
                 <span className="font-mono text-xs text-foreground font-medium">Active Internship</span>
               </motion.div>
-            )}
-         </div>
+            </motion.div>
+          )}
+        </div>
+
       </div>
 
       <div className="absolute bottom-0 w-full z-40">
