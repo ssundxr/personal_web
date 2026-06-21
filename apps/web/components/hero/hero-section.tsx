@@ -66,8 +66,39 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* Cinematic Image Pillar */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none pt-12 md:pt-24 pb-32">
+      {/* Background Solid Typography (z-0) */}
+      <div className="absolute inset-0 w-full flex flex-col items-center justify-center pointer-events-none px-4 z-0 mt-[15vh]">
+        {showContent && (
+          <motion.div 
+            style={{ y: yText }}
+            className="flex flex-col items-center text-foreground"
+          >
+            <div className="overflow-hidden flex justify-center w-full">
+               <motion.span
+                 initial={{ y: "110%", rotate: 2 }}
+                 animate={{ y: "0%", rotate: 0 }}
+                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+                 className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase"
+               >
+                 SHYAM
+               </motion.span>
+            </div>
+            <div className="overflow-hidden flex justify-center w-full mt-[-2vw] md:mt-[-4vw]">
+               <motion.span
+                 initial={{ y: "110%", rotate: 2 }}
+                 animate={{ y: "0%", rotate: 0 }}
+                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+                 className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase flex items-baseline"
+               >
+                 SUNDER<span className="text-accent opacity-90 text-[18vw]">.</span>
+               </motion.span>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Cinematic Image Pillar (z-10) */}
+      <div className="relative z-10 flex items-center justify-center pointer-events-none pt-12 md:pt-24 pb-32">
         {showContent && (
           <motion.div
             initial={{ scale: 1.1, opacity: 0, filter: "blur(20px)" }}
@@ -87,11 +118,11 @@ export default function HeroSection() {
         )}
       </div>
 
-      {/* Massive Blended Typography */}
-      <div className="relative z-20 w-full flex flex-col items-center justify-center pointer-events-none mix-blend-difference text-[#fff] px-4">
+      {/* Foreground Outline Typography (z-20) */}
+      <div className="absolute inset-0 w-full flex flex-col items-center justify-center pointer-events-none px-4 z-20 mt-[15vh]">
         {showContent && (
           <motion.div 
-            style={{ y: yText }}
+            style={{ y: yText, WebkitTextStroke: "2px var(--foreground)", color: "transparent" }}
             className="flex flex-col items-center"
           >
             <div className="overflow-hidden flex justify-center w-full">
@@ -111,7 +142,7 @@ export default function HeroSection() {
                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
                  className="font-heading font-bold text-[18vw] leading-[0.8] tracking-tighter text-center uppercase flex items-baseline"
                >
-                 SUNDER<span className="text-accent mix-blend-normal opacity-90 text-[18vw]">.</span>
+                 SUNDER<span className="text-accent opacity-90 text-[18vw]" style={{ WebkitTextStroke: "0px", color: "var(--accent)" }}>.</span>
                </motion.span>
             </div>
           </motion.div>
