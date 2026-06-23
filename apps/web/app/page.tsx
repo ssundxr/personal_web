@@ -294,19 +294,41 @@ export default function Home() {
               name: "Akhil S", 
               role: "Full Stack Developer", 
               text: "I had the pleasure of working with Shyam Sunder during his AI Engineer Internship at seekATS. Shyam consistently demonstrated strong expertise in AI, Machine Learning, and Python while building impactful solutions that improved recruitment workflows. His ability to combine deep technical knowledge with a research-driven mindset, ownership, and rapid execution set him apart. Shyam is a highly motivated professional with excellent problem-solving skills and a strong work ethic, and I'm confident he will make valuable contributions to any Data Science or AI team.", 
+              imagePath: "/recommendations/akhil.jpg",
+              recommenderLink: "https://www.linkedin.com/in/-akhil-s/",
+              sourceLink: "https://www.linkedin.com/in/sundxrr/"
             },
           ].map((rec, i) => (
             <motion.div 
               key={i} 
               variants={fadeUpVariant}
               whileHover={{ y: -5 }}
-              className="group relative p-10 border border-border-subtle bg-background hover:border-accent/50 transition-all duration-700 flex flex-col justify-between rounded-xl shadow-lg hover:shadow-accent/20"
+              className="group relative p-8 md:p-10 border border-border-subtle bg-background hover:border-accent/50 transition-all duration-700 flex flex-col justify-between rounded-xl shadow-lg hover:shadow-accent/20 overflow-hidden"
             >
-              <div className="absolute w-8 h-8 opacity-10 group-hover:opacity-20 transition-opacity duration-500 top-8 left-8 text-6xl text-accent font-serif">"</div>
-              <p className="text-lg text-secondary leading-relaxed mb-10 relative z-10 pl-4 border-l-2 border-accent/20 group-hover:border-accent/50 transition-colors duration-500 italic">{rec.text}</p>
-              <div className="flex flex-col gap-1 relative z-10">
-                <h3 className="text-xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{rec.name}</h3>
-                <span className="font-mono text-xs text-secondary opacity-80">{rec.role}</span>
+              <div className="absolute opacity-10 group-hover:opacity-20 transition-opacity duration-500 top-4 left-6 text-8xl text-accent font-serif leading-none pointer-events-none">"</div>
+              <a href={rec.sourceLink} target="_blank" rel="noopener noreferrer" className="absolute top-6 right-6 opacity-40 hover:opacity-100 transition-opacity hover:text-accent">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </a>
+              <p className="text-lg text-secondary leading-relaxed mb-10 relative z-10 pt-4 group-hover:text-foreground transition-colors duration-500 italic">"{rec.text}"</p>
+              
+              <div className="flex items-center gap-4 relative z-10 mt-auto pt-6 border-t border-border-subtle/50">
+                <a href={rec.recommenderLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group/author">
+                  {rec.imagePath ? (
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border border-border-subtle shrink-0">
+                      <Image src={rec.imagePath} alt={rec.name} fill className="object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-surface border border-border-subtle flex items-center justify-center text-secondary font-bold shrink-0">
+                      {rec.name.charAt(0)}
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-1">
+                    <h3 className="text-xl font-bold text-foreground tracking-tight group-hover/author:text-accent transition-colors duration-500">{rec.name}</h3>
+                    <span className="font-mono text-xs text-secondary opacity-80">{rec.role}</span>
+                  </div>
+                </a>
               </div>
             </motion.div>
           ))}
