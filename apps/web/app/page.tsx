@@ -268,8 +268,53 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ═══════════ SECTION 05 — LET'S TALK ═══════════ */}
-      <section id="contact" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative flex flex-col justify-center min-h-[60vh] bg-surface text-foreground transition-colors duration-[1200ms] scroll-m-20">
+      {/* ═══════════ SECTION 05 — RECOMMENDATIONS ═══════════ */}
+      <section className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative bg-surface transition-colors duration-[1200ms]">
+        <span className="opacity-[0.02] text-[20vw] absolute right-0 top-10 pointer-events-none font-bold tracking-tighter">05</span>
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeUpVariant}
+          className="flex justify-between items-end mb-16 md:mb-24"
+        >
+          <div className="font-mono text-xs uppercase tracking-widest text-secondary">section.recommendations</div>
+          <h2 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground uppercase">Words</h2>
+        </motion.div>
+
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
+          {[
+            { 
+              name: "Akhil S", 
+              role: "Full Stack Developer", 
+              text: "I had the pleasure of working with Shyam Sunder during his AI Engineer Internship at seekATS. Shyam consistently demonstrated strong expertise in AI, Machine Learning, and Python while building impactful solutions that improved recruitment workflows. His ability to combine deep technical knowledge with a research-driven mindset, ownership, and rapid execution set him apart. Shyam is a highly motivated professional with excellent problem-solving skills and a strong work ethic, and I'm confident he will make valuable contributions to any Data Science or AI team.", 
+            },
+          ].map((rec, i) => (
+            <motion.div 
+              key={i} 
+              variants={fadeUpVariant}
+              whileHover={{ y: -5 }}
+              className="group relative p-10 border border-border-subtle bg-background hover:border-accent/50 transition-all duration-700 flex flex-col justify-between rounded-xl shadow-lg hover:shadow-accent/20"
+            >
+              <div className="absolute w-8 h-8 opacity-10 group-hover:opacity-20 transition-opacity duration-500 top-8 left-8 text-6xl text-accent font-serif">"</div>
+              <p className="text-lg text-secondary leading-relaxed mb-10 relative z-10 pl-4 border-l-2 border-accent/20 group-hover:border-accent/50 transition-colors duration-500 italic">{rec.text}</p>
+              <div className="flex flex-col gap-1 relative z-10">
+                <h3 className="text-xl font-bold text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">{rec.name}</h3>
+                <span className="font-mono text-xs text-secondary opacity-80">{rec.role}</span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* ═══════════ SECTION 06 — LET'S TALK ═══════════ */}
+      <section id="contact" className="w-full px-6 md:px-12 py-32 border-t border-border-subtle relative flex flex-col justify-center min-h-[60vh] bg-background text-foreground transition-colors duration-[1200ms] scroll-m-20">
         <motion.div 
           initial="hidden"
           whileInView="visible"
