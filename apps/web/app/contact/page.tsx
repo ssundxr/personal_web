@@ -5,12 +5,12 @@ import { useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 // ==========================================
-// 🔴 PLACEHOLDERS: REPLACE THESE WITH YOURS
+// 🔴 CONFIGURED FOR: Website Contact Submissions
 // ==========================================
-const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/formResponse";
-const ENTRY_ID_NAME = "entry.123456789";
-const ENTRY_ID_EMAIL = "entry.987654321";
-const ENTRY_ID_MESSAGE = "entry.112233445";
+const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfUlhhdNv6TWkr0ghndRixpd_S-c-ca-fSdzck59Ls2Trj0SQ/formResponse";
+const ENTRY_ID_NAME = "entry.309298557";
+const ENTRY_ID_EMAIL = "entry.1999213503";
+const ENTRY_ID_MESSAGE = "entry.202793601";
 // ==========================================
 
 export default function Contact() {
