@@ -6,6 +6,7 @@ import { ArrowRight, Lock } from "lucide-react";
 import { useRef } from "react";
 import Preloader from "../components/hero/preloader";
 import HeroSection from "../components/hero/hero-section";
+import { ContactForm } from "../components/ui/ContactForm";
 export default function Home() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -359,36 +360,49 @@ export default function Home() {
           Let's Connect<span className="text-accent">.</span>
         </motion.h2>
         
-        <div className="flex flex-col md:flex-row gap-10 sm:gap-12 md:gap-32 w-full">
-          <motion.p 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUpVariant}
-            custom={2}
-            className="text-lg sm:text-xl md:text-3xl max-w-2xl leading-snug font-medium tracking-tight text-secondary"
-          >
-            Always open to interesting conversations about technology, research, and building things that matter.
-          </motion.p>
+        <div className="flex flex-col lg:flex-row gap-10 sm:gap-12 lg:gap-24 w-full">
+          <div className="flex flex-col gap-10 lg:w-1/2">
+            <motion.p 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUpVariant}
+              custom={2}
+              className="text-lg sm:text-xl md:text-3xl max-w-2xl leading-snug font-medium tracking-tight text-secondary"
+            >
+              Always open to interesting conversations about technology, research, and building things that matter.
+            </motion.p>
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="flex flex-col gap-4 font-mono text-base sm:text-lg w-full max-w-md"
+            >
+              <motion.a variants={fadeUpVariant} href="mailto:shyamsundxr@gmail.com" className="group flex items-center justify-between gap-4 sm:gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
+                <span className="group-hover:text-accent transition-colors duration-500 truncate">shyamsundxr@gmail.com</span> 
+                <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500 shrink-0">↗</motion.span>
+              </motion.a>
+              <motion.a variants={fadeUpVariant} href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 sm:gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
+                <span className="group-hover:text-accent transition-colors duration-500">Twitter</span> 
+                <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500 shrink-0">↗</motion.span>
+              </motion.a>
+              <motion.a variants={fadeUpVariant} href="https://linkedin.com/in/sundxrr" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 sm:gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
+                <span className="group-hover:text-accent transition-colors duration-500">LinkedIn</span> 
+                <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500 shrink-0">↗</motion.span>
+              </motion.a>
+            </motion.div>
+          </div>
+          
           <motion.div 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="flex flex-col gap-4 font-mono text-base sm:text-lg md:text-xl w-full max-w-md"
+            variants={fadeUpVariant}
+            custom={3}
+            className="lg:w-1/2"
           >
-            <motion.a variants={fadeUpVariant} href="mailto:shyamsundxr@gmail.com" className="group flex items-center justify-between gap-4 sm:gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
-              <span className="group-hover:text-accent transition-colors duration-500 truncate">shyamsundxr@gmail.com</span> 
-              <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500 shrink-0">↗</motion.span>
-            </motion.a>
-            <motion.a variants={fadeUpVariant} href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 sm:gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
-              <span className="group-hover:text-accent transition-colors duration-500">Twitter</span> 
-              <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500 shrink-0">↗</motion.span>
-            </motion.a>
-            <motion.a variants={fadeUpVariant} href="https://linkedin.com/in/sundxrr" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 sm:gap-8 border-b border-border-subtle pb-4 hover:border-accent transition-colors duration-500 text-foreground">
-              <span className="group-hover:text-accent transition-colors duration-500">LinkedIn</span> 
-              <motion.span whileHover={{ rotate: 45 }} className="group-hover:text-accent transition-colors duration-500 shrink-0">↗</motion.span>
-            </motion.a>
+            <ContactForm />
           </motion.div>
         </div>
       </section>
