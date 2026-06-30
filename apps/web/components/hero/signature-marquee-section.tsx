@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function SignatureMarqueeSection() {
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-20 flex w-full flex-col overflow-hidden pointer-events-none select-none bg-background/50 backdrop-blur-md border-t border-border-subtle py-4">
+    <div className="absolute bottom-0 left-0 right-0 z-20 flex w-full flex-col overflow-hidden pointer-events-none select-none bg-background/50 backdrop-blur-md border-t border-border-subtle py-3 sm:py-4">
       <div className="flex w-full overflow-hidden">
         <motion.div
           animate={{ x: [0, -1000] }}
@@ -14,18 +14,18 @@ export default function SignatureMarqueeSection() {
             duration: 20,
             ease: "linear",
           }}
-          className="flex whitespace-nowrap items-center"
+          className="flex whitespace-nowrap items-center will-change-transform"
         >
           {[...Array(6)].map((_, i) => (
             <div key={i} className="flex items-center">
-              <h2 className="font-brier px-4 text-2xl md:text-4xl leading-none tracking-tight uppercase" style={{ color: "var(--marquee-accent)" }}>
+              <h2 className="font-brier px-3 sm:px-4 text-lg sm:text-2xl md:text-4xl leading-none tracking-tight uppercase" style={{ color: "var(--marquee-accent)" }}>
                 AI ENGINEER
               </h2>
-              <span className="text-foreground/30 px-4 text-2xl md:text-4xl">•</span>
-              <h2 className="font-oswald text-foreground px-4 text-xl md:text-3xl font-bold leading-none tracking-tighter uppercase">
+              <span className="text-foreground/30 px-3 sm:px-4 text-lg sm:text-2xl md:text-4xl">•</span>
+              <h2 className="font-oswald text-foreground px-3 sm:px-4 text-base sm:text-xl md:text-3xl font-bold leading-none tracking-tighter uppercase">
                 UNDERGRAD RESEARCHER
               </h2>
-              <span className="text-foreground/30 px-4 text-2xl md:text-4xl">•</span>
+              <span className="text-foreground/30 px-3 sm:px-4 text-lg sm:text-2xl md:text-4xl">•</span>
             </div>
           ))}
         </motion.div>

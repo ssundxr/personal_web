@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
+  const [isPointerFine, setIsPointerFine] = useState(false);
   
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -13,7 +14,19 @@ export function CustomCursor() {
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
+  // Only activate on devices with a precise pointer (mouse)
   useEffect(() => {
+    const mq = window.matchMedia("(pointer: fine)");
+    setIsPointerFine(mq.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => setIsPointerFine(e.matches);
+    mq.addEventListener("change", handleChange);
+    return () => mq.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (!isPointerFine) return; // Skip all listeners on touch
+
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -41,19 +54,26 @@ export function CustomCursor() {
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", handleMouseOver);
     };
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, isPointerFine]);
 
-  // Optionally hide native cursor
+  // Hide native cursor only on pointer:fine devices
   useEffect(() => {
-    document.body.style.cursor = 'none';
+    if (isPointerFine) {
+      document.body.style.cursor = 'none';
+    } else {
+      document.body.style.cursor = 'auto';
+    }
     return () => {
       document.body.style.cursor = 'auto';
     };
-  }, []);
+  }, [isPointerFine]);
+
+  // Don't render anything on touch devices
+  if (!isPointerFine) return null;
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:block"
+      className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full pointer-events-none z-[9999] mix-blend-difference"
       style={{
         x: cursorXSpring,
         y: cursorYSpring,

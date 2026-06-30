@@ -32,6 +32,12 @@
   --accent: #e60000; /* Bold Preloader Red */
   --border-subtle: #E7E2DB;
   --marquee-accent: #e60000; /* Red in light mode */
+
+  /* Safe-area insets for notched phones */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
 .dark {
@@ -45,11 +51,43 @@
   --marquee-accent: #D1FF1C; /* Neon green in dark mode */
 }
 
-/* 1200ms Sunset Transition for Dark Mode Switch */
+/* ─── Theme-Switch Transition ─── */
+/* Only transition color-related properties for theme toggling.
+   Transform & opacity are excluded to avoid killing framer-motion animations. */
 *, ::before, ::after {
   transition-property: background-color, border-color, color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 1200ms;
+}
+
+/* ─── Mobile Essentials ─── */
+/* Prevent tap highlight flash on iOS/Android */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Use dynamic viewport height (accounts for iOS Safari address bar) */
+.min-h-screen-dvh {
+  min-height: 100dvh;
+}
+
+.h-screen-dvh {
+  height: 100dvh;
+}
+
+/* Touch-action helpers */
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Ambient Background Systems */
@@ -78,4 +116,27 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--secondary);
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    display: none;
+  }
+
+  /* Stabilize layout */
+  html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+  }
+}
+
+/* Body scroll lock utility — used by mobile menu */
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
 }

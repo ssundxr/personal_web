@@ -125,7 +125,7 @@ export function ShareMenu({
       <motion.button
         layout
         onClick={() => setIsOpen(true)}
-        className="fixed top-8 right-8 z-40 bg-[var(--surface)] border border-[var(--border-subtle)] text-[var(--foreground)] px-4 py-3 rounded-full shadow-2xl flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors duration-500 overflow-hidden"
+        className="fixed top-20 right-4 sm:top-8 sm:right-8 z-40 bg-[var(--surface)] border border-[var(--border-subtle)] text-[var(--foreground)] px-4 py-3 rounded-full shadow-2xl flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-colors duration-500 overflow-hidden"
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -159,7 +159,7 @@ export function ShareMenu({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md bg-[var(--surface)] border border-[var(--border-subtle)] p-8 rounded-xl shadow-2xl flex flex-col gap-8"
+              className="relative w-full max-w-[calc(100vw-2rem)] sm:max-w-md bg-[var(--surface)] border border-[var(--border-subtle)] p-5 sm:p-8 rounded-xl shadow-2xl flex flex-col gap-6 sm:gap-8 mx-4 sm:mx-0"
             >
               <button 
                 onClick={() => setIsOpen(false)}
@@ -177,7 +177,7 @@ export function ShareMenu({
                 <button 
                   onClick={() => handleNativeStoryShare('instagram')}
                   disabled={isGenerating || !storyFile}
-                  className="flex flex-col items-center justify-center gap-3 p-6 rounded-lg bg-[#111] hover:bg-[#1a1a1a] border border-[#333] transition-colors disabled:opacity-50"
+                  className="flex flex-col items-center justify-center gap-3 p-4 sm:p-6 min-h-[80px] rounded-lg bg-[#111] hover:bg-[#1a1a1a] border border-[#333] transition-colors disabled:opacity-50"
                 >
                   <Camera className="w-6 h-6 text-pink-500" />
                   <span className="font-mono text-[10px] uppercase tracking-widest text-[#f5f5f5]">

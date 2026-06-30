@@ -50,7 +50,7 @@ export function CommandPalette() {
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh] px-4 backdrop-blur-md bg-[var(--background)]/40 transition-colors duration-[1200ms]">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] sm:pt-[15vh] md:pt-[20vh] px-3 sm:px-4 backdrop-blur-md bg-[var(--background)]/40 transition-colors duration-[1200ms]">
           <motion.div 
             initial={{ opacity: 0, scale: 0.98, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -124,7 +124,7 @@ export function CommandPalette() {
               </Command.List>
               
               <div className="border-t border-[var(--border-subtle)] px-4 py-3 flex items-center justify-between text-[11px] font-mono text-[var(--secondary)]">
-                <div className="flex items-center gap-4">
+                <div className="hidden sm:flex items-center gap-4">
                   <span className="flex items-center gap-1">
                     <kbd className="bg-[var(--background)] px-1.5 py-0.5 rounded border border-[var(--border-subtle)]">↑</kbd>
                     <kbd className="bg-[var(--background)] px-1.5 py-0.5 rounded border border-[var(--border-subtle)]">↓</kbd>
