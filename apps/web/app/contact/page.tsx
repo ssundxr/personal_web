@@ -1,8 +1,23 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
+
+// ==========================================
+// 🔴 PLACEHOLDERS: REPLACE THESE WITH YOURS
+// ==========================================
+const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/formResponse";
+const ENTRY_ID_NAME = "entry.123456789";
+const ENTRY_ID_EMAIL = "entry.987654321";
+const ENTRY_ID_MESSAGE = "entry.112233445";
+// ==========================================
 
 export default function Contact() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 30 },
     visible: (custom: number) => ({
@@ -12,8 +27,36 @@ export default function Contact() {
     })
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const submitData = new FormData();
+    submitData.append(ENTRY_ID_NAME, formData.name);
+    submitData.append(ENTRY_ID_EMAIL, formData.email);
+    submitData.append(ENTRY_ID_MESSAGE, formData.message);
+
+    try {
+      // Using no-cors because Google Forms doesn't allow cross-origin requests
+      // This means we won't get a proper JSON response back, but the submission WILL work.
+      await fetch(GOOGLE_FORM_ACTION_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: submitData,
+      });
+      
+      setIsSuccess(true);
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Form submission failed", error);
+      alert("Failed to send message. Please try emailing me directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="w-full max-w-3xl mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-24">
+    <div className="w-full max-w-3xl mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-24 overflow-hidden">
       <motion.h1 
         initial="hidden" animate="visible" variants={fadeUpVariant} custom={0}
         className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4 sm:mb-6"
@@ -22,49 +65,112 @@ export default function Contact() {
       </motion.h1>
       <motion.p 
         initial="hidden" animate="visible" variants={fadeUpVariant} custom={1}
-        className="text-lg sm:text-xl text-secondary mb-8 sm:mb-12"
+        className="text-lg sm:text-xl text-secondary mb-8 sm:mb-12 max-w-2xl"
       >
         I am always open to discussing research collaborations, design systems, and software engineering opportunities.
       </motion.p>
 
-      <motion.form 
-        initial="hidden" animate="visible" variants={fadeUpVariant} custom={2}
-        className="flex flex-col gap-5 sm:gap-6"
-      >
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium text-foreground">Name</label>
-          <input 
-            type="text" 
-            id="name" 
-            className="px-4 py-3 min-h-[48px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-foreground placeholder:text-secondary"
-            placeholder="Jane Doe"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-sm font-medium text-foreground">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            className="px-4 py-3 min-h-[48px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-foreground placeholder:text-secondary"
-            placeholder="jane@example.com"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="message" className="text-sm font-medium text-foreground">Message</label>
-          <textarea 
-            id="message" 
-            rows={5}
-            className="px-4 py-3 min-h-[120px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all resize-none text-foreground placeholder:text-secondary"
-            placeholder="How can I help you?"
-          />
-        </div>
-        <button 
-          type="button" 
-          className="mt-2 sm:mt-4 px-8 py-4 min-h-[48px] bg-accent text-white font-medium rounded-xl hover:bg-accent/90 active:scale-[0.98] transition-all"
-        >
-          Send Message
-        </button>
-      </motion.form>
+      <div className="relative">
+        <AnimatePresence mode="wait">
+          {!isSuccess ? (
+            <motion.form 
+              key="form"
+              onSubmit={handleSubmit}
+              initial="hidden" 
+              animate="visible" 
+              exit={{ opacity: 0, y: -20, transition: { duration: 0.5 } }}
+              variants={fadeUpVariant} 
+              custom={2}
+              className="flex flex-col gap-5 sm:gap-6"
+            >
+              <div className="flex flex-col gap-2">
+                <label htmlFor="name" className="text-sm font-medium text-foreground">Name</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="px-4 py-3 min-h-[48px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-foreground placeholder:text-secondary disabled:opacity-50"
+                  placeholder="Jane Doe"
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email" className="text-sm font-medium text-foreground">Email</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  className="px-4 py-3 min-h-[48px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-foreground placeholder:text-secondary disabled:opacity-50"
+                  placeholder="jane@example.com"
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="message" className="text-sm font-medium text-foreground">Message</label>
+                <textarea 
+                  id="message" 
+                  required
+                  rows={5}
+                  value={formData.message}
+                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                  className="px-4 py-3 min-h-[120px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all resize-none text-foreground placeholder:text-secondary disabled:opacity-50"
+                  placeholder="How can I help you?"
+                  disabled={isSubmitting}
+                />
+              </div>
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="mt-2 sm:mt-4 px-8 py-4 min-h-[48px] bg-foreground text-background font-medium rounded-xl hover:bg-foreground/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-3 overflow-hidden relative group"
+              >
+                {isSubmitting ? (
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />
+                    <span>Transmitting...</span>
+                  </motion.div>
+                ) : (
+                  <>
+                    <span className="relative z-10 font-mono uppercase tracking-widest text-sm">Send Transmission</span>
+                    <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </motion.form>
+          ) : (
+            <motion.div 
+              key="success"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+              className="flex flex-col items-center justify-center py-16 sm:py-24 text-center px-4 bg-surface border border-border-subtle rounded-2xl"
+            >
+              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-6">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
+                Message Received
+              </h3>
+              <p className="text-secondary max-w-sm mb-8">
+                Thank you for reaching out. I'll review your transmission and get back to you shortly.
+              </p>
+              <button 
+                onClick={() => setIsSuccess(false)}
+                className="font-mono text-sm uppercase tracking-widest text-secondary hover:text-foreground transition-colors"
+              >
+                Send another message →
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
