@@ -57,11 +57,11 @@ function StatusPill({ match }: { match: Match }) {
 //  FLAG BADGE
 // ═══════════════════════════════════════════════════
 
-function FlagBadge({ code }: { code: string }) {
+function FlagBadge({ code, flagUrl }: { code: string; flagUrl?: string }) {
   if (code === "TBD") {
     return (
       <div
-        className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 border border-[var(--border-subtle)] bg-[var(--surface)]"
+        className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 border border-dashed border-[var(--border-subtle)] bg-[var(--surface)]"
         aria-hidden="true"
       >
         <svg
@@ -86,10 +86,14 @@ function FlagBadge({ code }: { code: string }) {
       className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 border border-[var(--border-subtle)] bg-[var(--surface)] overflow-hidden relative"
       aria-hidden="true"
     >
-      {/* Real flags could go here using `code`. For now, we use a sleek placeholder */}
-      <span className="text-[9px] font-mono font-bold text-[var(--secondary)] uppercase select-none">
-        {code.slice(0, 3)}
-      </span>
+      {flagUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={flagUrl} alt={code} className="w-full h-full object-cover" />
+      ) : (
+        <span className="text-[9px] font-mono font-bold text-[var(--secondary)] uppercase select-none">
+          {code.slice(0, 3)}
+        </span>
+      )}
     </div>
   );
 }
@@ -109,7 +113,7 @@ function TeamRow({ team, isFinished }: { team: Match["teamA"]; isFinished: boole
       }`}
     >
       <div className="flex items-center gap-3 min-w-0">
-        <FlagBadge code={team.flagCode} />
+        <FlagBadge code={team.flagCode} flagUrl={team.flagUrl} />
         <span
           className={`text-[14px] truncate transition-colors ${
             isDimmed
@@ -150,15 +154,21 @@ function TeamRow({ team, isFinished }: { team: Match["teamA"]; isFinished: boole
 //  MATCH CARD
 // ═══════════════════════════════════════════════════
 
-function MatchCard({ match }: { match: Match }) {
+function MatchCard({ match, onClick }: { match: Match; onClick?: () => void }) {
   const isFinished = match.status === "finished_ft" || match.status === "finished_pens";
   const relativeLabel = getRelativeLabel(match.kickoffUTC);
   const dateDisplay = relativeLabel ?? formatKickoffIST(match.kickoffUTC);
 
   return (
-    <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border-subtle)] shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden w-full h-full">
+    <div 
+      onClick={onClick}
+      className="group relative bg-[var(--surface)] rounded-2xl border border-[var(--border-subtle)] shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden w-full h-full cursor-pointer z-10"
+    >
+      {/* Dynamic Hover Glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10 bg-[radial-gradient(circle_at_50%_120%,rgba(200,160,100,0.15),transparent_70%)]" />
+
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]/50 bg-[var(--background)]/50">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]/50 bg-[var(--background)]/50 relative z-10">
         <div className="flex flex-col min-w-0">
           <span className="text-[11px] font-mono font-semibold text-[var(--secondary)] uppercase tracking-wider truncate">
             {dateDisplay}
@@ -216,7 +226,7 @@ function BracketPreloader({ onComplete }: { onComplete: () => void }) {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-      className="absolute inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--background)]"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--background)]"
     >
       <div className="relative flex flex-col items-center">
         {/* Logo Container */}
@@ -255,16 +265,111 @@ function BracketPreloader({ onComplete }: { onComplete: () => void }) {
 }
 
 // ═══════════════════════════════════════════════════
+//  MATCH DETAILS SLIDE-OVER
+// ═══════════════════════════════════════════════════
+
+function MatchDetailsSlideOver({ match, onClose }: { match: Match; onClose: () => void }) {
+  // Prevent body scroll when open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'auto'; };
+  }, []);
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]"
+      />
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        className="fixed top-0 right-0 bottom-0 w-full sm:w-[480px] bg-[var(--surface)] shadow-2xl z-[10001] border-l border-[var(--border-subtle)] flex flex-col overflow-y-auto"
+      >
+        <div className="p-6 border-b border-[var(--border-subtle)] flex items-center justify-between sticky top-0 bg-[var(--surface)]/90 backdrop-blur-md z-10">
+          <h2 className="font-mono text-sm uppercase tracking-widest text-[var(--secondary)]">Match Details</h2>
+          <button onClick={onClose} className="p-2 hover:bg-[var(--background)] rounded-full transition-colors">
+            ✕
+          </button>
+        </div>
+        
+        <div className="p-6 flex flex-col gap-8">
+          {/* Hero Matchup */}
+          <div className="flex items-center justify-between py-6 px-4 bg-[var(--background)] rounded-2xl border border-[var(--border-subtle)] relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.05),transparent_70%)]" />
+            <div className="flex flex-col items-center gap-3 z-10 w-1/3">
+              <div className="w-16 h-12 bg-[var(--surface)] rounded shadow-sm border border-[var(--border-subtle)] flex items-center justify-center overflow-hidden">
+                {match.teamA.flagUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={match.teamA.flagUrl} alt={match.teamA.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xs text-[var(--secondary)] font-bold">{match.teamA.flagCode}</span>
+                )}
+              </div>
+              <span className="font-sans font-semibold text-center text-sm">{match.teamA.name}</span>
+            </div>
+            
+            <div className="flex flex-col items-center z-10 w-1/3">
+              <span className="font-mono text-3xl font-bold">{match.teamA.score ?? "-"} : {match.teamB.score ?? "-"}</span>
+              {match.status === "scheduled" && <span className="text-[10px] uppercase tracking-wider text-[var(--accent)] mt-2">VS</span>}
+            </div>
+
+            <div className="flex flex-col items-center gap-3 z-10 w-1/3">
+              <div className="w-16 h-12 bg-[var(--surface)] rounded shadow-sm border border-[var(--border-subtle)] flex items-center justify-center overflow-hidden">
+                {match.teamB.flagUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={match.teamB.flagUrl} alt={match.teamB.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xs text-[var(--secondary)] font-bold">{match.teamB.flagCode}</span>
+                )}
+              </div>
+              <span className="font-sans font-semibold text-center text-sm">{match.teamB.name}</span>
+            </div>
+          </div>
+
+          {/* Info Cards */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-[var(--background)] p-4 rounded-xl border border-[var(--border-subtle)]">
+              <p className="text-[10px] uppercase tracking-wider text-[var(--secondary)] mb-1">Stadium</p>
+              <p className="font-sans text-sm font-medium">{match.venue}</p>
+            </div>
+            <div className="bg-[var(--background)] p-4 rounded-xl border border-[var(--border-subtle)]">
+              <p className="text-[10px] uppercase tracking-wider text-[var(--secondary)] mb-1">Date & Time</p>
+              <p className="font-sans text-sm font-medium">{formatKickoffIST(match.kickoffUTC)}</p>
+            </div>
+          </div>
+
+          {/* Mock Lineups / Live Event Feed placeholder */}
+          <div className="flex flex-col gap-3">
+            <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--secondary)] border-b border-[var(--border-subtle)] pb-2">Live Match Feed</h3>
+            <div className="flex items-center gap-4 text-sm text-[var(--foreground)] opacity-70 italic py-8 justify-center">
+              Awaiting official API live events...
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
+// ═══════════════════════════════════════════════════
 //  MAIN EXPORT — BRACKET PAGE
 // ═══════════════════════════════════════════════════
 
 export default function BracketPage() {
   const [matches, setMatches] = useState<Match[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [secondsAgo, setSecondsAgo] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeRound, setActiveRound] = useState<RoundId>("R32");
   const [showPreloader, setShowPreloader] = useState(true);
+  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -335,6 +440,23 @@ export default function BracketPage() {
         transition={{ duration: 0.8, delay: 0.2 }}
         className="flex flex-col h-full w-full"
       >
+        {/* News Ticker */}
+        <div className="w-full bg-[var(--accent)] text-black overflow-hidden border-b border-[var(--border-subtle)] flex items-center py-1.5 shrink-0">
+          <div className="w-20 shrink-0 bg-[var(--accent)] text-black font-mono text-[10px] sm:text-xs font-bold px-4 z-10 flex items-center">
+            LIVE 
+            <span className="w-2 h-2 rounded-full bg-red-600 ml-2 animate-pulse" />
+          </div>
+          <div className="flex-1 overflow-hidden relative flex whitespace-nowrap">
+            <motion.div 
+              animate={{ x: ["100%", "-100%"] }}
+              transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+              className="font-mono text-[10px] sm:text-xs uppercase tracking-wider"
+            >
+              API STREAM CONNECTED — FETCHING REAL-TIME 2026 WORLD CUP METADATA — POWERED BY FOOTBALL-DATA.ORG
+            </motion.div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--border-subtle)] shrink-0 bg-[var(--surface)] z-10 sticky top-0">
         <div className="flex items-center gap-4 sm:gap-6">
@@ -427,8 +549,15 @@ export default function BracketPage() {
               transition={{ duration: 0.2 }}
               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6"
             >
-              {activeMatches.map((match) => (
-                <MatchCard key={match.id} match={match} />
+              {activeMatches.map((match, i) => (
+                <motion.div
+                  key={match.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <MatchCard match={match} onClick={() => setSelectedMatch(match)} />
+                </motion.div>
               ))}
               {activeMatches.length === 0 && (
                 <div className="col-span-full py-12 flex flex-col items-center justify-center text-[var(--secondary)]">
@@ -461,6 +590,16 @@ export default function BracketPage() {
         )}
       </div>
       </motion.div>
+
+      {/* Slide Over Panel */}
+      <AnimatePresence>
+        {selectedMatch && (
+          <MatchDetailsSlideOver 
+            match={selectedMatch} 
+            onClose={() => setSelectedMatch(null)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

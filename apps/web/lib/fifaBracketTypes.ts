@@ -11,6 +11,7 @@ export type MatchStatus =
 export interface Team {
   name: string;
   flagCode: string; // 3-letter ISO code (e.g. "CAN", "MAR")
+  flagUrl?: string; // URL to the team's flag image
   score?: number;
   penaltyScore?: number;
   winner?: boolean;
