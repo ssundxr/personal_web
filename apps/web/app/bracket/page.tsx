@@ -285,16 +285,16 @@ function MatchDetailsSlideOver({ match, onClose }: { match: Match; onClose: () =
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]"
       />
       <motion.div
-        initial={{ x: "100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "100%" }}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed top-0 right-0 bottom-0 w-full sm:w-[480px] bg-[var(--surface)] shadow-2xl z-[10001] border-l border-[var(--border-subtle)] flex flex-col overflow-y-auto"
+        className="fixed inset-x-0 bottom-0 h-[85vh] rounded-t-3xl sm:inset-y-0 sm:right-0 sm:bottom-0 sm:left-auto sm:w-[480px] sm:h-full sm:rounded-none bg-[var(--surface)] shadow-2xl z-[10001] border-t sm:border-t-0 sm:border-l border-[var(--border-subtle)] flex flex-col overflow-y-auto"
       >
         <div className="p-6 border-b border-[var(--border-subtle)] flex items-center justify-between sticky top-0 bg-[var(--surface)]/90 backdrop-blur-md z-10">
           <h2 className="font-mono text-sm uppercase tracking-widest text-[var(--secondary)]">Match Details</h2>
-          <button onClick={onClose} className="p-2 hover:bg-[var(--background)] rounded-full transition-colors">
-            ✕
+          <button onClick={onClose} className="p-2 bg-[var(--background)] border border-[var(--border-subtle)] hover:bg-[var(--border-subtle)]/50 rounded-full transition-colors flex items-center justify-center w-8 h-8 text-[var(--foreground)]">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         </div>
         

@@ -416,15 +416,8 @@ export default function Home() {
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[var(--surface)]/90 backdrop-blur-xl border border-[var(--border-subtle)] shadow-lg hover:shadow-xl transition-shadow group"
             aria-label="Open FIFA World Cup 2026 Bracket"
           >
-            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 flex items-center justify-center shrink-0">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-              </svg>
+            <div className="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border-subtle)] flex items-center justify-center shrink-0 overflow-hidden">
+              <img src="/WC.jpeg" alt="World Cup" className="w-full h-full object-cover" />
             </div>
             <span className="text-[13px] font-semibold text-[var(--foreground)] tracking-tight hidden sm:inline">
               World Cup Bracket
