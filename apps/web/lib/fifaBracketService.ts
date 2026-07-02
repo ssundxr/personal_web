@@ -1,7 +1,7 @@
 // ─── FIFA World Cup 2026 — Bracket Data Service ───
 // PLACEHOLDER DATA — replace via fetchBracketData() with a real live API before production.
 
-import type { Match, Team } from "./fifaBracketTypes";
+import type { Match, Team, RoundId } from "./fifaBracketTypes";
 
 // ─── IST Formatter ───
 // Converts an ISO 8601 UTC timestamp to a human-readable IST string.
