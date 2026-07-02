@@ -8,30 +8,20 @@
   --color-accent: var(--accent);
   --color-border-subtle: var(--border-subtle);
 
-  --font-heading: var(--font-cormorant), serif;
+  --font-heading: var(--font-space-grotesk), sans-serif;
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
-  --font-brier: "Brier", sans-serif;
-  --font-oswald: var(--font-oswald);
-}
-
-@font-face {
-  font-family: "Brier";
-  src: local("Brier"); /* Replace with url("/fonts/Brier-Bold.woff2") when you have the file */
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
 }
 
 :root {
-  /* Light Mode - Luxury Digital Journal */
-  --background: #F5F3EE;
-  --surface: #FAF9F7;
-  --foreground: #111111;
-  --secondary: #6B6B6B;
-  --accent: #e60000; /* Bold Preloader Red */
-  --border-subtle: #E7E2DB;
-  --marquee-accent: #e60000; /* Red in light mode */
+  /* Light Mode — Clean, Premium minimal UI */
+  --background: #FAFAFA;
+  --surface: #FFFFFF;
+  --foreground: #111827;
+  --secondary: #6B7280;
+  --accent: #0F172A;
+  --border-subtle: #F3F4F6;
+  --marquee-accent: #0F172A;
 
   /* Safe-area insets for notched phones */
   --safe-area-top: env(safe-area-inset-top, 0px);
@@ -41,14 +31,14 @@
 }
 
 .dark {
-  /* Dark Mode - Museum Exhibition at Night / Cinematic */
-  --background: #0B0D0F;
-  --surface: #12161A;
-  --foreground: #F5F5F5;
-  --secondary: #A5A5A5;
-  --accent: #D4B483;
-  --border-subtle: #1A1F24;
-  --marquee-accent: #D1FF1C; /* Neon green in dark mode */
+  /* Dark Mode — Deep premium FAANG-grade */
+  --background: #0A0A0A;
+  --surface: #171717;
+  --foreground: #F9FAFB;
+  --secondary: #9CA3AF;
+  --accent: #F9FAFB;
+  --border-subtle: #27272A;
+  --marquee-accent: #F9FAFB;
 }
 
 /* ─── Theme-Switch Transition ─── */
@@ -130,6 +120,10 @@
     scrollbar-gutter: stable;
     overflow-y: scroll;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Body scroll lock utility — used by mobile menu */

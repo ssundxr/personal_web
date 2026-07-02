@@ -1,20 +1,13 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Lock } from "lucide-react";
-import { useRef } from "react";
 import Preloader from "../components/hero/preloader";
 import HeroSection from "../components/hero/hero-section";
 import { ContactForm } from "../components/ui/ContactForm";
-export default function Home() {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-  const portraitY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
+export default function Home() {
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 40 },
     visible: (custom: number) => ({
@@ -408,6 +401,41 @@ export default function Home() {
       </section>
 
     </div>
+
+      {/* ═══════════ FIFA WORLD CUP 2026 BRACKET LINK ═══════════ */}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.9 }}
+          transition={{ delay: 4.2, type: "spring", stiffness: 300, damping: 25 }}
+          className="fixed bottom-6 right-6 z-[60]"
+        >
+          <Link
+            href="/bracket"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[var(--surface)]/90 backdrop-blur-xl border border-[var(--border-subtle)] shadow-lg hover:shadow-xl transition-shadow group"
+            aria-label="Open FIFA World Cup 2026 Bracket"
+          >
+            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 flex items-center justify-center shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+            </div>
+            <span className="text-[13px] font-semibold text-[var(--foreground)] tracking-tight hidden sm:inline">
+              World Cup Bracket
+            </span>
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-widest bg-red-500/10 text-red-500 border border-red-500/20">
+              <span className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
+              Live
+            </span>
+          </Link>
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }

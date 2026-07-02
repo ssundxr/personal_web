@@ -77,7 +77,7 @@ export function ContactForm() {
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className="px-4 py-3 min-h-[48px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-foreground placeholder:text-secondary disabled:opacity-50"
-                  placeholder="Jane Doe"
+                  placeholder="android messi"
                   disabled={isSubmitting}
                 />
               </div>
@@ -90,7 +90,7 @@ export function ContactForm() {
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   className="px-4 py-3 min-h-[48px] bg-surface border border-border-subtle rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-foreground placeholder:text-secondary disabled:opacity-50"
-                  placeholder="jane@example.com"
+                  placeholder="cristianoronaldo@gmail.com"
                   disabled={isSubmitting}
                 />
               </div>

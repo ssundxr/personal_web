@@ -7,9 +7,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 
 const links: { name: string, path: string }[] = [
+  { name: "Home", path: "/#hero" },
   { name: "Projects", path: "/#projects" },
   { name: "Experience", path: "/#experience" },
   { name: "Gallery", path: "/gallery" },
+  { name: "Bracket", path: "/bracket" },
   { name: "Contact", path: "/#contact" },
 ];
 

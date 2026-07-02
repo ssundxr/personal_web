@@ -49,7 +49,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-[100dvh] w-full bg-background overflow-hidden flex flex-col justify-center pb-20 md:pb-32 transition-colors duration-[1200ms] -mt-24">
+    <section id="hero" className="relative min-h-[100dvh] w-full bg-background overflow-hidden flex flex-col justify-center pb-20 md:pb-32 transition-colors duration-[1200ms] -mt-24">
       
       {/* Subtle Ambient Background Glow — reduced blur on mobile for GPU perf */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -60,9 +60,9 @@ export default function HeroSection() {
       <div className="relative z-10 container mx-auto px-5 sm:px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-center pt-28 sm:pt-32 pb-16">
         
         {/* Left Column: Clean Typography */}
-        <div className="w-full flex flex-col justify-center order-2 lg:order-1">
+        <div className="w-full flex flex-col items-start justify-center text-left order-2 lg:order-1">
           {showContent && (
-            <div className="flex flex-col gap-6 sm:gap-8">
+            <div className="flex flex-col items-start gap-6 sm:gap-8 w-full">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -70,7 +70,7 @@ export default function HeroSection() {
                 className="flex items-center gap-3 sm:gap-4"
               >
                 <div className="w-8 sm:w-12 h-[2px] bg-accent" />
-                <span className="font-oswald uppercase tracking-widest text-xs sm:text-sm text-secondary">
+                <span className="font-sans uppercase tracking-widest text-xs sm:text-sm text-secondary font-medium">
                   AI-Engineer
                 </span>
               </motion.div>

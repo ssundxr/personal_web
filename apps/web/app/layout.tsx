@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cormorant_Garamond, JetBrains_Mono, Oswald } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import { CommandPalette } from "../components/CommandPalette";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { SmoothScroller } from "../components/layout/SmoothScroller";
-import { CustomCursor } from "../components/ui/CustomCursor";
 
 
 const inter = Inter({ 
@@ -14,10 +13,10 @@ const inter = Inter({
   variable: "--font-inter" 
 });
 
-const cormorant = Cormorant_Garamond({
+const spaceGrotesk = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-cormorant",
+  variable: "--font-space-grotesk",
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -26,20 +25,14 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-const oswald = Oswald({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-oswald",
-});
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F5F3EE" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B0D0F" },
+    { media: "(prefers-color-scheme: light)", color: "#FAFAF9" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090B" },
   ],
 };
 
@@ -56,17 +49,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body 
-        className={`${inter.variable} ${cormorant.variable} ${jetbrainsMono.variable} ${oswald.variable} font-sans bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen flex flex-col transition-colors duration-[1200ms]`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen flex flex-col transition-colors duration-[1200ms]`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange={false}
-          storageKey="portfolio-theme-v2"
+          storageKey="portfolio-theme-v3"
         >
           <SmoothScroller>
-            <CustomCursor />
             {/* Ambient background container managed via global css matching the theme */}
             <div className="fixed inset-0 pointer-events-none -z-10 dark:ambient-dark ambient-light" />
             

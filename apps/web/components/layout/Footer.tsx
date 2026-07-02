@@ -23,8 +23,9 @@ export function Footer() {
           
           <div className="flex flex-col gap-4 sm:gap-6">
             <span className="font-mono text-xs sm:text-sm uppercase tracking-widest text-secondary mb-2 sm:mb-4 border-b border-border-subtle pb-3 sm:pb-4 transition-colors duration-[1200ms]">Index</span>
-            <Link href="/" className="font-mono text-base sm:text-lg md:text-xl lg:text-2xl text-foreground hover:text-accent transition-colors duration-500">Home</Link>
+            <Link href="/#hero" className="font-mono text-base sm:text-lg md:text-xl lg:text-2xl text-foreground hover:text-accent transition-colors duration-500">Home</Link>
             <Link href="/gallery" className="font-mono text-base sm:text-lg md:text-xl lg:text-2xl text-foreground hover:text-accent transition-colors duration-500">Gallery</Link>
+            <Link href="/bracket" className="font-mono text-base sm:text-lg md:text-xl lg:text-2xl text-foreground hover:text-accent transition-colors duration-500">Bracket</Link>
           </div>
 
           <div className="flex flex-col gap-4 sm:gap-6">

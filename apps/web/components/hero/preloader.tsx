@@ -1,103 +1,110 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence, animate, useMotionValue } from "framer-motion";
 
-// Stickers: fewer & smaller on mobile, full set on desktop
-const allStickers = [
-  { id: 1, top: "10%", left: "10%", rotate: -15, delay: 0.1, width: "140px", mobileWidth: "80px" },
-  { id: 2, top: "15%", right: "15%", rotate: 20, delay: 0.2, width: "120px", mobileWidth: "70px" },
-  { id: 3, top: "40%", left: "5%", rotate: 10, delay: 0.3, width: "160px", mobileWidth: "90px" },
-  { id: 4, top: "50%", right: "10%", rotate: -25, delay: 0.4, width: "130px", mobileWidth: "75px" },
-  { id: 5, bottom: "20%", left: "15%", rotate: 30, delay: 0.5, width: "150px", mobileWidth: "85px" },
-  { id: 6, bottom: "25%", right: "20%", rotate: -10, delay: 0.6, width: "140px", mobileWidth: "80px" },
-  { id: 7, top: "5%", left: "40%", rotate: 5, delay: 0.7, width: "110px", mobileHidden: true },
-  { id: 8, bottom: "5%", right: "10%", rotate: -15, delay: 0.8, width: "135px", mobileHidden: true },
-  { id: 9, top: "25%", left: "25%", rotate: 45, delay: 0.9, width: "125px", mobileHidden: true },
-  { id: 10, top: "30%", right: "25%", rotate: -35, delay: 1.0, width: "145px", mobileHidden: true },
-  { id: 11, bottom: "10%", left: "5%", rotate: 15, delay: 1.1, width: "115px", mobileHidden: true },
-];
+const SoccerBall = () => (
+  <motion.svg
+    animate={{ rotate: 360 }}
+    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+    width="48"
+    height="48"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="text-foreground"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 7.5l3.5 2.5-1.5 4h-4L8.5 10z" />
+    <path d="M12 7.5V2" />
+    <path d="M15.5 10l4.5-1.5" />
+    <path d="M8.5 10L4 8.5" />
+    <path d="M14 14l2.5 5.5" />
+    <path d="M10 14L7.5 19.5" />
+  </motion.svg>
+);
 
 export default function Preloader() {
   const [isVisible, setIsVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const count = useMotionValue(0);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 640);
     document.body.style.overflow = "hidden";
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      document.body.style.overflow = "";
-    }, 3500);
+
+    const controls = animate(0, 100, {
+      duration: 2.8,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (latest) => {
+        count.set(latest);
+        if (counterRef.current) {
+          counterRef.current.textContent = Math.round(latest).toString();
+        }
+      },
+      onComplete: () => {
+        setTimeout(() => {
+          setIsVisible(false);
+          document.body.style.overflow = "";
+        }, 300);
+      },
+    });
 
     return () => {
+      controls.stop();
       document.body.style.overflow = "";
-      clearTimeout(timer);
     };
-  }, []);
-
-  const stickers = isMobile 
-    ? allStickers.filter(s => !s.mobileHidden) 
-    : allStickers;
+  }, [count]);
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ y: 0 }}
-          exit={{ y: "-100%" }}
+          key="preloader"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#e60000] text-[#EBE9E1] overflow-hidden"
+          className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-background"
         >
-          {/* Scattered Aesthetic Stickers */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            {stickers.map((sticker) => (
-              <motion.img
-                key={sticker.id}
-                src={`/pic${sticker.id}.png`}
-                alt={`Sticker ${sticker.id}`}
-                initial={{ opacity: 0, scale: 0.5, rotate: sticker.rotate - 20 }}
-                animate={{ opacity: 1, scale: 1, rotate: sticker.rotate }}
-                transition={{
-                  delay: sticker.delay,
-                  type: "spring",
-                  stiffness: 150,
-                  damping: 15,
-                }}
-                style={{
-                  position: "absolute",
-                  top: sticker.top,
-                  left: sticker.left,
-                  right: sticker.right,
-                  bottom: sticker.bottom,
-                  width: isMobile ? (sticker.mobileWidth || sticker.width) : sticker.width,
-                  height: "auto",
-                }}
-                className="drop-shadow-2xl"
-              />
-            ))}
-          </div>
-
-          <div className="relative z-10 overflow-hidden px-4 text-center">
+          <motion.div
+            exit={{ y: -40, opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            className="flex flex-col items-center z-10 gap-8"
+          >
+            
+            <SoccerBall />
+            
+            {/* Name */}
             <motion.h1
-              initial={{ opacity: 0, y: 100 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="font-brier text-4xl sm:text-5xl tracking-tighter uppercase md:text-8xl lg:text-9xl"
+              transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="font-heading text-2xl sm:text-3xl md:text-4xl tracking-tight font-medium text-foreground uppercase"
             >
-              SHYAM SUNDER
+              Shyam Sunder
             </motion.h1>
-          </div>
 
-          {/* Aesthetic Minimal Loading Bar */}
-          <div className="absolute bottom-12 sm:bottom-16 md:bottom-24 w-36 sm:w-48 md:w-64 h-[2px] bg-white/20 overflow-hidden rounded-full z-10">
+            {/* Counter */}
             <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: "0%" }}
-              transition={{ duration: 2.5, ease: "easeInOut", delay: 0.4 }}
-              className="w-full h-full bg-white rounded-full"
-            />
-          </div>
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex items-baseline gap-1 bg-surface px-4 py-2 rounded-full border border-border-subtle"
+            >
+              <span
+                ref={counterRef}
+                className="font-mono text-sm tracking-widest tabular-nums text-foreground"
+              >
+                0
+              </span>
+              <span className="font-mono text-xs text-secondary">
+                %
+              </span>
+            </motion.div>
+          </motion.div>
+
         </motion.div>
       )}
     </AnimatePresence>
