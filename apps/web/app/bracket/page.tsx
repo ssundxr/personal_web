@@ -344,6 +344,19 @@ function MatchDetailsSlideOver({ match, onClose }: { match: Match; onClose: () =
             </div>
           </div>
 
+          {/* Watch Match Link (Final Only) */}
+          {match.round === "F" && (
+            <div className="flex flex-col gap-3">
+              <Link 
+                href="/watch" 
+                className="w-full py-4 rounded-xl flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-mono font-bold uppercase tracking-widest transition-colors shadow-[0_0_20px_rgba(220,38,38,0.4)]"
+              >
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                Watch Live Stream
+              </Link>
+            </div>
+          )}
+
           {/* Mock Lineups / Live Event Feed placeholder */}
           <div className="flex flex-col gap-3">
             <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--secondary)] border-b border-[var(--border-subtle)] pb-2">Live Match Feed</h3>

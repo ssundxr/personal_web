@@ -60,6 +60,13 @@ export const deskStructure = (S: StructureBuilder) =>
                     .schemaType('atlasSettings')
                     .documentId('atlasSettings')
                 ),
+              S.listItem()
+                .title('Live Stream Settings')
+                .child(
+                  S.document()
+                    .schemaType('liveStreamConfig')
+                    .documentId('liveStreamConfig')
+                ),
             ])
         ),
     ])

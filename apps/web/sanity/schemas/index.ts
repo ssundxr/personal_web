@@ -2,6 +2,7 @@ import siteSettings from './singletons/siteSettings'
 import themeSettings from './singletons/themeSettings'
 import atlasSettings from './singletons/atlasSettings'
 import portfolio from './singletons/portfolio'
+import liveStreamConfig from './singletons/liveStreamConfig'
 
 import project from './documents/project'
 import journal from './documents/journal'
@@ -32,6 +33,7 @@ export const schemaTypes = [
   themeSettings,
   atlasSettings,
   portfolio,
+  liveStreamConfig,
   
   project,
   journal,

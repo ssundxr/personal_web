@@ -1,0 +1,214 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { ChevronLeft, Lock, Tv, Code } from "lucide-react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShakaPlayer } from "../../components/ui/ShakaPlayer";
+
+export default function WatchPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [playerMode, setPlayerMode] = useState<"embedded" | "shaka">("embedded");
+
+  const [config, setConfig] = useState<any>(null);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === "FifA@)@^") {
+      setIsAuthenticated(true);
+      setError(false);
+    } else {
+      setError(true);
+      setPassword("");
+    }
+  };
+
+  // Fetch dynamic stream config from Sanity once authenticated
+
+  
+  useEffect(() => {
+    if (isAuthenticated && !config) {
+      setIsLoadingConfig(true);
+      const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+      const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+      const query = encodeURIComponent('*[_type == "liveStreamConfig"][0]');
+      
+      if (!projectId) {
+        setIsLoadingConfig(false);
+        return;
+      }
+
+      fetch(`https://${projectId}.api.sanity.io/v2023-05-03/data/query/${dataset}?query=${query}`)
+        .then(res => res.json())
+        .then(async data => {
+          const rawIframeUrl = data?.result?.iframeUrl || "https://krxplor.github.io/mpd/mpd1.html";
+          const shakaStreamUrl = data?.result?.shakaStreamUrl || "https://qp-pldt-live-bpk-ucd-prod.akamaized.net/bpk-tv/fifa_ppv1/default/index.mpd";
+          const shakaKeyId = data?.result?.shakaKeyId || "2c338a117d434ce4bbe3569231af90f1";
+          const shakaKeyVal = data?.result?.shakaKeyVal || "a9633d901ee8a3f4f58ac314b5c5f4fb";
+
+          // Pass the raw URL through our auto-extractor API to strip away Blogspot junk
+          try {
+            const parserRes = await fetch(`/api/parse-stream?url=${encodeURIComponent(rawIframeUrl)}`);
+            const parserData = await parserRes.json();
+            const finalIframeUrl = parserData.cleanUrl || rawIframeUrl;
+            
+            setConfig({
+              iframeUrl: finalIframeUrl,
+              shakaStreamUrl,
+              shakaKeyId,
+              shakaKeyVal
+            });
+          } catch (e) {
+            console.error("Auto-extractor failed, using raw URL", e);
+            setConfig({
+              iframeUrl: rawIframeUrl,
+              shakaStreamUrl,
+              shakaKeyId,
+              shakaKeyVal
+            });
+          }
+        })
+        .catch(err => console.error("Error fetching stream config:", err))
+        .finally(() => setIsLoadingConfig(false));
+    }
+  }, [isAuthenticated, config]);
+
+  return (
+    <div className="min-h-screen bg-[var(--background)] flex flex-col pt-24 px-4 sm:px-8 pb-12 items-center">
+      
+      {/* Header */}
+      <div className="w-full max-w-5xl mb-8 flex items-center justify-between">
+        <Link 
+          href="/bracket" 
+          className="w-10 h-10 rounded-xl bg-[var(--surface)] border border-[var(--border-subtle)] flex items-center justify-center hover:bg-[var(--border-subtle)]/50 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5 text-[var(--foreground)]" />
+        </Link>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+          <h1 className="font-mono text-sm uppercase tracking-widest text-[var(--secondary)]">Live Broadcast</h1>
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {!isAuthenticated ? (
+          <motion.div 
+            key="login"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="w-full max-w-md mt-16"
+          >
+            <div className="bg-[var(--surface)] p-8 rounded-3xl border border-[var(--border-subtle)] shadow-2xl flex flex-col items-center">
+              <div className="w-16 h-16 rounded-2xl bg-[var(--background)] border border-[var(--border-subtle)] flex items-center justify-center mb-6">
+                <Lock className="w-6 h-6 text-[var(--secondary)]" />
+              </div>
+              <h2 className="font-heading text-2xl font-bold mb-2">Restricted Access</h2>
+              <p className="text-[var(--secondary)] text-sm text-center mb-8">
+                This stream is encrypted. Please enter the client access password to continue.
+              </p>
+
+              <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
+                <div>
+                  <input 
+                    type="password"
+                    placeholder="Enter password..."
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={`w-full bg-[var(--background)] border ${error ? 'border-red-500' : 'border-[var(--border-subtle)]'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors`}
+                  />
+                  {error && <span className="text-red-500 text-xs mt-2 block pl-1">Incorrect password.</span>}
+                </div>
+                <button 
+                  type="submit"
+                  className="w-full bg-[var(--foreground)] text-[var(--background)] rounded-xl py-3 text-sm font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+                >
+                  Unlock Stream
+                </button>
+              </form>
+            </div>
+          </motion.div>
+        ) : isLoadingConfig || !config ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-full max-w-5xl flex items-center justify-center py-20"
+          >
+            <span className="font-mono text-[var(--secondary)] uppercase tracking-widest animate-pulse text-sm">
+              Connecting to broadcast relay...
+            </span>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="player"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-5xl flex flex-col gap-6"
+          >
+            {/* Player Toggle Controls */}
+            <div className="flex items-center justify-between p-2 bg-[var(--surface)] rounded-xl border border-[var(--border-subtle)]">
+              <button
+                onClick={() => setPlayerMode("embedded")}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-mono tracking-widest uppercase transition-colors ${playerMode === "embedded" ? "bg-[var(--background)] shadow-sm text-[var(--foreground)] border border-[var(--border-subtle)]" : "text-[var(--secondary)] hover:text-[var(--foreground)]"}`}
+              >
+                <Tv className="w-4 h-4" />
+                UI Mask Mode
+              </button>
+              <button
+                onClick={() => setPlayerMode("shaka")}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-mono tracking-widest uppercase transition-colors ${playerMode === "shaka" ? "bg-[var(--background)] shadow-sm text-[var(--foreground)] border border-[var(--border-subtle)]" : "text-[var(--secondary)] hover:text-[var(--foreground)]"}`}
+              >
+                <Code className="w-4 h-4" />
+                Native DRM Mode
+              </button>
+            </div>
+
+            {/* Players */}
+            <div className="w-full">
+              {playerMode === "embedded" ? (
+                <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-[var(--border-subtle)]">
+                  {/* Iframe */}
+                  <iframe 
+                    src={config.iframeUrl} 
+                    allow="encrypted-media; autoplay; fullscreen"
+                    className="w-full h-full pointer-events-none"
+                    scrolling="no"
+                  />
+                  {/* Mask for Follow Us Button */}
+                  <div className="absolute top-0 left-0 w-[150px] h-[60px] bg-black z-20 pointer-events-none" />
+                  {/* Mask for Watermark */}
+                  <div 
+                    className="absolute bottom-[55px] left-1/2 -translate-x-1/2 w-[250px] h-[50px] z-20 pointer-events-none"
+                    style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)" }}
+                  />
+                  {/* Click layer to allow play/pause but block underlying button clicks */}
+                  <div className="absolute inset-0 z-10 cursor-pointer" />
+                </div>
+              ) : (
+                <ShakaPlayer 
+                  streamUrl={config.shakaStreamUrl}
+                  keyId={config.shakaKeyId}
+                  keyVal={config.shakaKeyVal}
+                />
+              )}
+            </div>
+            
+            <div className="bg-[var(--surface)] p-4 rounded-xl border border-[var(--border-subtle)] flex gap-4 text-xs font-mono text-[var(--secondary)]">
+              <span className="uppercase text-[var(--accent)]">System Notice:</span>
+              <p>
+                {playerMode === "embedded" 
+                  ? "Currently using iframe UI masking to bypass CORS restrictions. Video controls are restricted." 
+                  : "Currently decrypting the DASH stream directly using Shaka Player. If playback fails, switch back to Mask Mode."}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Player with UI Masking</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* Disable pointer events on the iframe so users can't accidentally click the hidden buttons */
+            pointer-events: none; 
+        }
+
+        /* Re-enable pointer events for the middle of the screen so play/pause still works */
+        .click-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+        }
+
+        /* 
+           Mask 1: Covers the "Follow Us" WhatsApp button 
+           It is located at top: 10px, left: 10px in their CSS
+        */
+        .mask-top-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            height: 60px;
+            background: #000; /* Match player background */
+            z-index: 20;
+        }
+
+        /* 
+           Mask 2: Covers the "Team Goat" watermark
+           It is located at bottom: 70px, left: 50% in their CSS
+        */
+        .mask-watermark {
+            position: absolute;
+            bottom: 55px; /* Adjust based on their CSS */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 50px;
+            background: #000;
+            z-index: 20;
+            /* Use a gradient to blend it into the video if the background isn't purely black */
+            background: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="video-wrapper">
+        <iframe 
+            src="https://krxplor.github.io/mpd/mpd1.html" 
+            allow="encrypted-media; autoplay"
+            scrolling="no">
+        </iframe>
+        
+        <!-- Physical masks to hide the external UI elements -->
+        <div class="mask-top-left"></div>
+        <div class="mask-watermark"></div>
+
+        <!-- Invisible layer to allow clicking to pause/play while preventing clicks on the actual hidden buttons -->
+        <div class="click-layer" onclick="togglePlay()"></div>
+    </div>
+
+    <script>
+        // Note: We can't actually trigger play/pause on the cross-origin iframe.
+        // We are just letting the autoplay handle the stream, and masking the UI.
+    </script>
+</body>
+</html>

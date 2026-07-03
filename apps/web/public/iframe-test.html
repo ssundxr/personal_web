@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Embed Test</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 90vw;
+            max-width: 1200px;
+            /* 16:9 Aspect Ratio */
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        iframe.loaded {
+            opacity: 1;
+        }
+
+        .loading-state, .error-state {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-state {
+            display: none;
+            background-color: #1e293b;
+            color: #ef4444;
+            z-index: 15; /* Above iframe if error occurs */
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .error-state p {
+            color: #f8fafc;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .error-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Loading State -->
+        <div class="loading-state" id="loading">
+            <div class="spinner"></div>
+            <p>Loading iframe...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state" id="error">
+            <div class="error-icon">⚠️</div>
+            <p>This website does not allow embedding.</p>
+            <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 0.5rem;">
+                (Blocked by X-Frame-Options or Content-Security-Policy)
+            </p>
+        </div>
+
+        <!-- Iframe -->
+        <iframe 
+            id="test-iframe"
+            src="https://mpd26wc55.blogspot.com/p/match02.html?m=1"
+            allowfullscreen
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('test-iframe');
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        
+        let isLoaded = false;
+
+        // Note: Browsers do NOT fire the 'onerror' event for iframes when blocked by X-Frame-Options or CSP.
+        // They fire 'onload' instead, but render an error page inside the iframe.
+        // Because of the Same-Origin Policy, we cannot inspect the iframe's content to see if it's an error page.
+        // This script uses a heuristic/timeout approach to guess if it failed, 
+        // though native client-side detection of X-Frame-Options is restricted by browser security.
+
+        iframe.onload = () => {
+            console.log("[Iframe] Load event fired.");
+            isLoaded = true;
+            loadingEl.style.display = 'none';
+            iframe.classList.add('loaded');
+
+            // Attempt to check if we can access the iframe's location.
+            // If the iframe loaded the external URL successfully, accessing contentWindow.location.href 
+            // will throw a DOMException (Cross-Origin). 
+            // If it was blocked, some browsers might keep the location as 'about:blank' or throw differently.
+            try {
+                const href = iframe.contentWindow.location.href;
+                console.log("[Iframe] Accessible URL:", href);
+                // If we can read it and it's not the target, it might be blocked.
+            } catch (e) {
+                console.log("[Iframe] Cross-origin protections active (expected for successful third-party embeds).");
+            }
+        };
+
+        iframe.onerror = (err) => {
+            console.error("[Iframe] Error event fired:", err);
+            showError();
+        };
+
+        function showError() {
+            loadingEl.style.display = 'none';
+            iframe.style.display = 'none';
+            errorEl.style.display = 'flex';
+        }
+
+        // Fallback timeout to assume failure if nothing happens
+        setTimeout(() => {
+            if (!isLoaded) {
+                console.warn("[Iframe] Load timeout reached. The embed might be blocked or the network is slow.");
+                showError();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
