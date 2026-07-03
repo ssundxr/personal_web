@@ -6,6 +6,7 @@ import { Footer } from "../components/layout/Footer";
 import { CommandPalette } from "../components/CommandPalette";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { SmoothScroller } from "../components/layout/SmoothScroller";
+import { CR7Modal } from "../components/ui/CR7Modal";
 
 
 const inter = Inter({ 
@@ -63,6 +64,7 @@ export default function RootLayout({
             <div className="fixed inset-0 pointer-events-none -z-10 dark:ambient-dark ambient-light" />
             
             <CommandPalette />
+            <CR7Modal />
             <Navbar />
             <main className="flex-1 pt-24 z-0">
               {children}
