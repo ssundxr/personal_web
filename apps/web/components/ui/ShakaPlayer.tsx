@@ -17,7 +17,7 @@ export function ShakaPlayer({ streamUrl, keyId, keyVal }: { streamUrl: string, k
   useEffect(() => {
     // Load Shaka Player scripts dynamically
     const loadShaka = async () => {
-      if (window.shaka) {
+      if ((window as any).shaka) {
         setIsLoaded(true);
         return;
       }
@@ -40,9 +40,9 @@ export function ShakaPlayer({ streamUrl, keyId, keyVal }: { streamUrl: string, k
   }, []);
 
   useEffect(() => {
-    if (!isLoaded || !window.shaka || !videoRef.current || !containerRef.current) return;
+    if (!isLoaded || !(window as any).shaka || !videoRef.current || !containerRef.current) return;
 
-    const shaka = window.shaka;
+    const shaka = (window as any).shaka;
     shaka.polyfill.installAll();
 
     if (!shaka.Player.isBrowserSupported()) {
