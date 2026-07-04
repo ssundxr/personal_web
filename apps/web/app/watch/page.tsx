@@ -1,24 +1,38 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, Lock, Tv, Code } from "lucide-react";
+import { ChevronLeft, Lock, Tv, Code, User, Users } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShakaPlayer } from "../../components/ui/ShakaPlayer";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+type Step = 'password' | 'name' | 'pending' | 'granted' | 'rejected';
 
 export default function WatchPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [step, setStep] = useState<Step>('password');
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState(false);
+  const [requestId, setRequestId] = useState<string | null>(null);
+  
+  const [viewerCount, setViewerCount] = useState(0);
   const [playerMode, setPlayerMode] = useState<"embedded" | "shaka">("embedded");
 
   const [config, setConfig] = useState<any>(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle password submission
+  const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === "FifA@)@^") {
-      setIsAuthenticated(true);
+      setStep('name');
       setError(false);
     } else {
       setError(true);
@@ -26,11 +40,93 @@ export default function WatchPage() {
     }
   };
 
-  // Fetch dynamic stream config from Sanity once authenticated
+  // Handle name submission
+  const handleNameSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) {
+      setError(true);
+      return;
+    }
+    setError(false);
+    
+    // Insert request into Supabase
+    const { data, error: insertError } = await supabase
+      .from('stream_access_requests')
+      .insert([{ name: name.trim(), status: 'pending' }])
+      .select()
+      .single();
 
-  
+    if (insertError) {
+      console.error("Failed to request access", insertError);
+      setError(true);
+      return;
+    }
+
+    if (data) {
+      setRequestId(data.id);
+      setStep('pending');
+    }
+  };
+
+  // Subscribe to approval status if in pending state
   useEffect(() => {
-    if (isAuthenticated && !config) {
+    if (step === 'pending' && requestId) {
+      const channel = supabase
+        .channel(`request_${requestId}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'stream_access_requests', filter: `id=eq.${requestId}` },
+          (payload) => {
+            const newStatus = payload.new.status;
+            if (newStatus === 'approved') {
+              setStep('granted');
+            } else if (newStatus === 'rejected') {
+              setStep('rejected');
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [step, requestId]);
+
+  // Handle Presence for Viewer Count once granted
+  useEffect(() => {
+    if (step === 'granted') {
+      const room = supabase.channel('watch_room');
+      
+      room
+        .on('presence', { event: 'sync' }, () => {
+          const state = room.presenceState();
+          // Count total unique connections in the room
+          let count = 0;
+          for (const key in state) {
+            count += state[key].length;
+          }
+          setViewerCount(count);
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            await room.track({ 
+              user: name || 'Anonymous', 
+              online_at: new Date().toISOString() 
+            });
+          }
+        });
+
+      return () => {
+        room.untrack();
+        supabase.removeChannel(room);
+      };
+    }
+  }, [step, name]);
+
+  // Fetch dynamic stream config from Sanity once granted
+  useEffect(() => {
+    if (step === 'granted' && !config) {
       setIsLoadingConfig(true);
       const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
       const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
@@ -74,7 +170,7 @@ export default function WatchPage() {
         .catch(err => console.error("Error fetching stream config:", err))
         .finally(() => setIsLoadingConfig(false));
     }
-  }, [isAuthenticated, config]);
+  }, [step, config]);
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex flex-col pt-24 px-4 sm:px-8 pb-12 items-center">
@@ -87,14 +183,23 @@ export default function WatchPage() {
         >
           <ChevronLeft className="w-5 h-5 text-[var(--foreground)]" />
         </Link>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-          <h1 className="font-mono text-sm uppercase tracking-widest text-[var(--secondary)]">Live Broadcast</h1>
+        
+        <div className="flex items-center gap-4">
+          {step === 'granted' && (
+            <div className="flex items-center gap-2 bg-[var(--surface)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-full">
+              <Users className="w-4 h-4 text-[var(--secondary)]" />
+              <span className="font-mono text-xs font-bold">{viewerCount}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+            <h1 className="font-mono text-sm uppercase tracking-widest text-[var(--secondary)]">Live Broadcast</h1>
+          </div>
         </div>
       </div>
 
       <AnimatePresence mode="wait">
-        {!isAuthenticated ? (
+        {step === 'password' && (
           <motion.div 
             key="login"
             initial={{ opacity: 0, y: 20 }}
@@ -111,7 +216,7 @@ export default function WatchPage() {
                 This stream is encrypted. Please enter the client access password to continue.
               </p>
 
-              <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
+              <form onSubmit={handlePasswordSubmit} className="w-full flex flex-col gap-4">
                 <div>
                   <input 
                     type="password"
@@ -126,14 +231,95 @@ export default function WatchPage() {
                   type="submit"
                   className="w-full bg-[var(--foreground)] text-[var(--background)] rounded-xl py-3 text-sm font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
                 >
-                  Unlock Stream
+                  Verify Access
                 </button>
               </form>
             </div>
           </motion.div>
-        ) : isLoadingConfig || !config ? (
+        )}
+
+        {step === 'name' && (
+          <motion.div 
+            key="name"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="w-full max-w-md mt-16"
+          >
+            <div className="bg-[var(--surface)] p-8 rounded-3xl border border-[var(--border-subtle)] shadow-2xl flex flex-col items-center">
+              <div className="w-16 h-16 rounded-2xl bg-[var(--background)] border border-[var(--border-subtle)] flex items-center justify-center mb-6">
+                <User className="w-6 h-6 text-[var(--secondary)]" />
+              </div>
+              <h2 className="font-heading text-2xl font-bold mb-2">Identify Yourself</h2>
+              <p className="text-[var(--secondary)] text-sm text-center mb-8">
+                Please provide your name to request access to the broadcast. The administrator must approve your request.
+              </p>
+
+              <form onSubmit={handleNameSubmit} className="w-full flex flex-col gap-4">
+                <div>
+                  <input 
+                    type="text"
+                    placeholder="Enter your name..."
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={`w-full bg-[var(--background)] border ${error ? 'border-red-500' : 'border-[var(--border-subtle)]'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors`}
+                  />
+                  {error && <span className="text-red-500 text-xs mt-2 block pl-1">Please enter a valid name or check your connection.</span>}
+                </div>
+                <button 
+                  type="submit"
+                  className="w-full bg-[var(--foreground)] text-[var(--background)] rounded-xl py-3 text-sm font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+                >
+                  Send Request
+                </button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 'pending' && (
           <motion.div
-            key="loading"
+            key="pending"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-full max-w-md mt-16"
+          >
+            <div className="bg-[var(--surface)] p-8 rounded-3xl border border-[var(--border-subtle)] shadow-2xl flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-2xl bg-[var(--background)] border border-[var(--border-subtle)] flex items-center justify-center mb-6 relative overflow-hidden">
+                <div className="absolute inset-0 border-t-2 border-[var(--foreground)] rounded-2xl animate-spin opacity-50" />
+                <Lock className="w-6 h-6 text-[var(--secondary)]" />
+              </div>
+              <h2 className="font-heading text-2xl font-bold mb-2">Request Pending</h2>
+              <p className="text-[var(--secondary)] text-sm mb-4">
+                Waiting for the administrator to approve your access request.
+              </p>
+              <span className="font-mono text-xs uppercase tracking-widest text-[var(--accent)] animate-pulse">
+                Do not close this page...
+              </span>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 'rejected' && (
+          <motion.div
+            key="rejected"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md mt-16"
+          >
+            <div className="bg-[var(--surface)] p-8 rounded-3xl border border-red-500/30 shadow-2xl flex flex-col items-center text-center">
+              <h2 className="font-heading text-2xl font-bold mb-2 text-red-500">Access Denied</h2>
+              <p className="text-[var(--secondary)] text-sm">
+                Your request to view the broadcast has been rejected by the administrator.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 'granted' && (isLoadingConfig || !config) && (
+          <motion.div
+            key="loading-config"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -143,7 +329,9 @@ export default function WatchPage() {
               Connecting to broadcast relay...
             </span>
           </motion.div>
-        ) : (
+        )}
+
+        {step === 'granted' && config && (
           <motion.div
             key="player"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -198,8 +386,8 @@ export default function WatchPage() {
               )}
             </div>
             
-            <div className="bg-[var(--surface)] p-4 rounded-xl border border-[var(--border-subtle)] flex gap-4 text-xs font-mono text-[var(--secondary)]">
-              <span className="uppercase text-[var(--accent)]">System Notice:</span>
+            <div className="bg-[var(--surface)] p-4 rounded-xl border border-[var(--border-subtle)] flex flex-col sm:flex-row gap-4 text-xs font-mono text-[var(--secondary)]">
+              <span className="uppercase text-[var(--accent)] shrink-0">System Notice:</span>
               <p>
                 {playerMode === "embedded" 
                   ? "Currently using iframe UI masking to bypass CORS restrictions. Video controls are restricted." 
@@ -212,3 +400,4 @@ export default function WatchPage() {
     </div>
   );
 }
+
