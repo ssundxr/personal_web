@@ -104,7 +104,7 @@ export default function WatchPage() {
           // Count total unique connections in the room
           let count = 0;
           for (const key in state) {
-            count += state[key].length;
+            count += state[key]?.length || 0;
           }
           setViewerCount(count);
         })

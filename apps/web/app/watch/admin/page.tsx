@@ -73,7 +73,7 @@ export default function AdminPage() {
         const state = room.presenceState();
         let count = 0;
         for (const key in state) {
-          count += state[key].length;
+          count += state[key]?.length || 0;
         }
         setViewerCount(count);
       }).subscribe();
