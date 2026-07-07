@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,8 +7,16 @@ import { ArrowRight, Lock } from "lucide-react";
 import Preloader from "../components/hero/preloader";
 import HeroSection from "../components/hero/hero-section";
 import { ContactForm } from "../components/ui/ContactForm";
+import TributeExperience from "../components/tribute/TributeExperience";
 
 export default function Home() {
+  const [showTribute, setShowTribute] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const hasSeen = localStorage.getItem("cr7TributeSeen");
+    setShowTribute(hasSeen !== "true");
+  }, []);
+
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 40 },
     visible: (custom: number) => ({
@@ -26,6 +35,14 @@ export default function Home() {
       }
     }
   };
+
+  if (showTribute === null) {
+    return null;
+  }
+
+  if (showTribute) {
+    return <TributeExperience onComplete={() => setShowTribute(false)} />;
+  }
 
   return (
     <>
@@ -402,15 +419,33 @@ export default function Home() {
 
     </div>
 
-      {/* ═══════════ FIFA WORLD CUP 2026 BRACKET LINK ═══════════ */}
+      {/* ═══════════ FLOATING ACTION BUTTONS ═══════════ */}
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
           transition={{ delay: 4.2, type: "spring", stiffness: 300, damping: 25 }}
-          className="fixed bottom-6 right-6 z-[60]"
+          className="fixed bottom-6 right-6 z-[60] flex flex-col gap-3 items-end"
         >
+          {/* CR7 Tribute Replay Button */}
+          <button
+            onClick={() => {
+              window.scrollTo(0, 0);
+              setShowTribute(true);
+            }}
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-black/90 backdrop-blur-xl border border-[#D4AF37]/30 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all group hover:scale-105 active:scale-95 cursor-pointer"
+            aria-label="Replay CR7 Tribute"
+          >
+            <div className="w-8 h-8 rounded-full bg-black border border-[#D4AF37]/50 flex items-center justify-center shrink-0 overflow-hidden text-[#D4AF37] font-serif italic text-sm font-bold">
+              CR7
+            </div>
+            <span className="text-[13px] font-semibold text-[#D4AF37] tracking-widest uppercase hidden sm:inline group-hover:text-white transition-colors">
+              Experience Tribute
+            </span>
+          </button>
+
+          {/* World Cup Bracket */}
           <Link
             href="/bracket"
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[var(--surface)]/90 backdrop-blur-xl border border-[var(--border-subtle)] shadow-lg hover:shadow-xl transition-shadow group"

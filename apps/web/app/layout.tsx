@@ -6,7 +6,6 @@ import { Footer } from "../components/layout/Footer";
 import { CommandPalette } from "../components/CommandPalette";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { SmoothScroller } from "../components/layout/SmoothScroller";
-import { CR7Modal } from "../components/ui/CR7Modal";
 
 
 const inter = Inter({ 
@@ -38,7 +37,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Sunder — Builder, Researcher, Explorer",
+  title: "sunder!",
   description: "A luxury interactive autobiography where travel, AI projects, photography, reflections, personal growth, and current affairs are woven together into a living digital archive.",
 };
 
@@ -64,12 +63,15 @@ export default function RootLayout({
             <div className="fixed inset-0 pointer-events-none -z-10 dark:ambient-dark ambient-light" />
             
             <CommandPalette />
-            <CR7Modal />
-            <Navbar />
+            <div className="tribute-hide-element">
+              <Navbar />
+            </div>
             <main className="flex-1 pt-24 z-0">
               {children}
             </main>
-            <Footer />
+            <div className="tribute-hide-element">
+              <Footer />
+            </div>
           </SmoothScroller>
         </ThemeProvider>
       </body>

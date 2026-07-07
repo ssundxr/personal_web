@@ -134,3 +134,14 @@ body.menu-open {
   top: 0;
   left: 0;
 }
+
+/* ─── CR7 Tribute Experience ─── */
+body.tribute-active {
+  background-color: #fff !important;
+}
+body.tribute-active .tribute-hide-element {
+  display: none !important;
+}
+body.tribute-active main {
+  padding-top: 0 !important;
+}
