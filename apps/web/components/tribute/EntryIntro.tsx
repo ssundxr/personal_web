@@ -8,7 +8,7 @@ export default function EntryIntro({ onStart }: { onStart: () => void }) {
     visible: (custom: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: custom * 0.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] },
+      transition: { delay: custom * 0.2, duration: 1.2, ease: "easeOut" },
     }),
   };
 
