@@ -19,7 +19,7 @@ export default function WatchPage() {
   const [step, setStep] = useState<Step>('password');
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
   
   const [viewerCount, setViewerCount] = useState(0);
@@ -33,9 +33,9 @@ export default function WatchPage() {
     e.preventDefault();
     if (password === "FifA@)@^") {
       setStep('name');
-      setError(false);
+      setError(null);
     } else {
-      setError(true);
+      setError("Incorrect password.");
       setPassword("");
     }
   };
@@ -44,10 +44,10 @@ export default function WatchPage() {
   const handleNameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError(true);
+      setError("Please enter a valid name.");
       return;
     }
-    setError(false);
+    setError(null);
     
     // Insert request into Supabase
     const { data, error: insertError } = await supabase
@@ -58,7 +58,7 @@ export default function WatchPage() {
 
     if (insertError) {
       console.error("Failed to request access", insertError);
-      setError(true);
+      setError(insertError.message || "Failed to connect to the server.");
       return;
     }
 
@@ -217,15 +217,17 @@ export default function WatchPage() {
               </p>
 
               <form onSubmit={handlePasswordSubmit} className="w-full flex flex-col gap-4">
-                <div>
                   <input 
                     type="password"
                     placeholder="Enter password..."
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError(null);
+                    }}
                     className={`w-full bg-[var(--background)] border ${error ? 'border-red-500' : 'border-[var(--border-subtle)]'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors`}
                   />
-                  {error && <span className="text-red-500 text-xs mt-2 block pl-1">Incorrect password.</span>}
+                  {error && <span className="text-red-500 text-xs mt-2 block pl-1">{error}</span>}
                 </div>
                 <button 
                   type="submit"
@@ -261,10 +263,13 @@ export default function WatchPage() {
                     type="text"
                     placeholder="Enter your name..."
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      setError(null);
+                    }}
                     className={`w-full bg-[var(--background)] border ${error ? 'border-red-500' : 'border-[var(--border-subtle)]'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors`}
                   />
-                  {error && <span className="text-red-500 text-xs mt-2 block pl-1">Please enter a valid name or check your connection.</span>}
+                  {error && <span className="text-red-500 text-xs mt-2 block pl-1">{error}</span>}
                 </div>
                 <button 
                   type="submit"
