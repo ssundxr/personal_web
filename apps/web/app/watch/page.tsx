@@ -217,6 +217,7 @@ export default function WatchPage() {
               </p>
 
               <form onSubmit={handlePasswordSubmit} className="w-full flex flex-col gap-4">
+                <div>
                   <input 
                     type="password"
                     placeholder="Enter password..."
