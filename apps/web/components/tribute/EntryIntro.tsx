@@ -2,7 +2,7 @@
 
 import { motion, Variants } from "framer-motion";
 
-export default function EntryIntro({ onStart }: { onStart: () => void }) {
+export default function EntryIntro({ onStart, onSkip }: { onStart: () => void; onSkip?: () => void }) {
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: (custom: number) => ({
@@ -84,18 +84,33 @@ export default function EntryIntro({ onStart }: { onStart: () => void }) {
           <p className="text-[#D4AF37] italic font-serif text-2xl drop-shadow-lg">Obrigado.</p>
         </motion.div>
 
-        <motion.button
+        <motion.div
           custom={4}
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          onClick={onStart}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="px-10 py-4 text-sm tracking-[0.2em] uppercase border border-white/30 rounded-full text-white backdrop-blur-md transition-all hover:border-white hover:bg-white hover:text-black shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+          className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-4"
         >
-          Enter Tribute
-        </motion.button>
+          <motion.button
+            onClick={onStart}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-10 py-4 text-sm tracking-[0.2em] uppercase border border-white/30 rounded-full text-white backdrop-blur-md transition-all hover:border-white hover:bg-white hover:text-black shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+          >
+            Enter Tribute
+          </motion.button>
+
+          {onSkip && (
+            <motion.button
+              onClick={onSkip}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-10 py-4 text-sm tracking-[0.2em] uppercase border border-transparent rounded-full text-neutral-400 transition-all hover:text-white hover:bg-white/5"
+            >
+              Skip to Portfolio
+            </motion.button>
+          )}
+        </motion.div>
       </motion.div>
     </motion.div>
   );

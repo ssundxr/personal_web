@@ -53,7 +53,7 @@ export default function TributeExperience({ onComplete }: { onComplete: () => vo
 
       <AnimatePresence mode="wait">
         {step === "intro" && (
-          <EntryIntro key="intro" onStart={startStory} />
+          <EntryIntro key="intro" onStart={startStory} onSkip={finishTribute} />
         )}
         
         {step === "story" && (
