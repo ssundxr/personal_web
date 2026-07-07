@@ -92,8 +92,8 @@ export default function ScrollStory({ onFinish }: { onFinish: () => void }) {
                            centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
       };
       
-      if (images[0].complete) render(0);
-      else images[0].onload = () => render(0);
+      if (images[0]?.complete) render(0);
+      else if (images[0]) images[0].onload = () => render(0);
 
       const playhead = { frame: 0 };
       
