@@ -49,7 +49,7 @@ export default function TributeExperience({ onComplete }: { onComplete: () => vo
         Background Music - Indila Love Story
         Volume is handled via the audioRef below
       */}
-      <audio ref={audioRef} src="/love-story.aac" loop />
+      <audio ref={audioRef} src="/lovestory.mpeg" loop />
 
       <AnimatePresence mode="wait">
         {step === "intro" && (
