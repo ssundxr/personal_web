@@ -1,14 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function EntryIntro({ onStart }: { onStart: () => void }) {
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: (custom: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: custom * 0.2, duration: 1.2, ease: "easeOut" },
+      transition: { delay: custom * 0.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] },
     }),
   };
 
