@@ -39,8 +39,7 @@ export default function EntryIntro({ onStart }: { onStart: () => void }) {
         }}
       />
       
-      {/* Cinematic Black Gradient Overlay */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black via-black/80 to-black/40 pointer-events-none" />
+      {/* No Gradient Overlay */}
 
       {/* Subtle Particles - simplified with CSS for performance */}
       <div className="absolute inset-0 opacity-10 pointer-events-none z-0" 
