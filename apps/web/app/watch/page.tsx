@@ -429,21 +429,37 @@ export default function WatchPage() {
             className="w-full max-w-5xl flex flex-col gap-6"
           >
             {/* Player Toggle Controls */}
-            <div className="flex items-center justify-between p-2 bg-[var(--surface)] rounded-xl border border-[var(--border-subtle)]">
-              <button
-                onClick={() => setPlayerMode("embedded")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-mono tracking-widest uppercase transition-colors ${playerMode === "embedded" ? "bg-[var(--background)] shadow-sm text-[var(--foreground)] border border-[var(--border-subtle)]" : "text-[var(--secondary)] hover:text-[var(--foreground)]"}`}
-              >
-                <Tv className="w-4 h-4" />
-                UI Mask Mode
-              </button>
-              <button
-                onClick={() => setPlayerMode("shaka")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-mono tracking-widest uppercase transition-colors ${playerMode === "shaka" ? "bg-[var(--background)] shadow-sm text-[var(--foreground)] border border-[var(--border-subtle)]" : "text-[var(--secondary)] hover:text-[var(--foreground)]"}`}
-              >
-                <Code className="w-4 h-4" />
-                Native DRM Mode
-              </button>
+            <div className="flex flex-col gap-2 p-2 bg-[var(--surface)] rounded-xl border border-[var(--border-subtle)]">
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setPlayerMode("embedded")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-mono tracking-widest uppercase transition-colors ${playerMode === "embedded" ? "bg-[var(--background)] shadow-sm text-[var(--foreground)] border border-[var(--border-subtle)]" : "text-[var(--secondary)] hover:text-[var(--foreground)]"}`}
+                >
+                  <Tv className="w-4 h-4" />
+                  UI Mask Mode
+                </button>
+                <button
+                  onClick={() => setPlayerMode("shaka")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-mono tracking-widest uppercase transition-colors ${playerMode === "shaka" ? "bg-[var(--background)] shadow-sm text-[var(--foreground)] border border-[var(--border-subtle)]" : "text-[var(--secondary)] hover:text-[var(--foreground)]"}`}
+                >
+                  <Code className="w-4 h-4" />
+                  Native DRM Mode
+                </button>
+              </div>
+              
+              {playerMode === "shaka" && (
+                <div className="flex items-center justify-center py-2">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-mono text-[var(--secondary)] hover:text-[var(--foreground)] transition-colors">
+                    <input 
+                      type="checkbox" 
+                      checked={config.useProxy !== false}
+                      onChange={(e) => setConfig({ ...config, useProxy: e.target.checked })}
+                      className="accent-[var(--foreground)]"
+                    />
+                    Route through Server Proxy (Disable if playing locally but black screen on deployed)
+                  </label>
+                </div>
+              )}
             </div>
 
             {/* Players */}
@@ -475,6 +491,7 @@ export default function WatchPage() {
                   streamUrl={config.shakaStreamUrl}
                   keyId={config.shakaKeyId}
                   keyVal={config.shakaKeyVal}
+                  useProxy={config.useProxy !== false}
                 />
               )}
             </div>
