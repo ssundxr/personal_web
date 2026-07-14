@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
   try {
     // If the user accidentally pasted a raw <iframe src="..."> HTML string instead of a URL, extract the src!
-    if (targetUrl.trim().startsWith('<iframe')) {
+    if (targetUrl.toLowerCase().includes('<iframe')) {
       const srcMatch = targetUrl.match(/src\s*=\s*["']([^"']+)["']/i);
       if (srcMatch && srcMatch[1]) {
         targetUrl = srcMatch[1];
