@@ -1,18 +1,29 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const targetUrl = searchParams.get('url');
-
-  if (!targetUrl) {
+  const url = new URL(request.url).searchParams.get('url');
+  
+  if (!url) {
     return NextResponse.json({ error: 'URL parameter is required' }, { status: 400 });
   }
 
+  let targetUrl = decodeURIComponent(url);
+
   try {
+    // If the user accidentally pasted a raw <iframe src="..."> HTML string instead of a URL, extract the src!
+    if (targetUrl.trim().startsWith('<iframe')) {
+      const srcMatch = targetUrl.match(/src\s*=\s*["']([^"']+)["']/i);
+      if (srcMatch && srcMatch[1]) {
+        targetUrl = srcMatch[1];
+        // If it's just an iframe string, we don't need to fetch anything, just return the URL
+        return NextResponse.json({ cleanUrl: targetUrl });
+      }
+    }
+
     // 1. Fetch the target URL (e.g. the Blogspot page)
     const response = await fetch(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       },
     });
 
