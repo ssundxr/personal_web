@@ -154,7 +154,8 @@ export default function WatchPage() {
       fetch(`https://${projectId}.api.sanity.io/v2023-05-03/data/query/${dataset}?query=${query}`)
         .then(res => res.json())
         .then(async data => {
-          const rawIframeUrl = data?.result?.iframeUrl || "https://krxplor.github.io/mpd/mpd1.html";
+          // Use Sanity CMS config, with the working mpd26wc44 link as the ultimate fallback
+          const rawIframeUrl = data?.result?.iframeUrl || "https://mpd26wc44.blogspot.com/p/matchday01.html?m=1";
           const shakaStreamUrl = data?.result?.shakaStreamUrl || "https://qp-pldt-live-bpk-ucd-prod.akamaized.net/bpk-tv/fifa_ppv1/default/index.mpd";
           const shakaKeyId = data?.result?.shakaKeyId || "2c338a117d434ce4bbe3569231af90f1";
           const shakaKeyVal = data?.result?.shakaKeyVal || "a9633d901ee8a3f4f58ac314b5c5f4fb";
@@ -177,12 +178,17 @@ export default function WatchPage() {
 
             const isYouTube = finalIframeUrl.includes("youtube.com/embed");
             
+            // If the extractor found native MPD+Keys on the page, use them and auto-switch to Native Player!
+            if (parserData.shakaStreamUrl && parserData.shakaKeyId) {
+              setPlayerMode("shaka");
+            }
+            
             setConfig({
               iframeUrl: finalIframeUrl,
               isYouTube,
-              shakaStreamUrl,
-              shakaKeyId,
-              shakaKeyVal
+              shakaStreamUrl: parserData.shakaStreamUrl || shakaStreamUrl,
+              shakaKeyId: parserData.shakaKeyId || shakaKeyId,
+              shakaKeyVal: parserData.shakaKeyVal || shakaKeyVal
             });
           } catch (e) {
             console.error("Auto-extractor failed, using raw URL", e);
@@ -447,8 +453,8 @@ export default function WatchPage() {
                   {/* Iframe */}
                   <iframe 
                     src={config.iframeUrl} 
-                    allow="encrypted-media; autoplay; fullscreen"
-                    className={`w-full h-full ${config.isYouTube ? '' : 'pointer-events-none'}`}
+                    allow="encrypted-media; autoplay; fullscreen; picture-in-picture"
+                    className="w-full h-full"
                     scrolling="no"
                   />
                   
@@ -461,8 +467,6 @@ export default function WatchPage() {
                         className="absolute bottom-[55px] left-1/2 -translate-x-1/2 w-[250px] h-[50px] z-20 pointer-events-none"
                         style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)" }}
                       />
-                      {/* Click layer to allow play/pause but block underlying button clicks */}
-                      <div className="absolute inset-0 z-10 cursor-pointer" />
                     </>
                   )}
                 </div>

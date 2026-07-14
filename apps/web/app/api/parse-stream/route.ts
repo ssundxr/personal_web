@@ -31,7 +31,25 @@ export async function GET(request: Request) {
     const regex2 = /<iframe[^>]*\bsrc=["']([^"']+)["'][^>]*\bid=["']streamFrame["']/i;
     
     let cleanUrl = null;
+    let shakaStreamUrl = null;
+    let shakaKeyId = null;
+    let shakaKeyVal = null;
     
+    // Look for direct MPD and ClearKey variables embedded in the page script
+    // e.g. var url = "....mpd"; var ck_keyid = "..."; var ck_key = "...";
+    const mpdMatch = html.match(/["'](https?:\/\/[^"']+\.mpd)["']/i);
+    if (mpdMatch && mpdMatch[1]) {
+      shakaStreamUrl = mpdMatch[1];
+    }
+    const keyIdMatch = html.match(/(?:ck_keyid|keyid|keyId)\s*=\s*["']([a-fA-F0-9]{32})["']/i);
+    if (keyIdMatch && keyIdMatch[1]) {
+      shakaKeyId = keyIdMatch[1];
+    }
+    const keyValMatch = html.match(/(?:ck_key|key|keyVal)\s*=\s*["']([a-fA-F0-9]{32})["']/i);
+    if (keyValMatch && keyValMatch[1]) {
+      shakaKeyVal = keyValMatch[1];
+    }
+
     const match1 = html.match(regex1);
     if (match1 && match1[1]) {
       cleanUrl = match1[1];
@@ -52,13 +70,18 @@ export async function GET(request: Request) {
       }
     }
 
-    if (!cleanUrl) {
+    if (!cleanUrl && !shakaStreamUrl) {
       // If we couldn't extract anything, just return the original URL so the player doesn't completely break
       return NextResponse.json({ cleanUrl: targetUrl });
     }
 
-    // Return the cleanly extracted URL
-    return NextResponse.json({ cleanUrl });
+    // Return the cleanly extracted URL and any native player config found
+    return NextResponse.json({ 
+      cleanUrl: cleanUrl || targetUrl,
+      shakaStreamUrl,
+      shakaKeyId,
+      shakaKeyVal
+    });
 
   } catch (error: any) {
     console.error('Error in parse-stream API:', error);
