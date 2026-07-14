@@ -128,82 +128,12 @@ export function ShakaPlayer({ streamUrl, keyId, keyVal }: { streamUrl: string, k
       console.error("Shaka player error event — code:", d?.code, "category:", d?.category, "severity:", d?.severity, "data:", d?.data, "message:", d?.message);
     });
 
-    // Network request filter — route external URLs through our server-side proxy
-    const cdnBaseUrl = streamUrl.substring(0, streamUrl.lastIndexOf("/") + 1);
-    
-    player.getNetworkingEngine().registerRequestFilter(
-      (type: number, request: any) => {
-        if (request.uris && request.uris.length > 0) {
-          request.uris = request.uris.map((uri: string) => {
-            if (uri.startsWith("data:")) return uri;
-
-            // Unwrap any nested proxy URLs to get the real CDN URL
-            let realUrl = uri;
-            let safety = 0;
-            while (realUrl.includes("/api/stream-proxy") && safety < 20) {
-              safety++;
-              try {
-                const u = new URL(realUrl, window.location.origin);
-                const inner = u.searchParams.get("url");
-                if (inner && inner !== realUrl) {
-                  realUrl = inner;
-                } else {
-                  break;
-                }
-              } catch {
-                break;
-              }
-            }
-
-            // If it's already an absolute CDN URL, proxy it
-            if (realUrl.startsWith("http://") || realUrl.startsWith("https://")) {
-              if (!realUrl.includes("localhost")) {
-                return `/api/stream-proxy?url=${encodeURIComponent(realUrl)}`;
-              }
-            }
-
-            // Handle localhost URLs — these are segments that Shaka resolved
-            // against the proxy URL path instead of the CDN. Ignore them and
-            // let the response filter fix resolution (see below).
-            if (uri.includes("localhost") || uri.startsWith("/api/dash") || uri.startsWith("/dash")) {
-              // Can't fix path mapping reliably, skip proxying
-              // The response filter below fixes this at the root cause
-              return uri;
-            }
-
-            return uri;
-          });
-        }
-        return Promise.resolve();
-      }
-    );
-
-    // Response filter — tell Shaka the REAL CDN URL for the manifest response.
-    // This is the key fix: Shaka uses the response URI as the base for resolving
-    // all relative segment URLs. By setting it to the real CDN URL, segments
-    // resolve correctly (e.g., ../dash/segment.dash → cdn.com/.../dash/segment.dash)
-    player.getNetworkingEngine().registerResponseFilter(
-      (type: number, response: any) => {
-        if (response.uri && response.uri.includes("/api/stream-proxy")) {
-          try {
-            const u = new URL(response.uri, window.location.origin);
-            const realUrl = u.searchParams.get("url");
-            if (realUrl) {
-              response.uri = realUrl;
-            }
-          } catch {}
-        }
-        return Promise.resolve();
-      }
-    );
-
-    // Load through proxy
-    const proxiedUrl = `/api/stream-proxy?url=${encodeURIComponent(streamUrl)}`;
-    console.log(`Loading stream via proxy (DRM: ${useDrm}):`, proxiedUrl);
+    // Load stream directly
+    console.log(`Loading stream directly (DRM: ${useDrm}):`, streamUrl);
 
     try {
-      await player.load(proxiedUrl);
-      console.log("Shaka stream loaded successfully via proxy.");
+      await player.load(streamUrl);
+      console.log("Shaka stream loaded successfully.");
       setError(null);
       setStatus("");
       videoRef.current?.play().catch(() => console.log("Autoplay blocked"));
