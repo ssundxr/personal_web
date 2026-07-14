@@ -23,12 +23,12 @@ export function ShakaPlayer({ streamUrl, keyId, keyVal }: { streamUrl: string, k
       }
 
       const script1 = document.createElement("script");
-      script1.src = "https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js";
+      script1.src = "https://cdn.jsdelivr.net/npm/shaka-player@5.2.1/dist/shaka-player.ui.min.js";
       script1.async = true;
 
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = "https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.min.css";
+      link.href = "https://cdn.jsdelivr.net/npm/shaka-player@5.2.1/dist/controls.min.css";
       
       document.head.appendChild(link);
       document.head.appendChild(script1);
@@ -64,12 +64,38 @@ export function ShakaPlayer({ streamUrl, keyId, keyVal }: { streamUrl: string, k
       const playerConfig: any = {
         streaming: {
           lowLatencyMode: true,
-          jumpLargeGaps: true
+          jumpLargeGaps: true,
+          bufferingGoal: 10,
+          rebufferingGoal: 2,
+          inaccurateManifestTolerance: 0,
+          retryParameters: {
+            maxAttempts: 5,
+            baseDelay: 1000,
+            backoffFactor: 2,
+          }
+        },
+        manifest: {
+          dash: {
+            ignoreMinBufferTime: true
+          },
+          retryParameters: {
+            maxAttempts: 5,
+            baseDelay: 1000,
+            backoffFactor: 2,
+          }
+        },
+        drm: {
+          retryParameters: {
+            maxAttempts: 5,
+            baseDelay: 1000,
+            backoffFactor: 2,
+          }
         }
       };
 
       if (keyId && keyVal) {
         playerConfig.drm = {
+          ...playerConfig.drm,
           clearKeys: {
             [keyId]: keyVal
           }

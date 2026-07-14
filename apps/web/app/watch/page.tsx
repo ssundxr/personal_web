@@ -22,6 +22,9 @@ export default function WatchPage() {
   const [error, setError] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
   
+  const [showSecretId, setShowSecretId] = useState(false);
+  const [secretId, setSecretId] = useState("");
+
   const [viewerCount, setViewerCount] = useState(0);
   const [playerMode, setPlayerMode] = useState<"embedded" | "shaka">("embedded");
 
@@ -37,6 +40,17 @@ export default function WatchPage() {
     } else {
       setError("Incorrect password.");
       setPassword("");
+    }
+  };
+
+  const handleSecretSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (secretId === "ashwinfejl102@gmail.com") {
+      setName("Ashwin/Friend");
+      setStep('granted');
+      setError(null);
+    } else {
+      setError("Invalid Secret ID.");
     }
   };
 
@@ -237,6 +251,45 @@ export default function WatchPage() {
                   Verify Access
                 </button>
               </form>
+
+              <div className="w-full mt-6">
+                <button 
+                  onClick={() => setShowSecretId(!showSecretId)}
+                  className="text-[var(--secondary)] text-xs hover:text-[var(--foreground)] transition-colors underline underline-offset-4"
+                >
+                  yo u ashwin fejl or his homie? ask bro for the secret ID and drop it here fr 💀
+                </button>
+                
+                <AnimatePresence>
+                  {showSecretId && (
+                    <motion.form 
+                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      onSubmit={handleSecretSubmit} 
+                      className="w-full flex flex-col gap-3 overflow-hidden"
+                    >
+                      <input 
+                        type="text"
+                        placeholder="Enter Secret ID..."
+                        value={secretId}
+                        onChange={(e) => {
+                          setSecretId(e.target.value);
+                          setError(null);
+                        }}
+                        className={`w-full bg-[var(--background)] border ${error && secretId ? 'border-red-500' : 'border-[var(--border-subtle)]'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--foreground)] transition-colors`}
+                      />
+                      <button 
+                        type="submit"
+                        className="w-full bg-[var(--accent)] text-white rounded-xl py-3 text-sm font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+                      >
+                        Bypass
+                      </button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </div>
+
             </div>
           </motion.div>
         )}
