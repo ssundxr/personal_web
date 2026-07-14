@@ -154,8 +154,8 @@ export default function WatchPage() {
       fetch(`https://${projectId}.api.sanity.io/v2023-05-03/data/query/${dataset}?query=${query}`)
         .then(res => res.json())
         .then(async data => {
-          // Use Sanity CMS config, with the working mpd26wc44 link as the ultimate fallback
-          const rawIframeUrl = data?.result?.iframeUrl || "https://mpd26wc44.blogspot.com/p/matchday01.html?m=1";
+          // The user explicitly requested to hardcode this URL and ignore Sanity for now
+          const rawIframeUrl = "https://mpd26wc44.blogspot.com/p/matchday01.html?m=1";
           const shakaStreamUrl = data?.result?.shakaStreamUrl || "https://qp-pldt-live-bpk-ucd-prod.akamaized.net/bpk-tv/fifa_ppv1/default/index.mpd";
           const shakaKeyId = data?.result?.shakaKeyId || "2c338a117d434ce4bbe3569231af90f1";
           const shakaKeyVal = data?.result?.shakaKeyVal || "a9633d901ee8a3f4f58ac314b5c5f4fb";
