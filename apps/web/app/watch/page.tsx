@@ -163,18 +163,43 @@ export default function WatchPage() {
           try {
             const parserRes = await fetch(`/api/parse-stream?url=${encodeURIComponent(rawIframeUrl)}`);
             const parserData = await parserRes.json();
-            const finalIframeUrl = parserData.cleanUrl || rawIframeUrl;
+            let finalIframeUrl = parserData.cleanUrl || rawIframeUrl;
+            
+            // Auto-convert standard YouTube URLs to Embed URLs
+            if (finalIframeUrl.includes("youtube.com/watch?v=")) {
+              const urlObj = new URL(finalIframeUrl);
+              const videoId = urlObj.searchParams.get("v");
+              if (videoId) finalIframeUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            } else if (finalIframeUrl.includes("youtu.be/")) {
+              const videoId = finalIframeUrl.split("youtu.be/")[1]?.split("?")[0];
+              if (videoId) finalIframeUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            }
+
+            const isYouTube = finalIframeUrl.includes("youtube.com/embed");
             
             setConfig({
               iframeUrl: finalIframeUrl,
+              isYouTube,
               shakaStreamUrl,
               shakaKeyId,
               shakaKeyVal
             });
           } catch (e) {
             console.error("Auto-extractor failed, using raw URL", e);
+            let fallbackUrl = rawIframeUrl;
+            // Auto-convert standard YouTube URLs to Embed URLs
+            if (fallbackUrl.includes("youtube.com/watch?v=")) {
+              const urlObj = new URL(fallbackUrl);
+              const videoId = urlObj.searchParams.get("v");
+              if (videoId) fallbackUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            } else if (fallbackUrl.includes("youtu.be/")) {
+              const videoId = fallbackUrl.split("youtu.be/")[1]?.split("?")[0];
+              if (videoId) fallbackUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            }
+
             setConfig({
-              iframeUrl: rawIframeUrl,
+              iframeUrl: fallbackUrl,
+              isYouTube: fallbackUrl.includes("youtube.com/embed"),
               shakaStreamUrl,
               shakaKeyId,
               shakaKeyVal
@@ -255,7 +280,7 @@ export default function WatchPage() {
               <div className="w-full mt-6">
                 <button 
                   onClick={() => setShowSecretId(!showSecretId)}
-                  className="text-[var(--secondary)] text-xs hover:text-[var(--foreground)] transition-colors underline underline-offset-4"
+                  className="text-[var(--secondary)] text-sm font-medium hover:text-[var(--foreground)] transition-colors underline underline-offset-4 leading-relaxed"
                 >
                   yo u ashwin fejl or his homie? ask bro for the secret ID and drop it here fr 💀
                 </button>
@@ -423,18 +448,23 @@ export default function WatchPage() {
                   <iframe 
                     src={config.iframeUrl} 
                     allow="encrypted-media; autoplay; fullscreen"
-                    className="w-full h-full pointer-events-none"
+                    className={`w-full h-full ${config.isYouTube ? '' : 'pointer-events-none'}`}
                     scrolling="no"
                   />
-                  {/* Mask for Follow Us Button */}
-                  <div className="absolute top-0 left-0 w-[150px] h-[60px] bg-black z-20 pointer-events-none" />
-                  {/* Mask for Watermark */}
-                  <div 
-                    className="absolute bottom-[55px] left-1/2 -translate-x-1/2 w-[250px] h-[50px] z-20 pointer-events-none"
-                    style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)" }}
-                  />
-                  {/* Click layer to allow play/pause but block underlying button clicks */}
-                  <div className="absolute inset-0 z-10 cursor-pointer" />
+                  
+                  {!config.isYouTube && (
+                    <>
+                      {/* Mask for Follow Us Button */}
+                      <div className="absolute top-0 left-0 w-[150px] h-[60px] bg-black z-20 pointer-events-none" />
+                      {/* Mask for Watermark */}
+                      <div 
+                        className="absolute bottom-[55px] left-1/2 -translate-x-1/2 w-[250px] h-[50px] z-20 pointer-events-none"
+                        style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)" }}
+                      />
+                      {/* Click layer to allow play/pause but block underlying button clicks */}
+                      <div className="absolute inset-0 z-10 cursor-pointer" />
+                    </>
+                  )}
                 </div>
               ) : (
                 <ShakaPlayer 
